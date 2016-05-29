@@ -1,19 +1,28 @@
 (function() {
 
-document.onContextMenu = function() { return false; };
-
 var c2;
 
-var player = {
+const player = {
 	foot: {
 		points: [
 			[ [10, 20], [30, 20], [30, 30] ]
 //			[ [12, 22], [32, 22], [32, 32] ]
 		]
+	}, example: {
+		points: []
 	}
 };
 
+var nullFn = function(){};
+
 var TheCanvas = React.createClass({ 
+
+	getDefaultProps: function() {
+		return {
+			onMouseDown: nullFn,
+			onTouchDown: nullFn
+		}
+	},
 
 	componentDidMount: function() {
 		c2 = this.refs.theCanvas.getContext('2d');
@@ -35,16 +44,17 @@ var TheCanvas = React.createClass({
 			this.polygonArr = [];
 		} else {
 			if (!this.polygonArr) this.polygonArr = [];
-				console.log(event.pageX, srcElem.clientWidth,event.pageY, srcElem.clientHeight);
 			this.polygonArr.push([
-				event.pageX - srcElem.offsetWidth,
-				event.pageY - srcElem.offsetHeight
+				srcElem.offsetWidth - event.pageX,
+				srcElem.offsetHeight -event.pageY
 			]);
+			player.example.points = this.polygonArr;
 		}
 	},
 
 	paintPolygon: function(points) {
-		if (!points) { return; }
+		console.log(points);
+		if (!points || points.length < 2) { return; }
 		c2.beginPath();
 		c2.moveTo.apply(c2, points[0]);
 		for (var i = 1; i < points.length; ++i) {
@@ -65,6 +75,8 @@ var TheCanvas = React.createClass({
 		c2.save();
 
 		c2.translate(100, 100);
+
+		c2.save();
 		c2.fillStyle = '#F00';
 		c2.fillRect(-50, -50, 100, 100);
 		c2.restore();
@@ -74,29 +86,46 @@ var TheCanvas = React.createClass({
 			this.paintFrame(player[i].points);
 			c2.restore();
 		}
+		c2.restore();
 
 	},
+
+	_getCanvasProps: function() {
+		return {
+			ref: "theCanvas",
+			onMouseDown: this.props.onMouseDown,
+			onTouchDown: this.props.onTouchDown,
+			width: 200,
+			height: 200
+		};
+	},
+
+	render: function() {
+		return <div>
+			<canvas {...this._getCanvasProps} />
+		</div>;
+	}
+
+});
+
+/* Tells canvas what to draw */
+var PolygonCanvas = React.createClass({
 
 	onMouseDown: function(e) {
 		this.genPolygonString(e, this.refs.theCanvas);
 	},
 
-	onTouchDown: function(e) {
+	onTouchDown: function(e) {},
 
-	},
 
 	render: function() {
-		return <div>
-			<canvas 
-				ref="theCanvas"
-				onMouseDown={this.onMouseDown}
-				onTouchDown={this.onTouchDown}
-				width={200}
-				height={200} />
-		</div>;
-
+		return
+			<div>
+			<TheCanvas
+				lines=
+				frameNum={this.state.frameNum}/>
+		</div>
 	}
-
 });
 
 var App = React.createClass({
