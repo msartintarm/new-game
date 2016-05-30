@@ -1,3 +1,4 @@
+
 const player = {
 	foot: {
 		points: [
@@ -55,7 +56,7 @@ class PolygonCanvas extends React.Component {
 		};
 		console.log("document.body.addEvent");
 	}
-
+ 
 	onButtonMouseDown (e) {
 		if (e.keyCode === KEYS.mLeft) {
 
@@ -69,6 +70,7 @@ class PolygonCanvas extends React.Component {
 	onCanvasTouchDown (e) {}
 
 	render () {
+		return (
 		<div>
 			<input 
 				type="button"
@@ -78,6 +80,7 @@ class PolygonCanvas extends React.Component {
 				onTouchDown={this.onCanvasTouchDown}
 				lineSegments={player.points} />
 		</div>
+		);
 	}
 }
 		console.log("PoplyonoinCanvas");
