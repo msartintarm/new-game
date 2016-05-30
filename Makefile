@@ -13,8 +13,8 @@ BUNDLE_LIB:= work/bundle-lib.js
 # (c) 2016. All rights reserved.
 # Makefile that installs and runs the project.
 
-all: bundleify_lib bundleify
-
+ all: bundleify_lib bundleify
+#all: bundleify
 bundleify_lib: $(BUNDLE_LIB)
 $(BUNDLE_LIB): $(LIB)
 	rm -f $@

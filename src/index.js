@@ -3,7 +3,7 @@ class PolygonCanvas extends React.Component {
 
 	lineEndKey: KEYS.mRight
 } 
-*/
+*/ 
 class App extends React.Component {
 
 	constructor () {
