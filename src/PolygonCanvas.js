@@ -10,7 +10,7 @@ const player = {
 const KEYS = {
 	mLeft: 79,
 	mRight: 80
-};
+}; 
 
 /* Tells canvas what to draw */
 class PolygonCanvas extends React.Component {
