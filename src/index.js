@@ -1,18 +1,11 @@
-/*
-class PolygonCanvas extends React.Component {
+(() => {
 
-	lineEndKey: KEYS.mRight
-} 
-*/ 
 class App extends React.Component {
 
 	constructor () {
 		super();
 		this.state = { frameNum: 0 };
-	}
-
-	componentDidMount () {
-		requestAnimationFrame(this.tick);
+		this.tick = this.tick.bind(this);
 	}
 
 	tick () {
@@ -20,20 +13,17 @@ class App extends React.Component {
 		requestAnimationFrame(this.tick);
 	}
 
+	componentDidMount () {
+		requestAnimationFrame(this.tick);
+	}
+
 	render () {
-		console.log("maINrENDER");
 		return <div>
 			<PolygonCanvas frameNum={this.state.frameNum} />
 		</div>
 	}
 }
 
-(() => {
-
-console.log("Index Start");
-
 ReactDOM.render(<App />, document.body.firstElementChild);
-
-console.log("Index Done");
 
 }) ();

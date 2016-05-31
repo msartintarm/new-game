@@ -2,9 +2,6 @@ var c2;
 
 var nullFn = function(){};
 
-console.log("yo!");
-
- 
 /* Errors once for each key to avoid console pollution */
 
 let consoleErrOnce = (() => {
@@ -70,22 +67,20 @@ class TheCanvas extends React.Component {
 	_getCanvasProps () {
 		return {
 			ref: "theCanvas",
-			onMouseDown: this.props.onMouseDown,
-			onTouchDown: this.props.onTouchDown,
 			width: 200,
 			height: 200
 		};
 	}
 
 	render () {
+		return (
 		<div>
-			<canvas {...this._getCanvasProps} />
+			<canvas {...this._getCanvasProps()} />
 		</div>
+		);
 	}
 }
 
 TheCanvas.defaultProps = {
-	onMouseDown: nullFn,
-	onTouchDown: nullFn,
 	lineSegments: []
 };

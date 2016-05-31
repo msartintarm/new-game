@@ -3,33 +3,41 @@ SHELL=/bin/sh
 #  No? Download latest make.exe here (4.1 as of May 2016):
 #  http://www.equation.com/servlet/equation.cmd?fa=make
 
-SRC:= src/TheCanvas.js \
+SRC_JS:= src/TheCanvas.js \
 	src/PolygonCanvas.js \
 	src/index.js
-LIB:= lib/react.15.1.0.js \
+LIB_JS:= lib/react.15.1.0.js \
 	lib/react-dom-15.1.0.js \
 	lib/babel.browser.min.js
 
-BUNDLE:= work/bundle.js
-BUNDLE_LIB:= work/bundle-lib.js
+WORK_DIR:= work
+
+JS_TARGET:= $(WORK_DIR)/bundle.js
+JS_LIB_TARGET:= $(WORK_DIR)/bundle-lib.js
 
 # (c) 2016. All rights reserved.
 # Makefile that installs and runs the project.
 
+# Default; builds
 all: bundleify_lib bundleify
 
-.PHONY: clean all
+# Builds + runs server
+serve: all
+	python -m http.server 3000
+
+.PHONY: clean all server
 
 clean:
-	rm -f $(BUNDLE) $(BUNDLE_LIB)
+	rm -rf $(WORK_DIR)
 
-bundleify_lib: $(BUNDLE_LIB)
-$(BUNDLE_LIB): $(LIB)
+bundleify_lib: $(JS_LIB_TARGET)
+$(JS_LIB_TARGET): $(LIB_JS)
+	mkdir -p $(@D)
 	rm -f $@
-	cat $(LIB) >> $@
+	cat $(LIB_JS) >& $@
 
-bundleify: $(BUNDLE)
-$(BUNDLE): $(SRC)
+bundleify: $(JS_TARGET)
+$(JS_TARGET): $(SRC_JS)
+	mkdir -p $(@D)
 	rm -f $@
-	cat $(SRC) >> $@
-
+	cat $(SRC_JS) >& $@
