@@ -88,46 +88,27 @@ class PolygonCanvas extends React.Component {
 	handler(e, map) {
 		var target = e.target;
 		var mapKey = target.className || target.tagName;
-		var fn = ret[map];
+		var fn = map[mapKey];
 		return fn? fn(e): null;
 	}
 
 	mouseDownHandler (e) {
-		var map = {
+		return this.handler(e, {
 			"CANVAS": this.onCanvasMouseDown,
 			"button": this.onButtonMouseDown
-		};
-
-		return handler(e, map)
-
-		console.log("Mouse Down!");
-		console.log(e.target);
-		switch(e.target.className) {
-			case "CANVAS":
-				return this.onCanvasMouseDown(e);
-			case "button":
-				return this.onButtonMouseDown(e);
-			default:
-				break;
-		}
+		});
 	}
 
 	touchDownHandler (e) {
-		switch(e.target.className) {
-			case "CANVAS":
-				return this.onCanvasTouchDown(e);
-			default:
-				break;
-		}
+		return this.handler(e, {
+			"CANVAS": this.onCanvasTouchDown 
+		});
 	}
 
 	keyDownHandler (e) {
-		switch(e.target.className) {
-			case "":
-				return this.onCanvasKeyDown(e);
-			default:
-				break;
-		}
+		return this.handler(e, {
+			"CANVAS": this.onCanvasKeyDown 
+		});
 	}
 
 	onCanvasTouchDown (e) {}
