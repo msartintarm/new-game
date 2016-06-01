@@ -32,8 +32,12 @@ class TheCanvas extends React.Component {
 		this._paint();
 	}
 
+	/*
+		points format: array of arrays
+		[[0,1], [1,2],[2,3]]
+	*/
 	_paintLineSegment (points) {
-		if (!points || points.length < 1) {
+		if (!points || points.length < 2 || points[0].length < 2) {
 			return;
 		}
 		c2.beginPath();
@@ -51,8 +55,7 @@ class TheCanvas extends React.Component {
 
 		let s_2 = SIZE / 2;
 		c2.save();
-		c2.translate(s_2, s_2);
-		c2.fillRect(-s_2, -s_2, s_2, s_2);
+		c2.fillRect(0, 0, SIZE, SIZE);
 		c2.restore();
 
 /*

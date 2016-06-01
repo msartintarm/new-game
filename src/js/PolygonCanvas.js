@@ -77,39 +77,49 @@ class PolygonCanvas extends React.Component {
 			let theCode = ev.keyCode;
 			console.log(newText);
 			this.keyList[key] = theCode;
-			let newText = this.getSetButtonText(key, this.keyList[key]);
+			let newText = this.getSetButtonText(key, theCode);
 			this.setState({ button_text: newText });
 			document.body.removeEventListener('keydown', this.setKey[key]);
 		}.bind(this);
 	}
-/*
-	setLineEndKey (ev) {
-		let theKey = ev.keyCode;
-		console.log(newText);
-		this.keyList['line end'] = theKey;
-		let newText = this.getSetButtonText('line end', this.keyList['line end']);
-		this.setState({ button_text: newText });
-		document.body.removeEventListener('keydown', this.setLineEndKey);
+
+	/* return array from event with offset relative to target */
+	getCoords(e) {
+		let t = e.target;
+		let x = e.pageX - t.offsetLeft;
+		let y = e.pageY - t.offsetTop;
+		return [x, y];
 	}
-*/
+
 	onButtonMouseDown (e) {
 		this.setState({ button_text: 'next key down..' });
 		document.body.addEventListener('keydown', this.setKey['line end']);
 	}
 
-	/*
-		Keep calling the function to store points
-		Call it with r button click to print points stored
-		To be used as points generator to paste into data file
-	*/
+	/* Update polygon array with point from latest canvas click. */
 	onCanvasMouseDown (e) {
-		let newState = {};
-		newState.polygon_arr = [...this.state.polygon_arr];
-		newState.polygon_arr[0].push([
-				e.pageX,
-				e.pageY
-		]);
-		newState.polygon_arr_text = JSON.stringify(newState.polygon_arr);
+
+		let newArr = [...this.state.polygon_arr]; // make copy
+		newArr[0].push(this.getCoords(e));
+
+		let newState = {
+			polygon_arr: newArr,
+			polygon_arr_text: JSON.stringify(newArr)
+		};
+
+		this.setState(newState);
+	}
+
+	/* Draws example line with last point */
+	onCanvasMouseOver (e) {
+		if (!this.state.polygon_arr.length > 1) { return; }
+
+		let newState = {
+			example_line: [
+				this.state.polygon_arr[0],
+				[ e.pageX, e.pageY ]
+		]};
+
 		this.setState(newState);
 	}
 
@@ -119,27 +129,24 @@ class PolygonCanvas extends React.Component {
 		  2. target element tag name
 	*/
 	handler(e, map) {
-		var target = e.target;
-		var mapKey = target.className || target.tagName;
-		var fn = map[mapKey];
+		let target = e.target;
+		let mapKey = target.className || target.tagName;
+		let fn = map[mapKey];
 		return fn? fn.call(this, e): null;
 	}
 
-	mouseDownHandler (e) {
-		return this.handler(e, {
+	mouseDownHandler (e) { return this.handler(e, {
 			"CANVAS": this.onCanvasMouseDown,
 			"line_end_button": this.onButtonMouseDown
 		});
 	}
 
-	touchDownHandler (e) {
-		return this.handler(e, {
+	touchDownHandler (e) { return this.handler(e, {
 			"CANVAS": this.onCanvasTouchDown 
 		});
 	}
 
-	keyDownHandler (e) {
-		return this.handler(e, {
+	keyDownHandler (e) { return this.handler(e, {
 			"CANVAS": this.onCanvasKeyDown 
 		});
 	}
@@ -158,7 +165,7 @@ class PolygonCanvas extends React.Component {
 			<div>
 				<TheCanvas className="canvas"
 					frameNum={this.props.frameNum}
-					lineSegments={this.state.polygon_arr} />
+					lineSegments={[...this.state.polygon_arr, this.example_line ]} />
 			</div>
 			<div className="polygon_arr_text" >
 				{this.state.polygon_arr_text}
