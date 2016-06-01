@@ -30,7 +30,7 @@ class PolygonCanvas extends React.Component {
 		this.lineEndKey = KEYS.mRight;
 		this.state = ({ 
 			button_text: 'Set keycode',
-			polygon_arr: [],
+			polygon_arr: [[]],
 			polygon_arr_text: ''
 		});
 		// ES6 React auto bind alternatives:
@@ -76,11 +76,11 @@ class PolygonCanvas extends React.Component {
 	*/
 	onCanvasMouseDown (e) {
 		let newState = {};
-		newState.polygon_arr = [
-			...this.state.polygon_arr, [
-				event.pageX,
-				event.pageY
-		]];
+		newState.polygon_arr = [...this.state.polygon_arr];
+		newState.polygon_arr[0].push([
+				e.pageX,
+				e.pageY
+		]);
 		newState.polygon_arr_text = JSON.stringify(newState.polygon_arr);
 		this.setState(newState);
 	}
@@ -89,7 +89,7 @@ class PolygonCanvas extends React.Component {
 		var target = e.target;
 		var mapKey = target.className || target.tagName;
 		var fn = map[mapKey];
-		return fn? fn(e): null;
+		return fn? fn.call(this, e): null;
 	}
 
 	mouseDownHandler (e) {
@@ -118,18 +118,16 @@ class PolygonCanvas extends React.Component {
 		<div className="container"
 			onMouseDown={this.mouseDownHandler}
 			onTouchDown={this.touchDownHandler}
-			onKeyDown={this.keyDownHandler}
-		>
+			onKeyDown={this.keyDownHandler} >
 			<button className="button" >
 				{this.state.button_text} 
 			</button>
-			<div >
-				>
+			<div>
 				<TheCanvas className="canvas"
 					frameNum={this.props.frameNum}
 					lineSegments={this.state.polygon_arr} />
 			</div>
-			<div className="polygon_arr_text">
+			<div className="polygon_arr_text" style="font-size: 14px">
 				{this.state.polygon_arr_text}
 			</div>
 		</div>
