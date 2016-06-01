@@ -4,8 +4,8 @@ SHELL=/bin/sh
 #  http://www.equation.com/servlet/equation.cmd?fa=make
 
 
+SRC_CSS_DIR:= src/css
 SRC_JS_DIR:= src/js
-SRC_JS_DIR:= src/css
 WORK_DIR:= work
 
 SRC_SCSS:= $(SRC_CSS_DIR)/style.scss

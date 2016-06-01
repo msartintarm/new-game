@@ -14,12 +14,12 @@ const KEYS = {
 // for keys that fromCharCode doesn't define
 const keyCodeMap = {
 	16: 'Left Shift',
+	32: 'Space',
 	37: 'Left',
 	38: 'Up',
 	39: 'Right',
 	40: 'Down'
 };
-
 
 /* Tells canvas what to draw */
 class PolygonCanvas extends React.Component {
@@ -27,9 +27,11 @@ class PolygonCanvas extends React.Component {
 	constructor () {
 		super();
 
-		this.lineEndKey = KEYS.mRight;
+		this.keyList = {
+			'line end': 16
+		};
 		this.state = ({ 
-			button_text: 'Set keycode',
+			button_text: this.getStartButtonText('line end', this.keyList['line end']),
 			polygon_arr: [[]],
 			polygon_arr_text: ''
 		});
@@ -40,12 +42,24 @@ class PolygonCanvas extends React.Component {
 		this.mouseDownHandler = this.mouseDownHandler.bind(this);
 		this.touchDownHandler = this.touchDownHandler.bind(this);
 
-		this.setLineEndKey = this.setLineEndKey.bind(this);
+		this.setKey = {
+			'line end': this.setKeyGen('line end')
+		};
 
 	}
 
 	getKeycodeName (key) {
 		return keyCodeMap[key] || String.fromCharCode(key).trim() || key;
+	}
+
+	getStartButtonText (name, key) {
+		return 'Set ' + (name || 'the') + ' keycode (currently '
+			+ this.getKeycodeName(key) + ')';
+	}
+
+	getSetButtonText (name, key) {
+		return 'The ' + (name || 'event') + ' set to '
+			+ this.getKeycodeName(key);
 	}
 
 	/* Determine which polygon to print for this frame */
@@ -55,18 +69,32 @@ class PolygonCanvas extends React.Component {
 		this.paintPolygon(frame[num]);
 	}
 
+	/* Returns function indexed by key that can be bound
+		to DOM elements and deletes itself after execution
+	*/
+	setKeyGen (key) {
+		return (ev) => {
+			let theCode = ev.keyCode;
+			console.log(newText);
+			this.keyList[key] = theCode;
+			let newText = this.getSetButtonText(key, this.keyList[key]);
+			this.setState({ button_text: newText });
+			document.body.removeEventListener('keydown', this.setKey[key]);
+		}.bind(this);
+	}
+/*
 	setLineEndKey (ev) {
 		let theKey = ev.keyCode;
-		let newText = 'Set to ' + this.getKeycodeName(theKey);
 		console.log(newText);
-		this.lineEndKey = theKey;
+		this.keyList['line end'] = theKey;
+		let newText = this.getSetButtonText('line end', this.keyList['line end']);
 		this.setState({ button_text: newText });
 		document.body.removeEventListener('keydown', this.setLineEndKey);
 	}
-
+*/
 	onButtonMouseDown (e) {
 		this.setState({ button_text: 'next key down..' });
-		document.body.addEventListener('keydown', this.setLineEndKey);
+		document.body.addEventListener('keydown', this.setKey['line end']);
 	}
 
 	/*
@@ -85,6 +113,11 @@ class PolygonCanvas extends React.Component {
 		this.setState(newState);
 	}
 
+	/* Looks for handler defined in mapping
+		- Checks in order 
+		  1. target element class name
+		  2. target element tag name
+	*/
 	handler(e, map) {
 		var target = e.target;
 		var mapKey = target.className || target.tagName;
@@ -95,7 +128,7 @@ class PolygonCanvas extends React.Component {
 	mouseDownHandler (e) {
 		return this.handler(e, {
 			"CANVAS": this.onCanvasMouseDown,
-			"button": this.onButtonMouseDown
+			"line_end_button": this.onButtonMouseDown
 		});
 	}
 
@@ -119,7 +152,7 @@ class PolygonCanvas extends React.Component {
 			onMouseDown={this.mouseDownHandler}
 			onTouchDown={this.touchDownHandler}
 			onKeyDown={this.keyDownHandler} >
-			<button className="button" >
+			<button className="line_end_button" >
 				{this.state.button_text} 
 			</button>
 			<div>
@@ -127,7 +160,7 @@ class PolygonCanvas extends React.Component {
 					frameNum={this.props.frameNum}
 					lineSegments={this.state.polygon_arr} />
 			</div>
-			<div className="polygon_arr_text" style="font-size: 14px">
+			<div className="polygon_arr_text" >
 				{this.state.polygon_arr_text}
 			</div>
 		</div>
