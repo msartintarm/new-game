@@ -1,3 +1,7 @@
+div {
+	box-sizing: border-box;
+}
+
 
 .canvas {
 	position: absolute;
@@ -7,6 +11,17 @@
 	left: 0px;
 }
 
-.polygon_arr_text {
-	font-size: 14px;
+.display_array {
+	position: relative;
+	font-size: 0.3rem;
+	line-height: 2;
+	min-height: 10px;
+	padding-top: 10px;
+}
+
+.display_label {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	font-size: 0.3rem;
 }
