@@ -1,3 +1,4 @@
+import Component from './Component';
 import EventButton from './EventButton';
 import TheCanvas from './TheCanvas';
 
@@ -14,15 +15,7 @@ const KEYS = {
 	mRight: 80
 };
 
-const handlerList = [
-	[ 'keydown', 'keyDownHandler'],
-	[ 'mousedown', 'mouseDownHandler'],
-	[ 'mousemove', 'mouseMoveHandler'],
-	[ 'mouseover', 'mouseOverHandler'],
-	[ 'touchdown', 'touchDownHandler']
-];
-
-class DisplayArray extends React.Component {
+class DisplayArray extends Component {
 	render () {
 		return(
 			<div className="display_array" >
@@ -34,58 +27,26 @@ class DisplayArray extends React.Component {
 }
 
 /* Tells canvas what to draw */
-class PolygonCanvas extends React.Component {
+class PolygonCanvas extends Component {
 
 	constructor () {
 		super();
 
-		this.state = ({
+		this.state = {
 			polygon_arr: [[]],
 			polygon_arr_text: 'no coords bro',
 			example_line: [],
 			example_line_text: 'no coords bro',
 			mouseDownElem: this
-		})
+		};
 
-		// ES6 React auto bind alternatives:
-		// http://egorsmirnov.me/2015/08/16/react-and-es6-part3.html
-		for (let [key, val] of handlerList) {
-			this[val] = this[val].bind(this);
-			console.log(key + "," + val);
-			document.addEventListener(key, this[val]);
-		}
-
-//		this.keyList = {};		/* Key code for this event key */
-//		this.setKey = {};		/* Set key functions */
-//		let k = 36; // char code of 0
-//		for (let entry of ['line end', 'line loop', 'line drop']) {
-//			this.setKey[entry] = this.setKeyGen(entry);
-//			this.keyList[entry] = ++k;
-//			this.addStartButtonText(this.state, entry);
-//		}
+		this.registerHandler("mousedown", "CANVAS", this.onCanvasMouseDown);
+		this.registerHandler("touchdown", "CANVAS", this.onCanvasTouchDown);
+		this.registerHandler("keydown", "default", this.onCanvasKeyDown);
+		this.registerHandler("mouseover", "CANVAS", this.onCanvasMouseOver);
+		this.registerHandler("mousemove", "CANVAS", this.onCanvasMouseMove);
 	}
 
-//	getKeycodeName (key) {
-//		return keyCodeMap[key]
-//			|| String.fromCharCode(key).trim()
-//			|| '\'' + key + '\'';
-//	}
-
-	/* Edits provided object and adds key / val pair for button text */
-/*	addStartButtonText (obj, name) {
-		let keyName = this.getKeycodeName(this.keyList[name]);
-		let textName = name + ' button_text';
-		obj[textName] = 'Set ' + (name || 'the')
-			+ ' keycode (currently ' + keyName + ')';
-	}
-*/
-	/* Edits provided object and adds key / val pair for button text */
-/*	addSetButtonText (obj, name) {
-		let keyName = this.getKeycodeName(this.keyList[name]);
-		let textName = name + ' button_text';
-		obj[textName] = 'The ' + (name || 'event') + ' set to ' + keyName;
-	}
-*/
 	/* Determine which polygon to print for this frame */
 	paintFrame (frame) {
 		var num = this.props.index;
@@ -93,21 +54,6 @@ class PolygonCanvas extends React.Component {
 		this.paintPolygon(frame[num]);
 	}
 
-	/* Returns function indexed by key that can be bound
-		to DOM elements and deletes itself after execution
-	*//*
-	setKeyGen (key) {
-		let a = (ev) => {
-			let theCode = ev.keyCode;
-			this.keyList[key] = theCode;
-			let newState = {};
-			this.addSetButtonText(newState, key);
-			this.setState(newState);
-			document.body.removeEventListener('keydown', a);
-		}.bind(this);
-		return a;
-	}
-*/
 	/* return array from event with offset relative to target */
 	getCoords(e) {
 		let t = e.target;
@@ -116,19 +62,6 @@ class PolygonCanvas extends React.Component {
 		return [x, y];
 	}
 
-	/* Returns function indexed by key that can be bound to DOM elements *//*
-	buttonMouseDownGen (key) {
-		let textKey = key + ' button_text';
-		return (e) => {
-
-			let newState = {};
-			newState[textKey] = 'next key down..';
-			this.recordMouseDown(e, newState);
-			this.setState(newState);
-			document.body.addEventListener('keydown', this.setKey[key]);
-		}.bind(this);
-	}
-*/
 	/* Update polygon array with point from latest canvas click. */
 	onCanvasMouseDown (e) {
 		let newArr = [...this.state.polygon_arr]; // make copy
@@ -150,19 +83,21 @@ class PolygonCanvas extends React.Component {
 
 		let newArr = [[], ...this.state.polygon_arr]; // add entry
 
-console.log(this.refs['line end'].key_val);
-/*
-		if (e.keyCode === this.keyList['line end']) {
+		var le = this.refs['line end'].key_val;
+		var ll = this.refs['line loop'].key_val;
+		var ld = this.refs['line drop'].key_val;
+
+		if (e.keyCode === le) {
 			// Copy entry from example line to end of latest segment
 			newArr[1].push([...this.state.example_line[1]]);
-		} else if (e.keyCode === this.keyList['line loop']){
+		} else if (e.keyCode === ll){
 			newArr[1].push([...this.state.example_line[1]]);
 			newArr[1].push([...newArr[1][0]]);
-		} else if (e.keyCode === this.keyList['line drop']) { 
+		} else if (e.keyCode === ld) { 
 		} else {
 			return;
 		}
-*/			
+			
 		let newState = {
 			polygon_arr: newArr,
 			polygon_arr_text: JSON.stringify(newArr),
@@ -201,49 +136,6 @@ console.log(this.refs['line end'].key_val);
 
 	/* Todo: something cool */
 	onCanvasMouseOver (e) {}
-
-	getElemKey (elem) { return elem.className || elem.tagName; }
-
-	/* Looks for handler defined in mapping
-		- Checks in order 
-		  1. target element class name
-		  2. target element tag name
-	*/
-	handler(e, map) {
-		let mapKey = this.getElemKey(e.target);
-		let fn = map[mapKey];
-		return fn? fn.call(this, e): 
-			map['default']? map['default'].call(this, e): null;
-	}
-
-	mouseOverHandler (e) { this.handler(e, {
-			"CANVAS": this.onCanvasMouseOver
-		});
-	}
-
-	mouseMoveHandler (e) { this.handler(e, {
-			"CANVAS": this.onCanvasMouseMove
-		});
-	}
-
-	mouseDownHandler (e) { this.handler(e, {
-			"CANVAS": this.onCanvasMouseDown,
-			"line-end-button": this.refs['line end'].buttonMouseDown,
-			"line-loop-button": this.refs['line loop'].buttonMouseDown,
-			"line-drop-button": this.refs['line drop'].buttonMouseDown,
-			default: this.recordMouseDown
-		});
-	}
-
-	touchDownHandler (e) { this.handler(e, {
-			"CANVAS": this.onCanvasTouchDown 
-		});
-	}
-	
-	keyDownHandler (e) { this.handler(e, {
-			default: this.onCanvasKeyDown 
-		});
-	}
 
 	onCanvasTouchDown (e) {}
 

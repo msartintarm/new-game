@@ -1,6 +1,7 @@
+import Component from './Component';
 import PolygonCanvas from './PolygonCanvas';
 
-class App extends React.Component {
+class App extends Component {
 
 	constructor () {
 		super();

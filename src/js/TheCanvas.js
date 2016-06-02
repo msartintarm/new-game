@@ -1,3 +1,5 @@
+import Component from './Component';
+
 const nullFn = function(){};
 
 const SIZE = 200;

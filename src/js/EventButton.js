@@ -1,3 +1,5 @@
+import Component from './Component';
+
 // for keys that fromCharCode doesn't define
 const keyCodeMap = {
 	16: 'Left Shift',
@@ -8,7 +10,7 @@ const keyCodeMap = {
 	40: 'Down'
 };
 
-class EventButton extends React.Component {
+class EventButton extends Component {
 	constructor(props) {
 		super(props);
 		this.key_val = 55;
@@ -16,8 +18,12 @@ class EventButton extends React.Component {
 			button_text: 'Set ' + this.props.name + ' keycode (currently '
 				+ this.getKeycodeName() + ')'
 		};
+		this.className=(this.props.name + ' button').replace(/ /g,"-");
+
 		this.addStartButtonText(this.state);
 		this.setKey = this.setKey.bind(this);
+		this.buttonMouseDown = this.buttonMouseDown.bind(this);
+		this.registerHandler("mousedown", this.className, this.buttonMouseDown);
 	}
 
 	/* Edits provided object and adds key / val pair for button text */
@@ -54,15 +60,16 @@ class EventButton extends React.Component {
 
 	/* Returns function indexed by key that can be bound to DOM elements */
 	buttonMouseDown (e) {
+		console.log("Button mouse down yo!");
 		let newState = { button_text: 'next key down..' };
-		this.recordMouseDown(e, newState);
 		this.setState(newState);
+		console.log("State set yo!");
 		document.body.addEventListener('keydown', this.setKey);
 	}
 
 	render () {
 		return (
-			<button className={(this.props.name + ' button').replace(/ /g,"-")} >
+			<button className={this.className} >
 				{this.state.button_text} 
 			</button>
 		)

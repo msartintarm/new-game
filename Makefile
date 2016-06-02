@@ -5,7 +5,7 @@ SHELL=/bin/sh
 
 
 BR:= browserify
-BR_FLAGS:= --detect-globals=false -t [ babelify --presets [ es2015 react ] ]
+BR_FLAGS:= --detect-globals=false -d -t [ babelify --presets [ es2015 react ] ]
 
 
 SRC_CSS_DIR:= src/css
