@@ -1,4 +1,4 @@
-(() => {
+import PolygonCanvas from './PolygonCanvas';
 
 class App extends React.Component {
 
@@ -18,12 +18,12 @@ class App extends React.Component {
 	}
 
 	render () {
-		return <div>
-			<PolygonCanvas frameNum={this.state.frameNum} />
-		</div>
+		return (
+			<div>
+				<PolygonCanvas frameNum={this.state.frameNum} />
+			</div>
+		);
 	}
 }
 
 ReactDOM.render(<App />, document.body.firstElementChild);
-
-}) ();
