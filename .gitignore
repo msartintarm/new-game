@@ -1,3 +1,6 @@
 
 # Ignore build artifacts yo
 work/
+
+# Ignore local install artifacts yo
+node_modules
