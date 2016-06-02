@@ -41,58 +41,63 @@ class DisplayArray extends React.Component {
 	}
 }
 
+class TheButton extends React.Component {
+	constructor() {
+		super()
+	}
+}
+
 /* Tells canvas what to draw */
 class PolygonCanvas extends React.Component {
 
 	constructor () {
 		super();
 
-		this.keyList = {
-			'line end': 16,
-			'line loop': 32,
-			'line drop': 33
-		};
 		this.state = ({
 			polygon_arr: [[]],
 			polygon_arr_text: 'no coords bro',
 			example_line: [],
 			example_line_text: 'no coords bro',
 			mouseDownElem: this
-		});
-			this.addStartButtonText(this.state, 'line end', this.keyList['line end']);
+		})
+
 		// ES6 React auto bind alternatives:
 		// http://egorsmirnov.me/2015/08/16/react-and-es6-part3.html
-
 		for (let [key, val] of handlerList) {
 			this[val] = this[val].bind(this);
 			console.log(key + "," + val);
 			document.addEventListener(key, this[val]);
 		}
 
-		this.setKey = {
-			'line end': this.setKeyGen('line end'),
-			'line loop': this.setKeyGen('line loop'),
-			'line drop': this.setKeyGen('line drop')
-		};
-
+		this.keyList = {};		/* Key code for this event key */
+		this.setKey = {};		/* Set key functions */
+		let k = 31;
+		for (let entry of ['line end', 'line loop', 'line drop']) {
+			this.addStartButtonText(this.state, entry);
+			this.setKey[entry] = this.setKeyGen(entry);
+			this.keyList[entry] = ++k;
+		}
 	}
 
 	getKeycodeName (key) {
-		return keyCodeMap[key] || String.fromCharCode(key).trim() || key;
+		return keyCodeMap[key]
+			|| String.fromCharCode(key).trim()
+			|| '\'' + key + '\'';
 	}
 
 	/* Edits provided object and adds key / val pair for button text */
-	addStartButtonText (obj, name, key) {
-		let newKey = name + ' button_text';
-		obj[newKey] = 'Set ' + (name || 'the')
-			+ ' keycode (currently ' + this.getKeycodeName(key) + ')';
+	addStartButtonText (obj, name) {
+		let keyName = this.getKeycodeName(this.keyList[name]);
+		let textName = name + ' button_text';
+		obj[textName] = 'Set ' + (name || 'the')
+			+ ' keycode (currently ' + keyName + ')';
 	}
 
 	/* Edits provided object and adds key / val pair for button text */
-	addSetButtonText (obj, name, key) {
-		let newKey = name + ' button_text';
-		obj[newKey] = 'The ' + (name || 'event') + ' set to '
-			+ this.getKeycodeName(key);
+	addSetButtonText (obj, name) {
+		let keyName = this.getKeycodeName(this.keyList[name]);
+		let textName = name + ' button_text';
+		obj[textName] = 'The ' + (name || 'event') + ' set to ' + keyName;
 	}
 
 	/* Determine which polygon to print for this frame */
@@ -110,7 +115,7 @@ class PolygonCanvas extends React.Component {
 			let theCode = ev.keyCode;
 			this.keyList[key] = theCode;
 			let newState = {};
-			this.addSetButtonText(newState, key, theCode);
+			this.addSetButtonText(newState, key);
 			this.setState(newState);
 			document.body.removeEventListener('keydown', a);
 		}.bind(this);
@@ -236,6 +241,8 @@ class PolygonCanvas extends React.Component {
 	mouseDownHandler (e) { this.handler(e, {
 			"CANVAS": this.onCanvasMouseDown,
 			"line_end_button": this.buttonMouseDownGen('line end'),
+			"line_loop_button": this.buttonMouseDownGen('line loop'),
+			"line_drop_button": this.buttonMouseDownGen('line drop'),
 			default: this.recordMouseDown
 		});
 	}
@@ -257,6 +264,12 @@ class PolygonCanvas extends React.Component {
 		<div className="container" >
 			<button className="line_end_button" >
 				{this.state['line end button_text']} 
+			</button>
+			<button className="line_loop_button" >
+				{this.state['line loop button_text']} 
+			</button>
+			<button className="line_drop_button" >
+				{this.state['line drop button_text']} 
 			</button>
 			<div>
 				<TheCanvas className="canvas"
