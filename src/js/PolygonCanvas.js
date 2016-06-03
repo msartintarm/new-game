@@ -78,7 +78,6 @@ class PolygonCanvas extends Component {
 	/* Cut off this line. Only for a given key and if canvas was last clicked
 		Takes it directly from last draw of example line */
 	onCanvasKeyDown (e) {
-		if (this.getElemKey(this.state.mouseDownElem) !== 'CANVAS') { return; }
 		if (this.state.example_line.length < 2) { return; }
 
 		let newArr = [[], ...this.state.polygon_arr]; // add entry
@@ -136,7 +135,6 @@ class PolygonCanvas extends Component {
 
 	/* Todo: something cool */
 	onCanvasMouseOver (e) {}
-
 	onCanvasTouchDown (e) {}
 
 	render () {
