@@ -16,7 +16,8 @@ SRC_SCSS:= $(SRC_CSS_DIR)/style.scss
 SRC_JS:= $(SRC_JS_DIR)/*.js
 LIB_JS:= lib/react.15.1.0.js \
 	lib/react-dom-15.1.0.js \
-	lib/babel.browser.min.js
+	lib/babel.browser.min.js \
+	lib/vec2.js
 
 JS_TARGET:= $(WORK_DIR)/bundle.js
 JS_TARGET_TEMP:= $(JS_TARGET).temp
@@ -37,7 +38,7 @@ serve: all
 .PHONY: clean all serve 
 
 install:
-	npm install --save-dev browserify babelify babel-preset-es2015 babel-preset-react
+	npm install --save-dev browserify babelify babel-preset-es2015 babel-preset-react gl-matrix
 
 clean:
 	rm -rf $(WORK_DIR)

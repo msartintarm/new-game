@@ -9,7 +9,7 @@ const SIZE = 200;
     Supports line segments and mouse / touch events as props
 
 */
-class TheCanvas extends React.Component { 
+class TheCanvas extends Component { 
 
     componentDidMount () {
         this.ctx = this.refs.theCanvas.getContext('2d');
