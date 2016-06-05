@@ -10,10 +10,11 @@ const keyCodeMap = {
 	40: 'Down'
 };
 
+let initial_val = 54; // first button has key '7'
 class EventButton extends Component {
 	constructor(props) {
 		super(props);
-		this.key_val = 55;
+		this.key_val = ++initial_val;
 		this.state = {
 			button_text: 'Set ' + this.props.name + ' keycode (currently '
 				+ this.getKeycodeName() + ')'

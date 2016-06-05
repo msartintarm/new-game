@@ -1,5 +1,5 @@
 import Component from './Component';
-import PolygonCanvas from './PolygonCanvas';
+import DrawCanvas from './DrawCanvas';
 
 class App extends Component {
 
@@ -21,7 +21,7 @@ class App extends Component {
 	render () {
 		return (
 			<div>
-				<PolygonCanvas frameNum={this.state.frameNum} />
+				<DrawCanvas frameNum={this.state.frameNum} />
 			</div>
 		);
 	}

@@ -1,7 +1,5 @@
 import Component from './Component';
 
-const nullFn = function(){};
-
 const SIZE = 200;
 /*
     Canvas class that binds passed-down line segments with DOM canvas
@@ -13,36 +11,49 @@ class TheCanvas extends Component {
 
     componentDidMount () {
         this.ctx = this.refs.theCanvas.getContext('2d');
+        this._paint(this.props.lineSegments);
     }
 
     componentDidUpdate () {
-        this._paint();
+        this._paint(this.props.lineSegments);
+    }
+
+    /* Returns false if this is not an array of 2d arrays [[0,1], [1,2],[2,3]] */
+    _isLineSegment (points) {
+        let t;
+        if (!points)
+            console.warn("No point list provided");
+        else if (points.length < 1) 
+            {} // empty array.. means no points in list
+        else if (points[0].length < 1)
+            console.warn("Points cannot be empty arrays");
+        else if ((t = typeof points[0][0]) .toLowerCase() !== "number") 
+            console.warn("Wrong type (non number) for line segment: " + t + "! :o");
+        else return true;
+        return false;
     }
 
     /*
-        points format: array of arrays
-        [[0,1], [1,2],[2,3]]
+        input needs to be 'line segment' 
     */
     _paintLineSegment (points) {
-        if (!points || points.length < 2 || points[0].length < 2) {
-            return;
-        }
+        if (!this._isLineSegment(points)) return; // make sure input is 'line segment format'
         this.ctx.beginPath();
-        this.ctx.moveTo.apply(this.ctx, points[0]);
+        this.ctx.moveTo(...points[0]);
         for (var i = 1; i < points.length; ++i) {
-            this.ctx.lineTo.apply(this.ctx, points[i]);
+            this.ctx.lineTo(...points[i]);
         }
         this.ctx.stroke();
     }
 
-    _paint () {
+    _paint (lineSegments) {
 
         this.ctx.fillStyle = '#F00';
         this.ctx.fillRect(0, 0, SIZE, SIZE);
 
-        for (let i = 0; i < this.props.lineSegments.length; ++i) {
+        for (let i = 0; i < lineSegments.length; ++i) {
             this.ctx.save();
-            this._paintLineSegment(this.props.lineSegments[i]);
+            this._paintLineSegment(lineSegments[i]);
             this.ctx.restore();
         }
 

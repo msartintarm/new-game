@@ -3,10 +3,17 @@ SHELL=/bin/sh
 #  No? Download latest make.exe here (4.1 as of May 2016):
 #  http://www.equation.com/servlet/equation.cmd?fa=make
 
+PWD := $(shell pwd)
 
-BR:= browserify
-BR_FLAGS:= --detect-globals=false -d -t [ babelify --presets [ es2015 react ] ]
+RM := rm -f
+RM_DIR := $(RM) -d
 
+NPM_PACKAGES := browserify babelify babel-preset-es2015 babel-preset-react gl-matrix exorcist
+
+BR := browserify
+EXORCIST := node_modules/exorcist/bin/exorcist.js
+
+BR_FLAGS := --detect-globals=false -d -t [ babelify --presets [ es2015 react ] ]
 
 SRC_CSS_DIR:= src/css
 SRC_JS_DIR:= src/js
@@ -16,10 +23,10 @@ SRC_SCSS:= $(SRC_CSS_DIR)/style.scss
 SRC_JS:= $(SRC_JS_DIR)/*.js
 LIB_JS:= lib/react.15.1.0.js \
 	lib/react-dom-15.1.0.js \
-	lib/babel.browser.min.js \
-	lib/vec2.js
+	lib/babel.browser.min.js
 
 JS_TARGET:= $(WORK_DIR)/bundle.js
+JS_MAP:= $(JS_TARGET).map
 JS_TARGET_TEMP:= $(JS_TARGET).temp
 JS_LIB_TARGET:= $(WORK_DIR)/bundle-lib.js
 
@@ -38,7 +45,7 @@ serve: all
 .PHONY: clean all serve 
 
 install:
-	npm install --save-dev browserify babelify babel-preset-es2015 babel-preset-react gl-matrix
+	npm install --save-dev $(NPM_PACKAGES)
 
 clean:
 	rm -rf $(WORK_DIR)
@@ -55,7 +62,7 @@ $(JS_LIB_TARGET): $(LIB_JS)
 bundleify: $(JS_TARGET)
 $(JS_TARGET): $(SRC_JS)
 	rm -f $@
-	$(BR) $(SRC_JS) -o $@ $(BR_FLAGS)
+	$(BR) $(SRC_JS) $(BR_FLAGS) | $(EXORCIST) $(JS_MAP) > $@ 
 
 bundle_css: $(CSS_TARGET)
 $(CSS_TARGET): $(SRC_SCSS)

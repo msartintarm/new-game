@@ -1,33 +1,14 @@
+import vec2 from 'gl-matrix';
+
 import Component from './Component';
 import EventButton from './EventButton';
 import TheCanvas from './TheCanvas';
+import DisplayArray from './DisplayArray';
 
-const player = {
-	foot: {
-		points: [
-			[ [10, 20], [30, 20], [30, 30] ]
-		]
-	}
-};
-
-const KEYS = {
-	mLeft: 79,
-	mRight: 80
-};
-
-class DisplayArray extends Component {
-	render () {
-		return(
-			<div className="display_array" >
-				<b className="display_label">Coords for {this.props.line_label}</b>
-				{this.props.text}
-			</div>
-		);
-	}
-}
+import Body from './Body';
 
 /* Tells canvas what to draw */
-class PolygonCanvas extends Component {
+class DrawCanvas extends Component {
 
 	constructor () {
 		super();
@@ -36,9 +17,11 @@ class PolygonCanvas extends Component {
 			polygon_arr: [[]],
 			polygon_arr_text: 'no coords bro',
 			example_line: [],
-			example_line_text: 'no coords bro',
-			mouseDownElem: this
+			example_line_text: 'no coords bro'
 		};
+
+		this.body = new Body();
+
 
 		this.registerHandler("mousedown", "CANVAS", this.onCanvasMouseDown);
 		this.registerHandler("touchdown", "CANVAS", this.onCanvasTouchDown);
@@ -70,8 +53,6 @@ class PolygonCanvas extends Component {
 			polygon_arr: newArr,
 			polygon_arr_text: JSON.stringify(newArr)
 		};
-		this.recordMouseDown(e, newState);
-
 		this.setState(newState);
 	}
 
@@ -106,17 +87,6 @@ class PolygonCanvas extends Component {
 		this.setState(newState);
 	}
 
-	/* record mouse down; if called with new state, append to it instead */
-	recordMouseDown (e, newState) {
-		if (!newState) {
-			this.setState({ mouseDownElem: e.target });
-		} else {
-			newState.mouseDownElem = e.target;
-		}
-		console.log(e.target);
-		console.log(e.target.className);
-	}
-
 	/* Draws example line with last point */
 	onCanvasMouseMove (e) {
 		if (this.state.polygon_arr.length < 1) { return; }
@@ -138,6 +108,13 @@ class PolygonCanvas extends Component {
 	onCanvasTouchDown (e) {}
 
 	render () {
+
+		let polygon = this.state.polygon_arr,
+			example = this.state.example_line,
+			player = this.body.getLines();
+
+		let arrayToDraw = [...polygon, example, ...player ];
+
 		return (
 		<div className="container" >
 			<EventButton name="line drop" ref="line drop" />
@@ -145,18 +122,15 @@ class PolygonCanvas extends Component {
 			<EventButton name="line loop" ref="line loop" />
 		
 			<div>
-				<TheCanvas className="canvas"
-					frameNum={this.props.frameNum}
-					lineSegments={[...this.state.polygon_arr, this.state.example_line ]} />
-				<TheCanvas className="canvas"
-					frameNum={this.props.frameNum}
-					lineSegments={[ this.state.example_line ]} />
+				<TheCanvas className="canvas" lineSegments={ player }/>
+				<TheCanvas className="canvas" lineSegments={ arrayToDraw } />
 			</div>
-			<DisplayArray text={this.state.polygon_arr_text} line_label="all lines"/>
-			<DisplayArray text={this.state.example_line_text} line_label="new line"/>
+			<DisplayArray array={polygon} line_label="polygon"/>
+			<DisplayArray array={example} line_label="new line"/>
+			<DisplayArray array={player} line_label="the player!"/>
 		</div>
 		);
 	}
 }
 
-export default PolygonCanvas;
+export default DrawCanvas;

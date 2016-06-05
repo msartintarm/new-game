@@ -1,25 +1,22 @@
-import Component from './Component';
+import vec2 from 'gl-matrix/src/gl-matrix/vec2';
 
 /* The Foot */
 class Foot { 
-    render () { return null; }
-    componentDidMount () {
-        this.ctx = this.refs.theCanvas.getContext('2d');
-        this.registerList
+
+    constructor(props) {
+        this.lineSegments = [[31,188],[30,175],[49,171],[97,178],[98,187],[31,187]];
     }
 
-    componentDidUpdate () {
-        this._paint();
+    translate (vec) {
+        for(var i = 0; i < this.lineSegments.length; ++i) {
+            vec2.add(this.lineSegments[i], this.lineSegments[i], vec);
+        }
+        return this;
+    }
+
+    getLines () {
+        return this.lineSegments;
     }
 }
-
-Foot.defaultProps = {
-    // format array of array of 2D array: 
-    // [ [[10, 20], [20, 30], [30, 40]], [[10, 30], [20, 30]] ]
-    lineSegments: [],
-    // format: array of 2D array (same as lineSegments[0])
-    // [[10, 20], [20, 30], [30, 40]]
-    lineSegment: []
-};
 
 export default Foot;
