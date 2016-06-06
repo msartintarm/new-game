@@ -1,11 +1,21 @@
 import vec2 from 'gl-matrix';
 
+import { registerHandler } from './EventHandler';
+
 import Component from './Component';
 import EventButton from './EventButton';
 import TheCanvas from './TheCanvas';
 import DisplayArray from './DisplayArray';
 
 import Body from './Body';
+
+/* return array from event with offset relative to target */
+let getCoords = (e) => {
+	let t = e.target;
+	let x = e.pageX - t.offsetLeft;
+	let y = e.pageY - t.offsetTop;
+	return [x, y];
+};
 
 /* Tells canvas what to draw */
 class DrawCanvas extends Component {
@@ -22,33 +32,19 @@ class DrawCanvas extends Component {
 
 		this.body = new Body();
 
-
-		this.registerHandler("mousedown", "CANVAS", this.onCanvasMouseDown);
-		this.registerHandler("touchdown", "CANVAS", this.onCanvasTouchDown);
-		this.registerHandler("keydown", "default", this.onCanvasKeyDown);
-		this.registerHandler("mouseover", "CANVAS", this.onCanvasMouseOver);
-		this.registerHandler("mousemove", "CANVAS", this.onCanvasMouseMove);
-	}
-
-	/* Determine which polygon to print for this frame */
-	paintFrame (frame) {
-		var num = this.props.index;
-		if (num)
-		this.paintPolygon(frame[num]);
-	}
-
-	/* return array from event with offset relative to target */
-	getCoords(e) {
-		let t = e.target;
-		let x = e.pageX - t.offsetLeft;
-		let y = e.pageY - t.offsetTop;
-		return [x, y];
+		for(let argList of [
+			["mousedown", "CANVAS", this.onCanvasMouseDown],
+			["touchdown", "CANVAS", this.onCanvasTouchDown],
+			["keydown", "default", this.onCanvasKeyDown],
+			["mouseover", "CANVAS", this.onCanvasMouseOver],
+			["mousemove", "CANVAS", this.onCanvasMouseMove]
+		]) { registerHandler(...argList); }
 	}
 
 	/* Update polygon array with point from latest canvas click. */
-	onCanvasMouseDown (e) {
+	onCanvasMouseDown = (e) => { // ES2016 auto bind syntax
 		let newArr = [...this.state.polygon_arr]; // make copy
-		newArr[0].push(this.getCoords(e));
+		newArr[0].push(getCoords(e));
 		let newState = {
 			polygon_arr: newArr,
 			polygon_arr_text: JSON.stringify(newArr)
@@ -58,7 +54,7 @@ class DrawCanvas extends Component {
 
 	/* Cut off this line. Only for a given key and if canvas was last clicked
 		Takes it directly from last draw of example line */
-	onCanvasKeyDown (e) {
+	onCanvasKeyDown = (e) => { // ES2016 auto bind syntax
 		if (this.state.example_line.length < 2) { return; }
 
 		let newArr = [[], ...this.state.polygon_arr]; // add entry
@@ -88,13 +84,13 @@ class DrawCanvas extends Component {
 	}
 
 	/* Draws example line with last point */
-	onCanvasMouseMove (e) {
+	onCanvasMouseMove = (e) => { // ES2016 auto bind syntax
 		if (this.state.polygon_arr.length < 1) { return; }
 		let theArr = this.state.polygon_arr[0];
 		if (theArr.length < 1) { return; }
 		let newArr = [
 			[...theArr[theArr.length - 1]], // copy last coord in line
-			this.getCoords(e)
+			getCoords(e)
 		];
 		let newState = {
 			example_line: newArr,
@@ -104,8 +100,8 @@ class DrawCanvas extends Component {
 	}
 
 	/* Todo: something cool */
-	onCanvasMouseOver (e) {}
-	onCanvasTouchDown (e) {}
+	onCanvasMouseOver = (e) => {}
+	onCanvasTouchDown = (e) => {}
 
 	render () {
 
@@ -120,10 +116,15 @@ class DrawCanvas extends Component {
 			<EventButton name="line drop" ref="line drop" />
 			<EventButton name="line end" ref="line end" />
 			<EventButton name="line loop" ref="line loop" />
-		
 			<div>
-				<TheCanvas className="canvas" lineSegments={ player }/>
-				<TheCanvas className="canvas" lineSegments={ arrayToDraw } />
+				Play!
+				<textarea className="play_area"></textarea>
+			</div>
+
+
+			<div>
+				<TheCanvas lineSegments={ player }/>
+				<TheCanvas lineSegments={ arrayToDraw } />
 			</div>
 			<DisplayArray array={polygon} line_label="polygon"/>
 			<DisplayArray array={example} line_label="new line"/>
@@ -133,4 +134,4 @@ class DrawCanvas extends Component {
 	}
 }
 
-export default DrawCanvas;
+export default DrawCanvas

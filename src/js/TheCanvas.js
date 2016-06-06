@@ -1,6 +1,6 @@
 import Component from './Component';
 
-const SIZE = 200;
+const SIZE = 800;
 /*
     Canvas class that binds passed-down line segments with DOM canvas
 

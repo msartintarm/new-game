@@ -22,4 +22,4 @@ class DisplayArray extends Component {
 	}
 }
 
-export default DisplayArray;
+export default DisplayArray

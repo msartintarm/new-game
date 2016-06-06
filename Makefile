@@ -8,12 +8,16 @@ PWD := $(shell pwd)
 RM := rm -f
 RM_DIR := $(RM) -d
 
-NPM_PACKAGES := browserify babelify babel-preset-es2015 babel-preset-react gl-matrix exorcist
+# Quite a lot of Babel plugins are needed to get ES6 + React compilation
+NPM_BABELIFY := babelify babel-preset-es2015 babel-preset-react babel-plugin-transform-class-properties
+NPM_PACKAGES := browserify $(NPM_BABELIFY) gl-matrix exorcist
+NPM_INSTALL := npm install --save-dev $(NPM_PACKAGES)
 
 BR := browserify
 EXORCIST := node_modules/exorcist/bin/exorcist.js
 
-BR_FLAGS := --detect-globals=false -d -t [ babelify --presets [ es2015 react ] ]
+BABELIFY := babelify --presets [ es2015 react ] --plugins [ transform-class-properties ]
+BR_FLAGS := --detect-globals=false -d -t [ $(BABELIFY) ]
 
 SRC_CSS_DIR:= src/css
 SRC_JS_DIR:= src/js
@@ -42,26 +46,26 @@ all: prep bundleify bundleify_lib bundle_css
 serve: all
 	python -m http.server 3000
 
+clean:
+	$(RM_DIR) $(WORK_DIR)
+
 .PHONY: clean all serve 
 
 install:
-	npm install --save-dev $(NPM_PACKAGES)
+	$(NPM_INSTALL)
 
-clean:
-	rm -rf $(WORK_DIR)
-
-prep: $(WORK_DIR)
+prep: $(WORK_DIR) # make sure build directories are present
 $(WORK_DIR):
 	mkdir -p $@
 
 bundleify_lib: $(JS_LIB_TARGET)
 $(JS_LIB_TARGET): $(LIB_JS)
-	rm -f $@
+	$(RM) $@
 	cat $(LIB_JS) >& $@
 
 bundleify: $(JS_TARGET)
 $(JS_TARGET): $(SRC_JS)
-	rm -f $@
+	$(RM) $@
 	$(BR) $(SRC_JS) $(BR_FLAGS) | $(EXORCIST) $(JS_MAP) > $@ 
 
 bundle_css: $(CSS_TARGET)

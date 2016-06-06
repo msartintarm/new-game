@@ -1,18 +1,19 @@
 import Component from './Component';
 import DrawCanvas from './DrawCanvas';
+import { onTick } from './EventHandler';
 
 class App extends Component {
 
 	constructor () {
 		super();
 		this.state = { frameNum: 0 };
-		this.tick = this.tick.bind(this);
 	}
 
-	tick () {
+	tick = () => {
 		this.setState({ frameNum: this.state.frameNum + 1 });
 		requestAnimationFrame(this.tick);
-	}
+		onTick();
+	};
 
 	componentDidMount () {
 		requestAnimationFrame(this.tick);

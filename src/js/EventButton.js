@@ -1,5 +1,7 @@
 import Component from './Component';
 
+import { registerHandler } from './EventHandler';
+
 // for keys that fromCharCode doesn't define
 const keyCodeMap = {
 	16: 'Left Shift',
@@ -9,64 +11,57 @@ const keyCodeMap = {
 	39: 'Right',
 	40: 'Down'
 };
+let getKeycodeName = (val) => {
+	return keyCodeMap[val]
+		|| String.fromCharCode(val).trim()
+		|| '\'' + val + '\'';
+};
 
 let initial_val = 54; // first button has key '7'
 class EventButton extends Component {
 	constructor(props) {
 		super(props);
 		this.key_val = ++initial_val;
-		this.state = {
-			button_text: 'Set ' + this.props.name + ' keycode (currently '
-				+ this.getKeycodeName() + ')'
-		};
 		this.className=(this.props.name + ' button').replace(/ /g,"-");
-
-		this.addStartButtonText(this.state);
+		this.state = this.addStartButtonText({});
 		this.setKey = this.setKey.bind(this);
 		this.buttonMouseDown = this.buttonMouseDown.bind(this);
-		this.registerHandler("mousedown", this.className, this.buttonMouseDown);
+		registerHandler("mousedown", this.className, this.buttonMouseDown);
 	}
 
 	/* Edits provided object and adds key / val pair for button text */
 	addStartButtonText (obj) {
-		let keyName = this.getKeycodeName();
+		let keyName = getKeycodeName(this.key_val);
 		obj.button_text = 'Set ' + (this.props.name || 'the')
 			+ ' keycode (currently ' + keyName + ')';
+		return obj;
 	}
 
 	/* Edits provided object and adds key / val pair for button text */
 	addSetButtonText (obj) {
-		let keyName = this.getKeycodeName();
+		let keyName = getKeycodeName(this.key_val);
 		obj.button_text = 'The ' + (this.props.name || 'event')
 			+ ' set to ' + keyName;
-	}
-
-	getKeycodeName () {
-	return keyCodeMap[this.key_val]
-		|| String.fromCharCode(this.key_val).trim()
-		|| '\'' + this.key_val + '\'';
 	}
 
 	/* Returns function indexed by key that can be bound
 		to DOM elements and deletes itself after execution
 	*/
-	setKey (ev) {
+	setKey = (ev) => {
 		let theCode = ev.keyCode;
 		this.key_val = theCode;
 		let newState = {};
 		this.addSetButtonText(newState);
 		this.setState(newState);
 		document.body.removeEventListener('keydown', this.setKey);
-	}
+	};
 
 	/* Returns function indexed by key that can be bound to DOM elements */
-	buttonMouseDown (e) {
-		console.log("Button mouse down yo!");
+	buttonMouseDown = (e) => {
 		let newState = { button_text: 'next key down..' };
 		this.setState(newState);
-		console.log("State set yo!");
 		document.body.addEventListener('keydown', this.setKey);
-	}
+	};
 
 	render () {
 		return (
