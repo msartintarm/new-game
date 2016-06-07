@@ -40,27 +40,30 @@ class Foot {
     }
 
     setToFrame(num, newTranslate) {
-        let index = (num >= 0)? num: this.frames.length - num;
+        console.log("sET to Frame", num, JSON.stringify(newTranslate));
+        let index = (num >= 0)? num: this.frames.length + num;
         if (index >= this.frames.length) return;
         this.lineSegments = [];
         for (let vecs of this.frames[index]) {
             let destVec = [];
             for (let theVec of vecs) {
-                destVec.push(vec2.clone(theVec, theVec));
+                destVec.push(vec2.clone(theVec));
             }
             this.lineSegments.push(destVec);
         }
-        this.translate( (newTranslate || null) );
+        this.translate( (newTranslate || undefined) );
     }
 
     translate (vec) {
-        if (vec) this.translateVec = vec;
+        if (!!vec) this.translateVec = vec2.clone(vec);
         if (!this.translateVec) return;
+        console.log("yo", this.lineSegments[0][0][0], this.translateVec);
         for (let oneLine of this.lineSegments) {
             for (let theVec of oneLine) {
                 vec2.add(theVec, theVec, this.translateVec);
             }
         }
+        console.log(this.lineSegments[0][0][0]);
         return this;
     }
 

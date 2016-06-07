@@ -6,12 +6,12 @@ SHELL=/bin/sh
 PWD := $(shell pwd)
 
 RM := rm -f
-RM_DIR := $(RM) -d
+RM_DIR := $(RM) -r
 
 # Quite a lot of Babel plugins are needed to get ES6 + React compilation
 NPM_BABELIFY := babelify babel-preset-es2015 babel-preset-react babel-plugin-transform-class-properties
 NPM_PACKAGES := browserify $(NPM_BABELIFY) gl-matrix exorcist
-NPM_INSTALL := npm install --save-dev $(NPM_PACKAGES)
+NPM_INSTALL := npm install --srcave-dev $(NPM_PACKAGES)
 
 BR := browserify
 EXORCIST := node_modules/exorcist/bin/exorcist.js
@@ -44,6 +44,7 @@ all: prep bundleify bundleify_lib bundle_css
 
 # Builds + runs server
 serve: all
+
 	python -m http.server 3000
 
 clean:
@@ -60,15 +61,12 @@ $(WORK_DIR):
 
 bundleify_lib: $(JS_LIB_TARGET)
 $(JS_LIB_TARGET): $(LIB_JS)
-	$(RM) $@
 	cat $(LIB_JS) >& $@
 
 bundleify: $(JS_TARGET)
 $(JS_TARGET): $(SRC_JS)
-	$(RM) $@
 	$(BR) $(SRC_JS) $(BR_FLAGS) | $(EXORCIST) $(JS_MAP) > $@ 
 
 bundle_css: $(CSS_TARGET)
 $(CSS_TARGET): $(SRC_SCSS)
-	rm -f $@
 	cat $(SRC_SCSS) >& $@
