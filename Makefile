@@ -44,8 +44,10 @@ all: prep bundleify bundleify_lib bundle_css
 
 # Builds + runs server
 serve: all
-
 	python -m http.server 3000
+
+serve2: all # Python2 Version
+	python -m SimpleHTTPServer 3000
 
 clean:
 	$(RM_DIR) $(WORK_DIR)

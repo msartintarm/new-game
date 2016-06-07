@@ -32,6 +32,10 @@ let registerHandler = (evName, key, theFunction) => {
 	eventmap[evName][key] = theFunction;
 };
 
+/* unique key for function,
+	function itself, 
+	num times to run (0 if unlimited),
+	replace if should override previous function */
 let registerTickEvent = (key, theFunction, numTimes, replace) => {
 	if (key in registeredHandlerMap['tick']) {
 		if (!replace) return; // no duplicate functions
@@ -41,7 +45,7 @@ let registerTickEvent = (key, theFunction, numTimes, replace) => {
 	tickCountMap[key] = 0;
 
 	registeredHandlerMap['tick'][key] = () => {
-		if (++tickCountMap[key] >= numTimes ) {
+		if (numTimes > 0 && ++tickCountMap[key] >= numTimes ) {
 			delete registeredHandlerMap['tick'][key];
 			return;
 		}

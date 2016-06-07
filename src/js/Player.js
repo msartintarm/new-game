@@ -2,11 +2,11 @@ import vec2 from 'gl-matrix/src/gl-matrix/vec2';
 
 import { registerHandler, registerTickEvent } from './EventHandler';
 
-import Foot from './Foot';
-import Hand from './Hand';
+import Foot from './LineSegmented/Foot';
+import Hand from './LineSegmented/Hand';
 
 /* Has its own line segments and manages connections to feet and arms */
-class Body { 
+class Player { 
 
     constructor(props) {
 
@@ -52,7 +52,7 @@ class Body {
 		this.pos = newPos;
 		this.translate(moveDist);
 
-    	this.footFrame = (this.footFrame + 1);
+    	this.footFrame = Math.min(this.footFrame + 1, this.moveRightFrames - 1);
 
 		vec2.add(this.footPt1, moveDist, this.footPt1);
 		vec2.add(this.footPt2, moveDist, this.footPt2);
@@ -62,9 +62,9 @@ class Body {
 		this.feet[1].setToFrame(this.footFrame).translate(this.footPt2);
 		this.hand.translate(moveDist);
 
-		if (this.footFrame === this.moveRightFrames - 1) {
-			this.setupMoveRightEnd();
-		}
+//		if (this.footFrame === this.moveRightFrames - 1) {
+//			this.setupMoveRightEnd();
+//		}
     };
 
     setupMoveRightEnd () {
@@ -104,7 +104,7 @@ class Body {
     setPositionOnKeyDown = (e) => {
     	switch (e.keyCode) {
     		case 39: // 'Right'
-				registerTickEvent('moveright', this.moveRight, this.moveRightFrames);
+				registerTickEvent('moveright', this.moveRight, 0);
     			break;
     		default: ;
     	}
@@ -129,4 +129,4 @@ class Body {
     }
 }
 
-export default Body;
+export default Player;

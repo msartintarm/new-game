@@ -1,7 +1,5 @@
 import LineSegmented from './LineSegmented';
 
-import { registerHandler, registerTickEvent } from './EventHandler';
-
 const HandWithScissors1 = [
 	[[28,4],[40,21]],
 	[[30,19],[47,5]],

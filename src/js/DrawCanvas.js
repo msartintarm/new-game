@@ -7,12 +7,8 @@ import EventButton from './EventButton';
 import TheCanvas from './TheCanvas';
 import DisplayArray from './DisplayArray';
 
-import Body from './Body';
-
-
-import Hook from './Hook';
-import TwoTonWeight from './TwoTonWeight';
-
+import Player from './Player';
+import Stuff from './Stuff';
 
 /* return array from event with offset relative to target */
 let getCoords = (e) => {
@@ -35,11 +31,9 @@ class DrawCanvas extends Component {
 			example_line_text: 'no coords bro'
 		};
 
-		this.body = new Body();
+		this.player = new Player();
 
-		this.hook = new Hook();
-
-		this.weight = (new TwoTonWeight()).translate([597,227]);
+		this.stuff = new Stuff();
 
 		for(let argList of [
 			["mousedown", "CANVAS", this.onCanvasMouseDown],
@@ -116,15 +110,11 @@ class DrawCanvas extends Component {
 
 		let polygon = this.state.polygon_arr,
 			example = this.state.example_line,
-			player = this.body.getLines(),
-			scene = [
-				...this.hook.getLines(),
-				...this.weight.getLines()
-			];
+			player = this.player.getLines(),
+			stuff = this.stuff.getLines();
 
-		let game = [...player, ...scene];
-
-		let arrayToDraw = [...polygon, example, ...player, ...scene];
+		let game = [...player, ...stuff];
+		let arrayToDraw = [...polygon, example, ...player, ...stuff];
 
 		return (
 		<div className="container" >
