@@ -1,6 +1,6 @@
 import Component from './Component';
 
-const SIZE = 800;
+const DEFAULT_SIZE = 800;
 /*
     Canvas class that binds passed-down line segments with DOM canvas
 
@@ -8,6 +8,11 @@ const SIZE = 800;
 
 */
 class TheCanvas extends Component { 
+
+    constructor(opts) {
+        super(opts);
+        this.size = opts.size || DEFAULT_SIZE;
+    }
 
     componentDidMount () {
         this.ctx = this.refs.theCanvas.getContext('2d');
@@ -49,7 +54,7 @@ class TheCanvas extends Component {
     _paint (lineSegments) {
 
         this.ctx.fillStyle = '#F00';
-        this.ctx.fillRect(0, 0, SIZE, SIZE);
+        this.ctx.fillRect(0, 0, this.size, this.size);
 
         for (let i = 0; i < lineSegments.length; ++i) {
             this.ctx.save();
@@ -62,8 +67,8 @@ class TheCanvas extends Component {
     _getCanvasProps () {
         return {
             ref: "theCanvas",
-            width: SIZE,
-            height: SIZE
+            width: this.size,
+            height: this.size
         };
     }
 

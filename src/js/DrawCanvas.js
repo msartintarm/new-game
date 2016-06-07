@@ -9,6 +9,11 @@ import DisplayArray from './DisplayArray';
 
 import Body from './Body';
 
+
+import Hook from './Hook';
+import TwoTonWeight from './TwoTonWeight';
+
+
 /* return array from event with offset relative to target */
 let getCoords = (e) => {
 	let t = e.target;
@@ -31,6 +36,10 @@ class DrawCanvas extends Component {
 		};
 
 		this.body = new Body();
+
+		this.hook = new Hook();
+
+		this.weight = (new TwoTonWeight()).translate([597,227]);
 
 		for(let argList of [
 			["mousedown", "CANVAS", this.onCanvasMouseDown],
@@ -107,9 +116,15 @@ class DrawCanvas extends Component {
 
 		let polygon = this.state.polygon_arr,
 			example = this.state.example_line,
-			player = this.body.getLines();
+			player = this.body.getLines(),
+			scene = [
+				...this.hook.getLines(),
+				...this.weight.getLines()
+			];
 
-		let arrayToDraw = [...polygon, example, ...player ];
+		let game = [...player, ...scene];
+
+		let arrayToDraw = [...polygon, example, ...player, ...scene];
 
 		return (
 		<div className="container" >
@@ -123,7 +138,8 @@ class DrawCanvas extends Component {
 
 
 			<div>
-				<TheCanvas lineSegments={ player }/>
+				<TheCanvas lineSegments={ game }/>
+				<TheCanvas size={200} lineSegments={ polygon } />
 				<TheCanvas lineSegments={ arrayToDraw } />
 			</div>
 			<DisplayArray array={polygon} line_label="polygon"/>

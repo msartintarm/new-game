@@ -16,7 +16,7 @@ class DisplayArray extends Component {
 		return(
 			<div className="display_array" >
 				<b className="display_label">{label}</b>
-				{text}
+				<div className="display_array_text">{text}</div>
 			</div>
 		);
 	}

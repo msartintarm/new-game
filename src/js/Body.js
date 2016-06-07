@@ -3,6 +3,7 @@ import vec2 from 'gl-matrix/src/gl-matrix/vec2';
 import { registerHandler, registerTickEvent } from './EventHandler';
 
 import Foot from './Foot';
+import Hand from './Hand';
 
 /* Has its own line segments and manages connections to feet and arms */
 class Body { 
@@ -10,8 +11,9 @@ class Body {
     constructor(props) {
 
 
-    	this.footPt1 = [73,130];
-    	this.footPt2 = [109,130];
+    	this.footPt1 = [73, 130];
+    	this.footPt2 = [109, 130];
+    	this.handPt = [120, 100];
 
     	this.pos = [0, 0];
 
@@ -34,11 +36,13 @@ class Body {
         registerHandler('keyup', 'play_area', this.setPositionOnKeyUp);
 
         this.activeMove = null;
+
+        this.hand = (new Hand()).translate(this.handPt);
     }
 
     moveRight = (e) => {
 
-    	var moveDist = [3, 0];
+    	var moveDist = [6	, 0];
     	var newPos = vec2.add(vec2.create(), this.pos, moveDist);
     	if (newPos[0] > 700) {
     		moveDist = [-this.pos[0], 100];
@@ -50,33 +54,40 @@ class Body {
 
     	this.footFrame = (this.footFrame + 1);
 
-		this.feet[0].setToFrame(this.footFrame,
-			vec2.add(this.footPt1, moveDist, this.footPt1));	
-		this.feet[1].setToFrame(this.footFrame,
-			vec2.add(this.footPt2, moveDist, this.footPt2));	
+		vec2.add(this.footPt1, moveDist, this.footPt1);
+		vec2.add(this.footPt2, moveDist, this.footPt2);
+		vec2.add(this.handPt, moveDist, this.handPt);
+
+		this.feet[0].setToFrame(this.footFrame).translate(this.footPt1);
+		this.feet[1].setToFrame(this.footFrame).translate(this.footPt2);
+		this.hand.translate(moveDist);
 
 		if (this.footFrame === this.moveRightFrames - 1) {
-			registerTickEvent('moveright', this.moveRightEnd, this.moveRightEndFrames, true);
+			this.setupMoveRightEnd();
 		}
     };
 
-    moveRightEnd = (e) => {
-    	let l = Math.floor(this.moveRightFrames / 2);
-    	if (this.footFrame >= l) {
-			let index = (Math.min(this.footFrame, l));
-			this.moveEndIndexMap = [
-				Math.round(index),
-				Math.round(index / 1.5),
-				Math.round(index / 3 ),
-				0
-			]
-    		this.footFrame = 0;
-    	} 
+    setupMoveRightEnd () {
+		// set up ending of move right
+		let index = Math.min(
+			this.footFrame, 
+			Math.floor(this.moveRightFrames / 2));
+		this.moveEndIndexMap = [
+			Math.round(index),
+			Math.round(index / 1.5),
+			Math.round(index / 3 ),
+			0
+		]
+		this.footFrame = 0;
+		registerTickEvent('moveright', this.moveRightEnd, this.moveRightEndFrames, true);
+    }
 
+    moveRightEnd = (e) => {
     	let f = this.moveEndIndexMap[this.footFrame];
 		this.footFrame += 1;
-		this.feet[0].setToFrame(f, this.footPt1);
-		this.feet[1].setToFrame(f, this.footPt2	);
+		this.feet[0].setToFrame(f).translate(this.footPt1);
+		this.feet[1].setToFrame(f).translate(this.footPt2);
+//		this.hand.translate(moveDist);
     };
 
     translate (vec) {
@@ -93,7 +104,7 @@ class Body {
     setPositionOnKeyDown = (e) => {
     	switch (e.keyCode) {
     		case 39: // 'Right'
-    			registerTickEvent('moveright', this.moveRight, this.moveRightFrames);
+				registerTickEvent('moveright', this.moveRight, this.moveRightFrames);
     			break;
     		default: ;
     	}
@@ -102,7 +113,7 @@ class Body {
     setPositionOnKeyUp = (e) => {
     	switch (e.keyCode) {
     		case 39: // 'Right'
-			registerTickEvent('moveright', this.moveRightEnd, this.moveRightEndFrames, true);
+			    this.setupMoveRightEnd();
     			break;
     		default: ;
     	}
@@ -112,7 +123,8 @@ class Body {
         return [
 	        ...this.lineSegments,
 	        ...this.feet[0].getLines(),
-	        ...this.feet[1].getLines()
+	        ...this.feet[1].getLines(),
+	        ...this.hand.getLines()
         ];
     }
 }
