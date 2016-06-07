@@ -7,10 +7,12 @@ var theHook = [
 		[683,32],[688,27],[698,27],[698,9],[697,10],[697,10]]];
 
 /* The Hook */
-class Hook extends LineSegmented { 
+class Hook extends LineSegmented {
     constructor(opts) {
-        super(opts, theHook, theHook);
+        super(opts, theHook);
+    	this.knotPoint = [694, 37]; // lowest point of the hook
+
     }
-}
+} 
 
 export default Hook;

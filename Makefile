@@ -1,23 +1,4 @@
-SHELL=/bin/sh
-# if windows, make sure 'make -v' returns 3.82 or higher
-#  No? Download latest make.exe here (4.1 as of May 2016):
-#  http://www.equation.com/servlet/equation.cmd?fa=make
-
-PWD := $(shell pwd)
-
-RM := rm -f
-RM_DIR := $(RM) -r
-
-# Quite a lot of Babel plugins are needed to get ES6 + React compilation
-NPM_BABELIFY := babelify babel-preset-es2015 babel-preset-react babel-plugin-transform-class-properties
-NPM_PACKAGES := browserify $(NPM_BABELIFY) gl-matrix exorcist
-NPM_INSTALL := npm install --srcave-dev $(NPM_PACKAGES)
-
-BR := browserify
-EXORCIST := node_modules/exorcist/bin/exorcist.js
-
-BABELIFY := babelify --presets [ es2015 react ] --plugins [ transform-class-properties ]
-BR_FLAGS := --detect-globals=false -d -t [ $(BABELIFY) ]
+include Makefile.inc
 
 SRC_CSS_DIR:= src/css
 SRC_JS_DIR:= src/js
@@ -36,6 +17,13 @@ JS_LIB_TARGET:= $(WORK_DIR)/bundle-lib.js
 
 CSS_TARGET:= $(WORK_DIR)/bundle.css
 
+PWD := $(shell pwd)
+
+
+# if windows, make sure 'make -v' returns 3.82 or higher
+#  No? Download latest make.exe here (4.1 as of May 2016):
+#  http://www.equation.com/servlet/equation.cmd?fa=make
+
 # (c) 2016. All rights reserved.
 # Makefile that installs and runs the project.
 
@@ -46,7 +34,7 @@ all: prep bundleify bundleify_lib bundle_css
 serve: all
 	python -m http.server 3000
 
-serve2: all # Python2 Version
+serve2: all
 	python -m SimpleHTTPServer 3000
 
 clean:

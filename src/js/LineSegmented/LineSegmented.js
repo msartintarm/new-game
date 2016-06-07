@@ -33,7 +33,19 @@ class LineSegmented {
 
 	lerp = lerpLineSegments;
 
+    /*
+        opts.numFrames: amount of frames to interpolate between
+        opts.setToFrame: initial frame to set to (default 0)
+        frameEnd: optional, if present and structure mirrors frameStart
+            allow interpolarion.
+    */
 	constructor(opts, frameStart, frameEnd) {
+
+        if (!frameEnd) {
+            this.lineSegments = [...frameStart];
+            return;
+        }
+
 		let _opts = opts || {};
 	    this.frames = _opts.numFrames?
 	        this.lerp(frameStart, frameEnd, _opts.numFrames):
