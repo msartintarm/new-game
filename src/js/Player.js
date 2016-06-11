@@ -67,6 +67,10 @@ class Player {
 //		}
     };
 
+    checkContact() {
+
+    }
+
     setupMoveRightEnd () {
 		// set up ending of move right
 		let index = Math.min(

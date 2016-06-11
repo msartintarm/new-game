@@ -1,14 +1,16 @@
+
+body {
+	background-color: black;
+	color: white;
+}
+
 div {
 	box-sizing: border-box;
 }
 
 
-.canvas {
-	position: absolute;
-	height: 200px;
-	width: 200px;
-	top: 0px;
-	left: 0px;
+.canvas_container {
+	border: 2px solid brown;
 }
 
 .display_array {
@@ -25,3 +27,4 @@ div {
 	left: 0px;
 	font-size: 0.3rem;
 }
+z`

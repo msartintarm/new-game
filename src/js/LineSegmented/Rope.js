@@ -1,5 +1,6 @@
 import LineSegmented from './LineSegmented';
 
+const NON_NUMBER_WARNING = "non number passed into LineIntersection, you twat.";
 
 let _theKnot = [
 	[[690,258],[682,256],[685,250],[691,257],[695,251],[699,256],[693,258]]
@@ -16,7 +17,7 @@ let _ropeList = []; // used in cut event
 /// <item>| y1 y2 |</item>
 /// </list>
 /// </summary>
-let Det2 = (float x1, float x2, float y1, float y2) => {
+let Det2 = (x1, x2, y1, y2) => {
     return (x1 * y2 - y1 * x2);
 };
 
@@ -25,11 +26,18 @@ let Det2 = (float x1, float x2, float y1, float y2) => {
 /// Source: http://mathworld.wolfram.com/Line-LineIntersection.html
 /// </summary>
 let LineIntersection = (v1, v2, v3, v4) => {
-    let tolerance = 0.000001f;
+	// type checking because JS doesn't have it...
+	for (let arg of arguments) {
+		if (typeof v1.X != "number" ||
+			typeof v1.Y != "number" ) 
+			throw (NON_NUMBER_WARNING);
+	}
+
+    let tolerance = 0.000001;
     let EmptyPt = { X:0, Y:0 };
 
     let a = Det2(v1.X - v2.X, v1.Y - v2.Y, v3.X - v4.X, v3.Y - v4.Y);
-    if (Math.Abs(a) < float.Epsilon) return EmptyPt; // Lines are parallel
+    if (Math.abs(a) < Number.EPSILON) return EmptyPt; // Lines are parallel
 
     let d1 = Det2(v1.X, v1.Y, v2.X, v2.Y);
     let d2 = Det2(v3.X, v3.Y, v4.X, v4.Y);
@@ -48,6 +56,12 @@ let LineIntersection = (v1, v2, v3, v4) => {
     return { X: x, Y: y };
 
 };
+
+class Knot extends LineSegmented {
+	constructor(opts) {
+		super(opts, _theKnot);
+	}	
+}
 
 /* 
 	The Rope 
@@ -77,6 +91,9 @@ class Rope extends LineSegmented {
     	// of the combined length of the lines. If so, the lines can't
     	// possibly intersect.
 
+    	if (lineIntersection(lineSeg[0], lineSeg[1])) {
+    		
+    	}
 
 
     }

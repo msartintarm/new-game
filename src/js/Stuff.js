@@ -17,6 +17,10 @@ class Stuff {
 
 		];
 	}
+
+	getfloorLines () {
+		return this.floor.getLines();
+	}
 }
 
 export default Stuff

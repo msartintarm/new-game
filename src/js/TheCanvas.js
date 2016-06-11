@@ -43,25 +43,26 @@ class TheCanvas extends Component {
     */
     _paintLineSegment (points) {
         if (!this._isLineSegment(points)) return; // make sure input is 'line segment format'
+        this.ctx.save();
         this.ctx.beginPath();
         this.ctx.moveTo(...points[0]);
         for (var i = 1; i < points.length; ++i) {
             this.ctx.lineTo(...points[i]);
         }
         this.ctx.stroke();
+        this.ctx.restore();
     }
 
     _paint (lineSegments) {
 
         this.ctx.fillStyle = '#F00';
         this.ctx.fillRect(0, 0, this.size, this.size);
-
+        this.ctx.save();
+        this.ctx.scale(0.5, 0.5);
         for (let i = 0; i < lineSegments.length; ++i) {
-            this.ctx.save();
             this._paintLineSegment(lineSegments[i]);
-            this.ctx.restore();
         }
-
+        this.ctx.restore();
     }
 
     _getCanvasProps () {
@@ -74,7 +75,7 @@ class TheCanvas extends Component {
 
     render () {
         return (
-            <div>
+            <div className="canvas_container">
                 <canvas {...this._getCanvasProps()} />
             </div>
         );
