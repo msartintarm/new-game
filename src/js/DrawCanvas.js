@@ -25,15 +25,18 @@ class DrawCanvas extends Component {
 		super();
 
 		this.state = {
-			polygon_arr: [[]],
+			polygon_arr: [],
 			polygon_arr_text: 'no coords bro',
 			example_line: [],
 			example_line_text: 'no coords bro'
 		};
 
-		this.player = new Player();
 
 		this.stuff = new Stuff();
+
+		this.player = new Player(
+			this.stuff.getCollisionLines
+		);
 
 		for(let argList of [
 			["mousedown", "CANVAS", this.onCanvasMouseDown],
@@ -46,8 +49,7 @@ class DrawCanvas extends Component {
 
 	/* Update polygon array with point from latest canvas click. */
 	onCanvasMouseDown = (e) => { // ES2016 auto bind syntax
-		let newArr = [...this.state.polygon_arr]; // make copy
-		newArr[0].push(getCoords(e));
+		let newArr = [...this.state.polygon_arr, ...getCoords(e)]; // make copy
 		let newState = {
 			polygon_arr: newArr,
 			polygon_arr_text: JSON.stringify(newArr)
@@ -60,7 +62,7 @@ class DrawCanvas extends Component {
 	onCanvasKeyDown = (e) => { // ES2016 auto bind syntax
 		if (this.state.example_line.length < 2) { return; }
 
-		let newArr = [[], ...this.state.polygon_arr]; // add entry
+		let newArr = [...this.state.polygon_arr]; // add entry
 
 		var le = this.refs['line end'].key_val;
 		var ll = this.refs['line loop'].key_val;
@@ -68,10 +70,11 @@ class DrawCanvas extends Component {
 
 		if (e.keyCode === le) {
 			// Copy entry from example line to end of latest segment
-			newArr[1].push([...this.state.example_line[1]]);
+			newArr.push(this.state.example_line[2]);
+			newArr.push(this.state.example_line[3]);
 		} else if (e.keyCode === ll){
-			newArr[1].push([...this.state.example_line[1]]);
-			newArr[1].push([...newArr[1][0]]);
+			newArr.push([...this.state.example_line[1]]);
+			newArr.push([...newArr[1][0]]);
 		} else if (e.keyCode === ld) { 
 		} else {
 			return;
@@ -88,12 +91,12 @@ class DrawCanvas extends Component {
 
 	/* Draws example line with last point */
 	onCanvasMouseMove = (e) => { // ES2016 auto bind syntax
-		if (this.state.polygon_arr.length < 1) { return; }
-		let theArr = this.state.polygon_arr[0];
-		if (theArr.length < 1) { return; }
+		let len = this.state.polygon_arr.length;
+		if (len < 2) { return; }
 		let newArr = [
-			[...theArr[theArr.length - 1]], // copy last coord in line
-			getCoords(e)
+			this.state.polygon_arr[len - 2], // copy last coord in line
+			this.state.polygon_arr[len - 1], // copy last coord in line
+			...getCoords(e)
 		];
 		let newState = {
 			example_line: newArr,
@@ -114,7 +117,7 @@ class DrawCanvas extends Component {
 			stuff = this.stuff.getLines();
 
 		let game = [...player, ...stuff];
-		let arrayToDraw = [...polygon, example, ...player, ...stuff];
+		let arrayToDraw = [ polygon, example, ...player, ...stuff];
 
 		return (
 		<div className="container" >

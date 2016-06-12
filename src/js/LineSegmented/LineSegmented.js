@@ -6,34 +6,23 @@ import vec2 from 'gl-matrix/src/gl-matrix/vec2';
 */
 let lerpLineSegments = (frame1, frame2, numFrames) => {
     let retArr = new Array( numFrames );
+    let lenFrame = frame1.length;
     for (let frameCount = 0; frameCount < numFrames; ++frameCount) {
         let lerpAmount = frameCount / (numFrames - 1);
-        let lenFrame = frame1.length;
         let oneFrame = new Array( lenFrame );
 
-        for (let i = 0, lenFr = frame1.length; i < lenFr; ++i) {
-            let seg1 = frame1[i];
-            let seg2 = frame2[i];
-            let newSeg = new Array( lenFr );
-            let tmpVec = vec2.create();
+        for (let i = 0; i < lenFrame; ++i) {
+            let newSeg = new Array( frame1[i].length );
 
-            for (let j = 0, lenSeg = seg1.length; j < lenSeg; j += 2) {
-                vec2.lerp(tmpVec,
-                    [ seg1[j], seg1[j+1] ],
-                    [ seg2[j], seg2[j+1] ],
-                    lerpAmount
-                );
-                newSeg[j] = tmpVec[0];
-                newSeg[j+1] = tmpVec[1];
-            }
+            vec2.forEach2(newSeg, frame1[i], frame2[i],
+                0, 0, 0, vec2.lerp, lerpAmount);
+
             oneFrame[i] = newSeg;
         }
         retArr[frameCount] = oneFrame;
     }
     return retArr;
 };
-	
-
 
 class LineSegmented {
 

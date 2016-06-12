@@ -18,9 +18,9 @@ class Stuff {
 		];
 	}
 
-	getFloorLines () {
+	getCollisionLines = () => {
 		return this.floor.getLines();
-	}
+	};
 }
 
 export default Stuff

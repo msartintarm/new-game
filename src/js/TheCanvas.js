@@ -1,9 +1,11 @@
 import Component from './Component';
 
 const DEFAULT_SIZE = 800;
+
+let warnCount = 0;
+
 /*
     Canvas class that binds passed-down line segments with DOM canvas
-
     Supports line segments and mouse / touch events as props
 
 */
@@ -26,13 +28,17 @@ class TheCanvas extends Component {
     /* Returns false if this is not an array of 2d arrays [0,1,1,2,2,3] */
     _isLineSegment (points) {
         let t;
-        if (!points)
+        if (!points) {
             console.warn("No point list provided");
-        else if (points.length < 2) 
-            {} // empty array.. means no points in list
-        else if ((t = typeof points[0]) .toLowerCase() !== "number") 
-            console.warn("Wrong type (non number) for line segment: " + t + "! :o");
-        else return true;
+        } else if (points.length < 2) { 
+            // empty array.. means no points in list
+        } else if ((t = typeof points[0]) .toLowerCase() !== "number") {
+            if (warnCount <= 5) { // this can be printed out millions of times otherwise
+                console.warn("Wrong type (non number) for line segment: " + t + "! :o");
+                console.warn("Point list is:" + JSON.stringify(points));
+                warnCount += 1;
+            }
+        } else return true;
         return false;
     }
 
@@ -56,7 +62,6 @@ class TheCanvas extends Component {
         this.ctx.fillStyle = '#F00';
         this.ctx.fillRect(0, 0, this.size, this.size);
         this.ctx.save();
-        this.ctx.scale(0.5, 0.5);
         for (let i = 0; i < lineSegments.length; ++i) {
             this._paintLineSegment(lineSegments[i]);
         }

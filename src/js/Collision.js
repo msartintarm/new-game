@@ -1,6 +1,6 @@
-import lineIntersection from './LineSegmented/lineIntersection';
+const NON_LINE_WARNING = "You need a 2d line to detect collisions. [1, 99, 3, 97]. Kapisch please.";
 
-import Stuff from './Stuff';
+import lineIntersection from './LineSegmented/lineIntersection';
 
 /*
 	Contains lines and checks for collisions between them and env.
@@ -9,24 +9,28 @@ import Stuff from './Stuff';
 	- DrawCanvas -> Stuff -> Hook -> LineSegmented
 	The player could import Stuff directly I guess and it would still be okay.
 */
-class CollisionLine {
+let detectCollision = (theLine, theSegs) => {
 
-	constructor(points) {
-		this.line = vec2.fromValues(points);
-	}
-
-
-	detectCollision() {
-		for (var line of Stuff.getFloorLines()) {
-			if (lineIntersection(
-				this.line[0], this.line[1], line[0], line[1]
-			)) {
+	if (theLine.length !== 4) { throw (NON_LINE_WARNING); }
+	let lnAX = theLine[0];
+	let lnAY = theLine[1];
+	let lnBX = theLine[2];
+	let lnBY = theLine[3];
+	for (var line of theSegs) {
+		if (line.length < 4) { break; } // no segs here
+        let aX = line[0];
+        let aY = line[1];
+    	let bX, bY;
+        for (let i = 2; i < line.length; i += 2) {
+        	bX = line[i];
+        	bY = line[i+1];
+			if (lineIntersection(lnAX, lnAY, lnBX, lnBY, aX, aY, bX, bY)) {
 				return true;
 			}
-		}
-		return false;
+			aX = bX; aY = bY;
+        }
 	}
+	return false;
+};
 
-}
-
-export default CollisionLine
+export default detectCollision

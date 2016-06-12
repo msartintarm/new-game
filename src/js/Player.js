@@ -7,24 +7,26 @@ import Hand from './LineSegmented/Hand';
 import LineSegmented from './LineSegmented/LineSegmented';
 
 import Stuff from './Stuff'
-import CollisionLine from './Collision'
+import detectCollision from './Collision'
 
 /* Has its own line segments and manages connections to feet and arms */
 class Player { 
 
-    constructor(props) {
+    constructor(collisionRetrievalFunction) {
 
-//        this.footCollisionSeg = []]
+        this.collisionlinesFn = collisionRetrievalFunction;
 
     	this.footPt1 = [73, 130];
     	this.footPt2 = [109, 130];
     	this.handPt = [120, 100];
 
-    	this.pos = [0, 0];
+    	this.pos = [99,165,99,167];
 
     	this.footFrame = 0;
     	this.moveRightFrames = 15;
     	this.moveRightEndFrames = 4;
+
+        this.footCollisionLine = [97, 163, 97, 169];
 
         this.feet = [
         	(new Foot({
@@ -47,12 +49,24 @@ class Player {
 
     moveRight = (e) => {
 
-    	var moveDist = [6, 0];
-    	var newPos = vec2.add(vec2.create(), this.pos, moveDist);
+    	let moveDist = [6, 0];
+    	let newPos = vec2.add(vec2.create(), this.pos, moveDist);
     	if (newPos[0] > 700) {
     		moveDist = [-this.pos[0], 100];
     		vec2.add(newPos, this.pos, moveDist);
     	}
+
+        // check collision
+        vec2.forEa
+        vec2.forEach(this.footCollisionLine, 0, 0, 0, 
+            vec2.add, moveDist);
+
+
+        if (detectCollision(
+            this.footCollisionLine,
+            this.collisionlinesFn()) === false) {
+            console.log("Uh oh!");
+        }
 
 		this.pos = newPos;
 
@@ -65,13 +79,6 @@ class Player {
 //			this.setupMoveRightEnd();
 //		}
     };
-
-    checkContact() {
-
-        for (let zz of Stuff) {
-            console.log("Wow!", zz);
-        }
-    }
 
     setupMoveRightEnd () {
 		// set up ending of move right
