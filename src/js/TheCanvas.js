@@ -23,16 +23,14 @@ class TheCanvas extends Component {
         this._paint(this.props.lineSegments);
     }
 
-    /* Returns false if this is not an array of 2d arrays [[0,1], [1,2],[2,3]] */
+    /* Returns false if this is not an array of 2d arrays [0,1,1,2,2,3] */
     _isLineSegment (points) {
         let t;
         if (!points)
             console.warn("No point list provided");
-        else if (points.length < 1) 
+        else if (points.length < 2) 
             {} // empty array.. means no points in list
-        else if (points[0].length < 1)
-            console.warn("Points cannot be empty arrays");
-        else if ((t = typeof points[0][0]) .toLowerCase() !== "number") 
+        else if ((t = typeof points[0]) .toLowerCase() !== "number") 
             console.warn("Wrong type (non number) for line segment: " + t + "! :o");
         else return true;
         return false;
@@ -45,9 +43,9 @@ class TheCanvas extends Component {
         if (!this._isLineSegment(points)) return; // make sure input is 'line segment format'
         this.ctx.save();
         this.ctx.beginPath();
-        this.ctx.moveTo(...points[0]);
-        for (var i = 1; i < points.length; ++i) {
-            this.ctx.lineTo(...points[i]);
+        this.ctx.moveTo(points[0], points[1]);
+        for (let i = 2; i < points.length; i += 2) {
+            this.ctx.lineTo(points[i], points[i+1]);
         }
         this.ctx.stroke();
         this.ctx.restore();

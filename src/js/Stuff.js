@@ -18,7 +18,7 @@ class Stuff {
 		];
 	}
 
-	getfloorLines () {
+	getFloorLines () {
 		return this.floor.getLines();
 	}
 }

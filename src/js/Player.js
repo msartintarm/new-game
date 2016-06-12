@@ -4,12 +4,17 @@ import { registerHandler, registerTickEvent } from './EventHandler';
 
 import Foot from './LineSegmented/Foot';
 import Hand from './LineSegmented/Hand';
+import LineSegmented from './LineSegmented/LineSegmented';
+
+import Stuff from './Stuff'
+import CollisionLine from './Collision'
 
 /* Has its own line segments and manages connections to feet and arms */
 class Player { 
 
     constructor(props) {
 
+//        this.footCollisionSeg = []]
 
     	this.footPt1 = [73, 130];
     	this.footPt2 = [109, 130];
@@ -31,7 +36,7 @@ class Player {
 	        	numFrames: this.moveRightFrames
 	        })).translate(this.footPt2)
         ];
-        this.lineSegments = [[[57,130],[139,129]],[[96,130],[94,13],[125,44]]];
+        this.body = new LineSegmented({}, [[57,130,139,129],[96,130,94,13,125,44]]);
         registerHandler('keydown', 'play_area', this.setPositionOnKeyDown);
         registerHandler('keyup', 'play_area', this.setPositionOnKeyUp);
 
@@ -42,7 +47,7 @@ class Player {
 
     moveRight = (e) => {
 
-    	var moveDist = [6	, 0];
+    	var moveDist = [6, 0];
     	var newPos = vec2.add(vec2.create(), this.pos, moveDist);
     	if (newPos[0] > 700) {
     		moveDist = [-this.pos[0], 100];
@@ -50,17 +55,11 @@ class Player {
     	}
 
 		this.pos = newPos;
-		this.translate(moveDist);
 
     	this.footFrame = Math.min(this.footFrame + 1, this.moveRightFrames - 1);
-
-		vec2.add(this.footPt1, moveDist, this.footPt1);
-		vec2.add(this.footPt2, moveDist, this.footPt2);
-		vec2.add(this.handPt, moveDist, this.handPt);
-
-		this.feet[0].setToFrame(this.footFrame).translate(this.footPt1);
-		this.feet[1].setToFrame(this.footFrame).translate(this.footPt2);
-		this.hand.translate(moveDist);
+        this.feet[0].setToFrame(this.footFrame);
+        this.feet[1].setToFrame(this.footFrame);
+        this.translate(moveDist);
 
 //		if (this.footFrame === this.moveRightFrames - 1) {
 //			this.setupMoveRightEnd();
@@ -69,6 +68,9 @@ class Player {
 
     checkContact() {
 
+        for (let zz of Stuff) {
+            console.log("Wow!", zz);
+        }
     }
 
     setupMoveRightEnd () {
@@ -95,13 +97,14 @@ class Player {
     };
 
     translate (vec) {
-        if (vec) this.translateVec = vec;
-        if (!this.translateVec) return;
-        for (let oneLine of this.lineSegments) {
-            for (let theVec of oneLine) {
-                vec2.add(theVec, theVec, this.translateVec);
-            }
-        }
+        vec2.add(this.footPt1, vec, this.footPt1);
+        vec2.add(this.footPt2, vec, this.footPt2);
+        vec2.add(this.handPt, vec, this.handPt);
+
+        this.feet[0].translate(this.footPt1);
+        this.feet[1].translate(this.footPt2);
+        this.hand.translate(vec);
+        this.body.translate(vec);
         return this;
     }
 
@@ -125,7 +128,7 @@ class Player {
 
     getLines () {
         return [
-	        ...this.lineSegments,
+	        ...this.body.getLines(),
 	        ...this.feet[0].getLines(),
 	        ...this.feet[1].getLines(),
 	        ...this.hand.getLines()
