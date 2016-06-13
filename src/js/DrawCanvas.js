@@ -1,4 +1,4 @@
-import vec2 from 'gl-matrix';
+import vec2 from 'gl-matrix/src/gl-matrix/vec2';
 
 import { registerHandler } from './EventHandler';
 
@@ -39,6 +39,8 @@ class DrawCanvas extends Component {
 		this.player = new Player(
 			this.stuff.getCollisionLines
 		);
+
+		this.player_offset = this.player.getPos();
 
 		for(let argList of [
 			["mousedown", "CANVAS", this.onCanvasMouseDown],
@@ -124,20 +126,22 @@ class DrawCanvas extends Component {
 		let arrayToDraw = [ polygon, example, 
 			...player, ...stuff, ...collisionLines];
 
+		let canvasOffset = vec2.sub(vec2.create(),
+			this.player.getPos(),
+			this.player_offset);
+
 		return (
 		<div className="container" >
-			<EventButton name="line drop" ref="line drop" />
-			<EventButton name="line end" ref="line end" />
-			<EventButton name="line loop" ref="line loop" />
-			<div>
-				Play!
-				<textarea className="play_area"></textarea>
-			</div>
-
-
-			<div>
-				<TheCanvas lineSegments={ game }/>
-				<TheCanvas size={200} lineSegments={ arrayToDraw } />
+			<div className="canvas_real_container">
+				<TheCanvas scale={0.25} lineSegments={ game }/>
+				<TheCanvas size={200} translateVec={canvasOffset} lineSegments={ arrayToDraw } />
+				<EventButton name="line drop" ref="line drop" />
+				<EventButton name="line end" ref="line end" />
+				<EventButton name="line loop" ref="line loop" />
+				<div>
+					Play!
+					<textarea className="play_area"></textarea>
+				</div>
 			</div>
 			<DisplayArray array={polygon} line_label="polygon"/>
 			<DisplayArray array={example} line_label="new line"/>

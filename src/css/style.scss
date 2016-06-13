@@ -8,9 +8,21 @@ div {
 	box-sizing: border-box;
 }
 
+.canvas_real_container {
+	border: 2px solid brown;
+}
+
+.canvas_real_container > div,
+.canvas_real_container > button {
+	border: 2px solid brown;
+}
+
+.canvas_real_container:after {
+	clear:both;
+}
 
 .canvas_container {
-	border: 2px solid brown;
+	float: left;
 }
 
 .display_array {

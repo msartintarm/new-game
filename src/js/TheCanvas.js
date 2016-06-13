@@ -13,7 +13,11 @@ class TheCanvas extends Component {
 
     constructor(opts) {
         super(opts);
+        if (opts.translateVec) { 
+            this.translateVec = [...opts.translateVec]; }
         this.size = opts.size || DEFAULT_SIZE;
+        this.scale = opts.scale || 1;
+
     }
 
     componentDidMount () {
@@ -53,6 +57,7 @@ class TheCanvas extends Component {
         for (let i = 2; i < points.length; i += 2) {
             this.ctx.lineTo(points[i], points[i+1]);
         }
+//        this.ctx.fill();
         this.ctx.stroke();
         this.ctx.restore();
     }
@@ -62,6 +67,14 @@ class TheCanvas extends Component {
         this.ctx.fillStyle = '#F00';
         this.ctx.fillRect(0, 0, this.size, this.size);
         this.ctx.save();
+        if (this.translateVec) { 
+            console.log(this.translateVec);
+            this.ctx.translate(...this.translateVec);
+        }
+        if (this.scale) {
+            this.ctx.scale(this.scale, this.scale);
+        }
+        this.ctx.fillStyle = '#33E';
         for (let i = 0; i < lineSegments.length; ++i) {
             this._paintLineSegment(lineSegments[i]);
         }

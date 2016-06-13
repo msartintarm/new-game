@@ -17,15 +17,13 @@ class Player {
 
         this.collisionlinesFn = collisionRetrievalFunction;
 
-        this.isFalling = false;
-
         this.moveDist =[0, 0];
 
     	this.footPt1 = [73, 130];
     	this.footPt2 = [109, 130];
     	this.handPt = [120, 100];
 
-    	this.pos = [99,165,99,167];
+    	this.pos = [99,165];
 
     	this.footFrame = 0;
         this.moveLeftFrames = 15;
@@ -75,6 +73,8 @@ class Player {
 
     }
 
+    getPos = () => { return [...this.pos]; }
+
     jump = (e) => {
         this.moveDist[1] = -20;
     };
@@ -102,43 +102,49 @@ class Player {
 
     };
 
+    getCollisionPoints (vec) {
+        // check collision
+        let newCollision1 = [...this.footCollisionLine1];
+        let newCollision2 = [...this.footCollisionLine2];
+        vec2.forEach(newCollision1, 0, 0, 0, vec2.add, vec);
+        vec2.forEach(newCollision2, 0, 0, 0, vec2.add, vec);
+        let footCollisionPts = detectCollision(newCollision1, this.collisionlinesFn());
+        let footCollisionPts2 = detectCollision(newCollision2, this.collisionlinesFn());
+        return (footCollisionPts || footCollisionPts2 || null);
+    }
+
+    getMinY(points) {
+        let a = points[1];
+        for (let i = 3; i < points.length; i += 2) { // check each line collision
+            a = Math.min(a, points[i]);
+        }
+        return a;
+    }
+
     checkFalling () {
         // check collision
 
-        let footCollisionPts = detectCollision(
-            this.footCollisionLine1, this.collisionlinesFn());
-        let footCollisionPts2 = detectCollision(
-            this.footCollisionLine2, this.collisionlinesFn());
+        let collisionPts = this.getCollisionPoints(this.moveDist);
 
-        if (footCollisionPts || footCollisionPts2) {
-            if (this.isFalling) {
-                var thePts = footCollisionPts || footCollisionPts2;
-                // check how much more 'up' we need to go -- correction is 
-                // part of the fall
-                console.log(JSON.stringify(thePts));
-                for (let i = 1; i < thePts.length; i += 2) {
-                    this.moveDist[1] = Math.min(0, thePts[i] - this.pos[1], this.moveDist[1]);
+        if (!collisionPts) { // fall!
+            if (this.moveDist[1] < 20) {
+                this.moveDist[1] = this.moveDist[1] + 1;
+                // could overshoot ground
+                let newCollisionPts = this.getCollisionPoints(this.moveDist);
+                if (newCollisionPts) {
+                    console.log("Overshoot!");
+                    let minY = this.getMinY(newCollisionPts);
+                    if (this.pos[1] + this.moveDist[1] > minY) {
+                        this.moveDist = this.pos[1] - minY;
+                    }
                 }
-                if (this.moveDist[1] < 0) this.isFalling = false;
-                if (this.moveDist[1] < 0) this.isFalling = false;
-            }
-            if (footCollisionPts && footCollisionPts2) {
-                console.log("On solid ground.");
-            } else {
-                console.log("Hanging..")
             }
         } else {
-            console.log("Falling!!1");
-            if (!this.isFalling) {
-                this.isFalling = true;
-                this.fallCount = 0;
-            } else if (this.fallCount < 20) {
-                this.fallCount += 1;
+            // are we falling (y positive)? if so, set to line intercept
+            if (this.moveDist[1] >= 0) {
+                let minY = this.getMinY(collisionPts);
+                this.moveDist[1] = minY - this.pos[1];
             }
-            this.moveDist[1] = Math.floor(
-//                this.moveDist[1] + (this.fallCount / 10)
-                this.moveDist[1] + (1)
-            );
         }
     }
 
