@@ -32,6 +32,20 @@ let registerHandler = (evName, key, theFunction) => {
 	eventmap[evName][key] = theFunction;
 };
 
+/* lets you query whether a tick event is active */
+let checkTickEvent = (key) => {
+	return (key in registeredHandlerMap['tick']);
+};
+
+/* get rid of this event */
+let deregisterTickEvent = (key) => {
+	if (checkTickEvent(key)) {
+		delete eventmap['tick'][key];
+		delete registeredHandlerMap['tick'][key];
+		return;
+	}
+};
+
 /* unique key for function,
 	function itself, 
 	num times to run (0 if unlimited),
@@ -46,7 +60,7 @@ let registerTickEvent = (key, theFunction, numTimes, replace) => {
 
 	registeredHandlerMap['tick'][key] = () => {
 		if (numTimes > 0 && tickCountMap[key] >= numTimes ) {
-			delete registeredHandlerMap['tick'][key];
+			deregisterTickEvent(key);
 			return;
 		}
 		tickCountMap[key] += 1;
@@ -61,4 +75,4 @@ let onTick = () => { // call after requesting animation frame
 	}
 }
 
-export { registerHandler, registerTickEvent, onTick };
+export { registerHandler, checkTickEvent, registerTickEvent, deregisterTickEvent, onTick };

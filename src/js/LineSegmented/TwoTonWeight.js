@@ -11,11 +11,15 @@ let theFrame = [
 ];
 
 /* The Two Ton Weight */
-class TwoTonWeight extends LineSegmented { 
+class TwoTonWeight { 
     constructor(opts) {
-        super(opts, theFrame, theFrame);
+    	this.ls = new LineSegmented(opts, theFrame);
     	this.knotPoint = theFrame[6][2][1]; // highest point of the triangle
     }
+
+    setToFrame(num) { return this.ls.setToFrame(num); }
+    translate (vec) { return this.ls.translate(vec); }
+    getLines () { return this.ls.getLines(); }
 }
 
 export default TwoTonWeight;

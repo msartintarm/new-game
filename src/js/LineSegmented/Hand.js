@@ -15,10 +15,15 @@ const HandWithScissors2 = [
 	[0,4,8,13,24,12]
 ];
 
-class Hand extends LineSegmented { 
-	constructor(opts) {
-		super(opts, HandWithScissors1, HandWithScissors2);
-	}
+class Hand {
+    constructor(opts) {
+    	this.ls = new LineSegmented(
+    		opts, HandWithScissors1, HandWithScissors2);
+    }
+
+    setToFrame(num) { return this.ls.setToFrame(num); }
+    translate (vec) { return this.ls.translate(vec); }
+    getLines () { return this.ls.getLines(); }
 }
 
 export default Hand

@@ -28,7 +28,9 @@ class DrawCanvas extends Component {
 			polygon_arr: [],
 			polygon_arr_text: 'no coords bro',
 			example_line: [],
-			example_line_text: 'no coords bro'
+			example_line_text: 'no coords bro',
+			polygon_arr_committed: 0
+
 		};
 
 
@@ -84,7 +86,8 @@ class DrawCanvas extends Component {
 			polygon_arr: newArr,
 			polygon_arr_text: JSON.stringify(newArr),
 			example_line: [],
-			example_line_text: 'no coords bro'
+			example_line_text: 'no coords bro',
+			polygon_arr_committed: newArr.length
 		};
 		this.setState(newState);
 	}
@@ -92,7 +95,7 @@ class DrawCanvas extends Component {
 	/* Draws example line with last point */
 	onCanvasMouseMove = (e) => { // ES2016 auto bind syntax
 		let len = this.state.polygon_arr.length;
-		if (len < 2) { return; }
+		if (len - this.state.polygon_arr_committed < 2) { return; }
 		let newArr = [
 			this.state.polygon_arr[len - 2], // copy last coord in line
 			this.state.polygon_arr[len - 1], // copy last coord in line

@@ -5,10 +5,14 @@ let floorFrame = [
 	[1,168,610,169,610,184,2,181,1,168], [3,794,2,769,779,764,782,785,3,794]
 ];
 
-class Floor extends LineSegmented {
-	constructor(opts) {
-		super(opts, floorFrame);
-	}
+class Floor {
+    constructor(opts) {
+    	this.ls = new LineSegmented(opts, floorFrame);
+    }
+
+    setToFrame(num) { return this.ls.setToFrame(num); }
+    translate (vec) { return this.ls.translate(vec); }
+    getLines () { return this.ls.getLines(); }
 }
 
 export default Floor

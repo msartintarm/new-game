@@ -7,10 +7,14 @@ let _theKnot = [
 
 let _ropeList = []; // used in cut event
 
-class Knot extends LineSegmented {
-	constructor(opts) {
-		super(opts, _theKnot);
-	}	
+class Knot {
+    constructor(opts) {
+    	this.ls = new LineSegmented(opts, _theKnot);
+    	this.knotPoint = theFrame[6][2][1]; // highest point of the triangle
+    }
+    setToFrame(num) { return this.ls.setToFrame(num); }
+    translate (vec) { return this.ls.translate(vec); }
+    getLines () { return this.ls.getLines(); }
 }
 
 /* 
@@ -18,12 +22,20 @@ class Knot extends LineSegmented {
 	Joins two objects
 	Can be severed with scissors
 */
-class Rope extends LineSegmented { 
+class Rope { 
     constructor(opts, thingA, thingB) {
-        super(opts, [..._theKnot, ..._theKnot, [[0,0]]]); // two knots and a connector
-    	this.translate([-682, -256]);
+        this.ls = new LineSegmented(
+        	opts,
+        	[..._theKnot, ..._theKnot,
+        	[[0,0]]
+    	]); // two knots and a connector
+    	this.ls.translate([-682, -256]);
         this.join(thingA, thingB);
     }
+
+    setToFrame(num) { return this.ls.setToFrame(num); }
+    translate (vec) { return this.ls.translate(vec); }
+    getLines () { return this.ls.getLines(); }
 
     join(thingA, thingB) {
     	if (!thingA.knotPoint || !thingB.knotPoint) return;
