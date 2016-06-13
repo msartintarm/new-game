@@ -114,10 +114,12 @@ class DrawCanvas extends Component {
 		let polygon = this.state.polygon_arr,
 			example = this.state.example_line,
 			player = this.player.getLines(),
+			collisionLines = this.player.getCollisionLines(),
 			stuff = this.stuff.getLines();
 
 		let game = [...player, ...stuff];
-		let arrayToDraw = [ polygon, example, ...player, ...stuff];
+		let arrayToDraw = [ polygon, example, 
+			...player, ...stuff, ...collisionLines];
 
 		return (
 		<div className="container" >
@@ -132,8 +134,7 @@ class DrawCanvas extends Component {
 
 			<div>
 				<TheCanvas lineSegments={ game }/>
-				<TheCanvas size={200} lineSegments={ polygon } />
-				<TheCanvas lineSegments={ arrayToDraw } />
+				<TheCanvas size={200} lineSegments={ arrayToDraw } />
 			</div>
 			<DisplayArray array={polygon} line_label="polygon"/>
 			<DisplayArray array={example} line_label="new line"/>

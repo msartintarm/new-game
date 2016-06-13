@@ -4,8 +4,8 @@ import Floor from './LineSegmented/Floor';
 
 class Stuff {
 	constructor () {
-		this.hook = new Hook();
-		this.weight = (new TwoTonWeight()).translate([597,227]);
+		this.hook = new Hook().translate([-582, 202]);
+		this.weight = (new TwoTonWeight()).translate([597,227]).translate([-582, 202]);
 		this.floor = new Floor();
 	}
 

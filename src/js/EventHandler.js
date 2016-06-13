@@ -45,10 +45,11 @@ let registerTickEvent = (key, theFunction, numTimes, replace) => {
 	tickCountMap[key] = 0;
 
 	registeredHandlerMap['tick'][key] = () => {
-		if (numTimes > 0 && ++tickCountMap[key] >= numTimes ) {
+		if (numTimes > 0 && tickCountMap[key] >= numTimes ) {
 			delete registeredHandlerMap['tick'][key];
 			return;
 		}
+		tickCountMap[key] += 1;
 		eventmap['tick'][key]();
 	};
 };
