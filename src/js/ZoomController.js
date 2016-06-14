@@ -56,7 +56,8 @@ class ZoomController {
 
 	setZoom (pos) {
 
-		let realPos = vec2.sub(vec2.create(), pos, this.playerOffset);
+///		let realPos = vec2.sub(vec2.create(), pos, this.playerOffset);
+		let realPos = pos;
 
 		// lookup coord map
 		let size = ROOM_SIZE;

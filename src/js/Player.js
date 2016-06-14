@@ -141,7 +141,7 @@ class Player {
             }
         } else {
             // are we falling (y positive)? if so, set to line intercept
-            if (this.moveDist[1] >= 0) {
+            if (this.moveDist[1] >= -1) {
                 let minY = this.getMinY(collisionPts);
                 this.moveDist[1] = minY - this.pos[1];
             }
