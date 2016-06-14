@@ -2,5 +2,8 @@
 # Ignore build artifacts yo
 work/
 
-# Ignore local install artifacts yo
-node_modules
+# Ignore local install artifacts yo (except for gl-matrix)
+node_modules/*
+!node_modules/gl-matrix
+node_modules/gl-matrix/*
+!node_modules/gl-matrix/src

@@ -7,6 +7,8 @@ import EventButton from './EventButton';
 import TheCanvas from './TheCanvas';
 import DisplayArray from './DisplayArray';
 
+import ZoomController from './ZoomController';
+
 import Player from './Player';
 import Stuff from './Stuff';
 
@@ -36,11 +38,12 @@ class DrawCanvas extends Component {
 
 		this.stuff = new Stuff();
 
+
 		this.player = new Player(
 			this.stuff.getCollisionLines
 		);
 
-		this.player_offset = this.player.getPos();
+		this.zoom = new ZoomController(this.player.getPos());
 
 		for(let argList of [
 			["mousedown", "CANVAS", this.onCanvasMouseDown],
@@ -122,19 +125,19 @@ class DrawCanvas extends Component {
 			collisionLines = this.player.getCollisionLines(),
 			stuff = this.stuff.getLines();
 
+		this.zoom.setZoom(this.player.getPos());
+
+		let zoom = this.zoom.getZoom();
+
 		let game = [...player, ...stuff];
 		let arrayToDraw = [ polygon, example, 
 			...player, ...stuff, ...collisionLines];
 
-		let canvasOffset = vec2.sub(vec2.create(),
-			this.player.getPos(),
-			this.player_offset);
-
 		return (
 		<div className="container" >
 			<div className="canvas_real_container">
-				<TheCanvas scale={0.25} lineSegments={ game }/>
-				<TheCanvas size={200} translateVec={canvasOffset} lineSegments={ arrayToDraw } />
+				<TheCanvas scale={zoom} lineSegments={ game }/>
+				<TheCanvas size={200} lineSegments={ arrayToDraw } />
 				<EventButton name="line drop" ref="line drop" />
 				<EventButton name="line end" ref="line end" />
 				<EventButton name="line loop" ref="line loop" />
@@ -145,7 +148,6 @@ class DrawCanvas extends Component {
 			</div>
 			<DisplayArray array={polygon} line_label="polygon"/>
 			<DisplayArray array={example} line_label="new line"/>
-			<DisplayArray array={player} line_label="the player!"/>
 		</div>
 		);
 	}

@@ -20,6 +20,16 @@ class TheCanvas extends Component {
 
     }
 
+    defaultProps = {
+        // format array of array of 2D array: 
+        // [ [[10, 20], [20, 30], [30, 40]], [[10, 30], [20, 30]] ]
+        lineSegments: [],
+        // format: array of 2D array (same as lineSegments[0])
+        // [[10, 20], [20, 30], [30, 40]]
+        lineSegment: [],
+        scale: 1
+    };
+
     componentDidMount () {
         this.ctx = this.refs.theCanvas.getContext('2d');
         this._paint(this.props.lineSegments);
@@ -71,8 +81,8 @@ class TheCanvas extends Component {
             console.log(this.translateVec);
             this.ctx.translate(...this.translateVec);
         }
-        if (this.scale) {
-            this.ctx.scale(this.scale, this.scale);
+        if (this.props.scale) {
+            this.ctx.scale(this.props.scale, this.props.scale);
         }
         this.ctx.fillStyle = '#33E';
         for (let i = 0; i < lineSegments.length; ++i) {
@@ -98,13 +108,5 @@ class TheCanvas extends Component {
     }
 }
 
-TheCanvas.defaultProps = {
-    // format array of array of 2D array: 
-    // [ [[10, 20], [20, 30], [30, 40]], [[10, 30], [20, 30]] ]
-    lineSegments: [],
-    // format: array of 2D array (same as lineSegments[0])
-    // [[10, 20], [20, 30], [30, 40]]
-    lineSegment: []
-};
 
 export default TheCanvas;

@@ -1,5 +1,7 @@
 import vec2 from 'gl-matrix/src/gl-matrix/vec2';
 
+const ZERO_VEC = vec2.fromValues(0, 0);
+
 /*
     takes two input frames with line segments that are matched up
     Returns array of frames with line-interpolated values
@@ -34,18 +36,28 @@ class LineSegmented {
         frameEnd: optional, if present and structure mirrors frameStart
             allow interpolarion.
     */
-	constructor(opts, frameStart, frameEnd) {
+	constructor(opts, frameOrSeg, frameEnd) {
 
+        let _opts = opts || {};
+        let _t = _opts.translate;
+        let _nF = _opts.numFrames;
+        let _sF = _opts.setToFrame;
+
+        this.pos = vec2.clone(ZERO_VEC);
+
+        // either one line segment or multipleframes
         if (!frameEnd) {
-            this.lineSegments = [...frameStart];
-            return;
+            this.lineSegments = [...frameOrSeg];
+        } else {
+            this.frames = _nF?
+                this.lerp(frameOrSeg, frameEnd, _nF):
+                [frameOrSeg, frameEnd];
+            this.setToFrame(_sF || 0); // Load this.lineSegments
         }
 
-		let _opts = opts || {};
-	    this.frames = _opts.numFrames?
-	        this.lerp(frameStart, frameEnd, _opts.numFrames):
-	        [frameStart, frameEnd];
-	    this.setToFrame((_opts.setToFrame || 0)); // Load this.lineSegments
+        if (_t) { this.translate(_t); }
+
+        return this;
     }
 
     /* Select frame index and copy it to this.lineSegments array
@@ -61,14 +73,23 @@ class LineSegmented {
             }
             this.lineSegments.push(destVec);
         }
+        this._translateNoCopy(this.pos);
         return this;
     }
 
     translate (vec) {
+        this._translateNoCopy(vec);
+        vec2.add(this.pos, this.pos, vec);
+        return this;
+    }
+
+    _translateNoCopy (vec) {
+        if (vec2.equals(vec, ZERO_VEC)) {
+            return this; // nothing to translate here
+        }
         for (let oneLine of this.lineSegments) {
             vec2.forEach(oneLine, 0, 0, 0, vec2.add, vec);
         }
-        return this;
     }
 
     getLines () {

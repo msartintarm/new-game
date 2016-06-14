@@ -10,18 +10,18 @@ import LineSegmented from './LineSegmented/LineSegmented';
 import Stuff from './Stuff'
 import detectCollision from './Collision'
 
-/* Has its own line segments and manages connections to feet and arms */
+/* Has its own line segments and manages connections to feet and arms
+    @collisionlinesFn: type [function] 
+        Returns array of collision lines (arrays of 4 pts) when invoked.
+*/
 class Player { 
 
     constructor(collisionRetrievalFunction) {
 
         this.collisionlinesFn = collisionRetrievalFunction;
 
-        this.moveDist =[0, 0];
+        this.moveDist = [0, 0];
 
-    	this.footPt1 = [73, 130];
-    	this.footPt2 = [109, 130];
-    	this.handPt = [120, 100];
 
     	this.pos = [99,165];
 
@@ -34,32 +34,31 @@ class Player {
         this.footCollisionLine2 = [158, 100, 158, 169];
 
         this.feet = [
-        	(new Foot({
+        	new Foot({
 	        	setToFrame: this.footFrame,
-	        	numFrames: this.moveRightFrames
-	        })).translate(this.footPt1),
-	        (new Foot({
+	        	numFrames: this.moveRightFrames,
+                translate: [73, 130]
+	        }),
+	        new Foot({
 	        	setToFrame: this.footFrame,
-	        	numFrames: this.moveRightFrames
-	        })).translate(this.footPt2)
+	        	numFrames: this.moveRightFrames,
+                translate: [109, 130]
+	        })
         ];
 
-        this.face = new LineSegmented({},
-            [
-                [115,105,106,104,102,89,102,71,105,74,115,75],
-                [113,88,106,88]
-            ]
-        );
-
-
-        this.body = new LineSegmented({}, 
-            [[57,130,139,129],[96,130,94,13,125,44]]);
+        this.face = new LineSegmented({}, [
+            [115,105,106,104,102,89,102,71,105,74,115,75],
+            [113,88,106,88]
+        ]);
+        this.body = new LineSegmented({}, [
+            [57,130,139,129],[96,130,94,13,125,44]
+        ]);
         registerHandler('keydown', 'play_area', this.setPositionOnKeyDown);
         registerHandler('keyup', 'play_area', this.setPositionOnKeyUp);
 
         this.activeMove = null;
 
-        this.hand = (new Hand()).translate(this.handPt);
+        this.hand = (new Hand()).translate([120, 100]);
 
         // used to automate drawing / translation a little
         this.segmentedList = [ 
@@ -83,16 +82,16 @@ class Player {
 
         this.moveDist[0] = 6;
         this.footFrame = Math.min(this.footFrame + 1, this.moveRightFrames - 1);
-        this.feet[0].setToFrame(this.footFrame).translate(this.footPt1);
-        this.feet[1].setToFrame(this.footFrame).translate(this.footPt2);
+        this.feet[0].setToFrame(this.footFrame);
+        this.feet[1].setToFrame(this.footFrame);
     };
 
     moveLeft = (e) => {
 
         this.moveDist[0] = -6;
         this.footFrame = Math.min(this.footFrame + 1, this.moveLeftFrames - 1);
-        this.feet[0].setToFrame(this.footFrame).translate(this.footPt1);
-        this.feet[1].setToFrame(this.footFrame).translate(this.footPt2);
+        this.feet[0].setToFrame(this.footFrame);
+        this.feet[1].setToFrame(this.footFrame);
     };
 
     adjustPosition = () => {
@@ -121,6 +120,7 @@ class Player {
         return a;
     }
 
+    /* return Y delta? */
     checkFalling () {
         // check collision
 
@@ -167,18 +167,14 @@ class Player {
     moveEnd = (e) => { 
         let f = this.moveEndIndexMap[this.footFrame];
         this.footFrame += 1;
-        this.feet[0].setToFrame(f).translate(this.footPt1);
-        this.feet[1].setToFrame(f).translate(this.footPt2);
+        this.feet[0].setToFrame(f);
+        this.feet[1].setToFrame(f);
     };
 
     translate (vec) {
         vec2.forEach(this.footCollisionLine1, 0, 0, 0, vec2.add, vec);
         vec2.forEach(this.footCollisionLine2, 0, 0, 0, vec2.add, vec);
         vec2.add(this.pos, this.pos, vec);
-        vec2.add(this.footPt1, this.footPt1, vec);
-        vec2.add(this.footPt2, this.footPt2, vec);
-        vec2.add(this.handPt, this.handPt, vec);
-
         for(let segmented of this.segmentedList) {
             segmented.translate(vec);
         }
