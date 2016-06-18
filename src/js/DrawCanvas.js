@@ -125,7 +125,9 @@ class DrawCanvas extends Component {
 			collisionLines = this.player.getCollisionLines(),
 			stuff = this.stuff.getLines();
 
-		this.zoom.setZoom(this.player.getPos());
+		let playerPos = this.player.getPos();
+
+		this.zoom.setZoom(playerPos);
 
 		let zoom = this.zoom.getZoom();
 
@@ -136,6 +138,7 @@ class DrawCanvas extends Component {
 		return (
 		<div className="container" >
 			<div className="canvas_real_container">
+				<DisplayArray array={[playerPos]} line_label="Playuh"/>
 				<TheCanvas scale={zoom} lineSegments={ game }/>
 				<TheCanvas size={200} lineSegments={ arrayToDraw } />
 				<EventButton name="line drop" ref="line drop" />

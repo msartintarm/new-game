@@ -6,7 +6,22 @@ import { registerHandler, registerTickEvent,
 import Body from './LineSegmented/Body';
 
 import Stuff from './Stuff'
-import detectCollision from './Collision'
+import DetectCollision from './Collision'
+
+// Returns function for max / min of all X or Y points
+let getMaxMinFn = (fn, start) => {
+    return (points) => {
+        let a = points[start];
+        for (let i = start + 2; i < points.length; i += 2) { // check each line collision
+            a = fn(a, points[i]);
+        }
+        return a;
+    };
+};
+
+let getMinY = getMaxMinFn(Math.min, 1);
+let getMinX = getMaxMinFn(Math.min, 0);
+let getMaxX = getMaxMinFn(Math.max, 0);
 
 /* Has its own line segments and manages connections to feet and arms
     @collisionlinesFn: type [function] 
@@ -69,88 +84,65 @@ class Player {
         // check collision
         let newCollision = [...line];
         vec2.forEach(newCollision, 0, 0, 0, vec2.add, vec);
-        return detectCollision(newCollision, this.collisionlinesFn());
+        return DetectCollision(newCollision, this.collisionlinesFn());
     }
 
     getFootCollisionPoints(vec) {
-        return 
-            this.getCollisionPoints(this.footCollisionLine1, vec) ||
-            this.getCollisionPoints(this.footCollisionLine2, vec) ||
-            null;
+        let a = [
+            ...this.getCollisionPoints(this.footCollisionLine1, vec),
+            ...this.getCollisionPoints(this.footCollisionLine2, vec)
+        ];
+        return (a.length < 1)? null: a;
     }
 
     getBodyCollisionPoints() {
-        return 
-            this.getCollisionPoints(this.bodyCollisionLine, this.moveDist);
+        return this.getCollisionPoints(this.bodyCollisionLine, this.moveDist);
     }
 
-    getMinY(points) {
-        let a = points[1];
-        for (let i = 3; i < points.length; i += 2) { // check each line collision
-            a = Math.min(a, points[i]);
-        }
-        return a;
-    }
-
-    getMinX(points) {
-        let a = points[0];
-        for (let i = 2; i < points.length; i += 2) { // check each line collision
-            a = Math.min(a, points[i]);
-        }
-        return a;
-    }
-
-    getMaxX(points) {
-        let a = points[0];
-        for (let i = 2; i < points.length; i += 2) { // check each line collision
-            a = Math.max(a, points[i]);
-        }
-        return a;
-    }
-
-    /* return Y delta? */
+    /* sets Y delta to fall unless you hit objects. return Y delta? */
     checkFalling () {
         // check collision 
 
         let collisionPts = this.getFootCollisionPoints(this.moveDist);
-        if (!collisionPts) { // fall!
-            if (this.moveDist[1] < 20) { // accelerate
-                this.moveDist[1] = this.moveDist[1] + 1;
-                // could overshoot ground
-                let newCollisionPts = this.getFootCollisionPoints(this.moveDist);
-                if (newCollisionPts) {
-                    console.log("Overshoot!");
-                    let minY = this.getMinY(newCollisionPts);
-                    if (this.moveDist[1] > minY - this.pos[1]) {
-                        this.moveDist[1] = this.pos[1] - minY;
-                    }
-                }
-            }
-        } else {
+        if (collisionPts) { // bam. hit ground
             // are we falling (y positive)? if so, set to line intercept
             if (this.moveDist[1] >= -1) {
-                let minY = this.getMinY(collisionPts);
+                let minY = getMinY(collisionPts);
                 this.moveDist[1] = minY - this.pos[1];
+                return minY - this.pos[1];
+            }
+        } else {
+            if (this.moveDist[1] < 20) { // accelerate
+                this.moveDist[1] = this.moveDist[1] + 1;
+            }
+            let newCollisionPts = this.getFootCollisionPoints(this.moveDist);
+            if (newCollisionPts) { // could overshoot ground
+                console.log("Overshoot!");
+                let minY = getMinY(newCollisionPts);
+                if (this.moveDist[1] > minY - this.pos[1]) {
+                    this.moveDist[1] = this.pos[1] - minY;
+                }
             }
         }
     }
 
     /* return X delta? */
     checkPushing () {
+
         // check collision
         let collisionPts = this.getBodyCollisionPoints();
         if (collisionPts) { // fall!
             if (this.moveDist[0] < 0) { // moving left.. check left collision
-                let minX = this.getMinX(newCollisionPts);
+                let minX = getMinX(collisionPts);
                 if (this.moveDist[0] > minX - this.pos[0]) {
                 console.log("OvershootX!");
                     this.moveDist[0] = this.pos[0] - minX;
                 }
             } else {
-                let maxX = this.getMaxX(newCollisionPts);
+                let maxX = getMaxX(collisionPts);
                 if (this.moveDist[0] > this.pos[0] - maxX) {
                 console.log("Undershoot!");
-                    this.moveDist[0] = this.pos[0] - maxX;
+                    this.moveDist[0] = maxX - this.pos[0];
                 }
             }
         }
@@ -223,7 +215,10 @@ class Player {
     }
 
     getCollisionLines () {
-        return [this.footCollisionLine1, this.footCollisionLine2];
+        return [
+            this.footCollisionLine1,
+            this.footCollisionLine2,
+            this.handCollisionLine];
     }
 }
 

@@ -6,10 +6,10 @@ import lineIntersection from './LineSegmented/lineIntersection';
 	Contains lines and checks for collisions between them and env.
 	Returns coords where collisions occurs
 */
-let detectCollision = (theLine, theSegs) => {
+let DetectCollision = (theLine, theSegs) => {
 
 	if (theLine.length !== 4) { throw (NON_LINE_WARNING); }
-	let resArr = null;
+	let resArr = [];
 	let lnAX = theLine[0];
 	let lnAY = theLine[1];
 	let lnBX = theLine[2];
@@ -24,7 +24,6 @@ let detectCollision = (theLine, theSegs) => {
         	bY = line[i+1];
         	let res = lineIntersection(lnAX, lnAY, lnBX, lnBY, aX, aY, bX, bY)
 			if (res) {
-				if (!resArr) resArr = [];
 				resArr.push(res[0]);
 				resArr.push(res[1]);
 			}
@@ -34,4 +33,4 @@ let detectCollision = (theLine, theSegs) => {
 	return resArr;
 };
 
-export default detectCollision
+export default DetectCollision
