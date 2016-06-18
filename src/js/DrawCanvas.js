@@ -138,7 +138,6 @@ class DrawCanvas extends Component {
 		return (
 		<div className="container" >
 			<div className="canvas_real_container">
-				<DisplayArray array={[playerPos]} line_label="Playuh"/>
 				<TheCanvas scale={zoom} lineSegments={ game }/>
 				<TheCanvas size={200} lineSegments={ arrayToDraw } />
 				<EventButton name="line drop" ref="line drop" />
@@ -148,9 +147,12 @@ class DrawCanvas extends Component {
 					Play!
 					<textarea className="play_area"></textarea>
 				</div>
+				<div>
+					<DisplayArray array={[playerPos]} line_label="Playuh"/>
+					<DisplayArray array={polygon} line_label="polygon"/>
+					<DisplayArray array={example} line_label="new line"/>
+				</div>
 			</div>
-			<DisplayArray array={polygon} line_label="polygon"/>
-			<DisplayArray array={example} line_label="new line"/>
 		</div>
 		);
 	}
