@@ -10,13 +10,8 @@ var theHook = [
 /* The Hook. Converted to using composition*/
 class Hook {
     constructor(opts) {
-    	this.ls = new LineSegmented(opts, theHook);
-//    	this.knotPoint = [694, 37]; // lowest point of the hook
+        return new LineSegmented(opts, theHook);
     }
-
-    setToFrame(num) { return this.ls.setToFrame(num); }
-    translate (vec) { return this.ls.translate(vec); }
-    getLines () { return this.ls.getLines(); }
 } 
 
 export default Hook

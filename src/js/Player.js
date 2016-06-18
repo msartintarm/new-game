@@ -3,9 +3,7 @@ import vec2 from 'gl-matrix/src/gl-matrix/vec2';
 import { registerHandler, registerTickEvent,
     checkTickEvent, deregisterTickEvent } from './EventHandler';
 
-import Foot from './LineSegmented/Foot';
-import Hand from './LineSegmented/Hand';
-import LineSegmented from './LineSegmented/LineSegmented';
+import Body from './LineSegmented/Body';
 
 import Stuff from './Stuff'
 import detectCollision from './Collision'
@@ -25,6 +23,8 @@ class Player {
 
     	this.pos = [99,165];
 
+        this.body = new Body();
+
     	this.footFrame = 0;
         this.moveLeftFrames = 15;
         this.moveRightFrames = 15;
@@ -33,43 +33,11 @@ class Player {
         this.footCollisionLine1 = [84, 100, 84, 169];
         this.footCollisionLine2 = [158, 100, 158, 169];
 
-        this.feet = [
-        	new Foot({
-	        	setToFrame: this.footFrame,
-	        	numFrames: this.moveRightFrames,
-                translate: [73, 130]
-	        }),
-	        new Foot({
-	        	setToFrame: this.footFrame,
-	        	numFrames: this.moveRightFrames,
-                translate: [109, 130]
-	        })
-        ];
+        this.bodyCollisionLine = [91,12,93,129];
 
-        this.face = new LineSegmented({}, [
-            [115,105,106,104,102,89,102,71,105,74,115,75],
-            [113,88,106,88]
-        ]);
-        this.body = new LineSegmented({}, [
-            [57,130,139,129],[96,130,94,13,125,44]
-        ]);
         registerHandler('keydown', 'play_area', this.setPositionOnKeyDown);
         registerHandler('keyup', 'play_area', this.setPositionOnKeyUp);
-
-        this.activeMove = null;
-
-        this.hand = (new Hand()).translate([120, 100]);
-
-        // used to automate drawing / translation a little
-        this.segmentedList = [ 
-            this.body,
-            ...this.feet,
-            this.hand,
-            this.face
-        ]
-
         registerTickEvent('adjustPosition', this.adjustPosition, 0); // set fall
-
     }
 
     getPos = () => { return [...this.pos]; }
@@ -79,37 +47,41 @@ class Player {
     };
 
     moveRight = (e) => {
-
         this.moveDist[0] = 6;
         this.footFrame = Math.min(this.footFrame + 1, this.moveRightFrames - 1);
-        this.feet[0].setToFrame(this.footFrame);
-        this.feet[1].setToFrame(this.footFrame);
+        this.body.setFeetToFrame(this.footFrame);
     };
 
     moveLeft = (e) => {
-
         this.moveDist[0] = -6;
         this.footFrame = Math.min(this.footFrame + 1, this.moveLeftFrames - 1);
-        this.feet[0].setToFrame(this.footFrame);
-        this.feet[1].setToFrame(this.footFrame);
+        this.body.setFeetToFrame(this.footFrame);
     };
 
     adjustPosition = () => {
         this.checkFalling();
+        this.checkPushing();
         if (this.moveDist[0] === 0 & this.moveDist[1] === 0) return;
         this.translate(this.moveDist);
-
     };
 
-    getCollisionPoints (vec) {
+    getCollisionPoints (line, vec) {
         // check collision
-        let newCollision1 = [...this.footCollisionLine1];
-        let newCollision2 = [...this.footCollisionLine2];
-        vec2.forEach(newCollision1, 0, 0, 0, vec2.add, vec);
-        vec2.forEach(newCollision2, 0, 0, 0, vec2.add, vec);
-        let footCollisionPts = detectCollision(newCollision1, this.collisionlinesFn());
-        let footCollisionPts2 = detectCollision(newCollision2, this.collisionlinesFn());
-        return (footCollisionPts || footCollisionPts2 || null);
+        let newCollision = [...line];
+        vec2.forEach(newCollision, 0, 0, 0, vec2.add, vec);
+        return detectCollision(newCollision, this.collisionlinesFn());
+    }
+
+    getFootCollisionPoints(vec) {
+        return 
+            this.getCollisionPoints(this.footCollisionLine1, vec) ||
+            this.getCollisionPoints(this.footCollisionLine2, vec) ||
+            null;
+    }
+
+    getBodyCollisionPoints() {
+        return 
+            this.getCollisionPoints(this.bodyCollisionLine, this.moveDist);
     }
 
     getMinY(points) {
@@ -120,22 +92,37 @@ class Player {
         return a;
     }
 
+    getMinX(points) {
+        let a = points[0];
+        for (let i = 2; i < points.length; i += 2) { // check each line collision
+            a = Math.min(a, points[i]);
+        }
+        return a;
+    }
+
+    getMaxX(points) {
+        let a = points[0];
+        for (let i = 2; i < points.length; i += 2) { // check each line collision
+            a = Math.max(a, points[i]);
+        }
+        return a;
+    }
+
     /* return Y delta? */
     checkFalling () {
-        // check collision
+        // check collision 
 
-        let collisionPts = this.getCollisionPoints(this.moveDist);
-
+        let collisionPts = this.getFootCollisionPoints(this.moveDist);
         if (!collisionPts) { // fall!
-            if (this.moveDist[1] < 20) {
+            if (this.moveDist[1] < 20) { // accelerate
                 this.moveDist[1] = this.moveDist[1] + 1;
                 // could overshoot ground
-                let newCollisionPts = this.getCollisionPoints(this.moveDist);
+                let newCollisionPts = this.getFootCollisionPoints(this.moveDist);
                 if (newCollisionPts) {
                     console.log("Overshoot!");
                     let minY = this.getMinY(newCollisionPts);
-                    if (this.pos[1] + this.moveDist[1] > minY) {
-                        this.moveDist = this.pos[1] - minY;
+                    if (this.moveDist[1] > minY - this.pos[1]) {
+                        this.moveDist[1] = this.pos[1] - minY;
                     }
                 }
             }
@@ -144,6 +131,27 @@ class Player {
             if (this.moveDist[1] >= -1) {
                 let minY = this.getMinY(collisionPts);
                 this.moveDist[1] = minY - this.pos[1];
+            }
+        }
+    }
+
+    /* return X delta? */
+    checkPushing () {
+        // check collision
+        let collisionPts = this.getBodyCollisionPoints();
+        if (collisionPts) { // fall!
+            if (this.moveDist[0] < 0) { // moving left.. check left collision
+                let minX = this.getMinX(newCollisionPts);
+                if (this.moveDist[0] > minX - this.pos[0]) {
+                console.log("OvershootX!");
+                    this.moveDist[0] = this.pos[0] - minX;
+                }
+            } else {
+                let maxX = this.getMaxX(newCollisionPts);
+                if (this.moveDist[0] > this.pos[0] - maxX) {
+                console.log("Undershoot!");
+                    this.moveDist[0] = this.pos[0] - maxX;
+                }
             }
         }
     }
@@ -167,17 +175,15 @@ class Player {
     moveEnd = (e) => { 
         let f = this.moveEndIndexMap[this.footFrame];
         this.footFrame += 1;
-        this.feet[0].setToFrame(f);
-        this.feet[1].setToFrame(f);
+        this.body.setFeetToFrame(f);
     };
 
     translate (vec) {
         vec2.forEach(this.footCollisionLine1, 0, 0, 0, vec2.add, vec);
         vec2.forEach(this.footCollisionLine2, 0, 0, 0, vec2.add, vec);
+        vec2.forEach(this.bodyCollisionLine, 0, 0, 0, vec2.add, vec);
         vec2.add(this.pos, this.pos, vec);
-        for(let segmented of this.segmentedList) {
-            segmented.translate(vec);
-        }
+        this.body.translate(vec);
         return this;
     }
 
@@ -213,14 +219,7 @@ class Player {
     };
 
     getLines () {
-
-        return [
-	        ...this.body.getLines(),
-	        ...this.feet[0].getLines(),
-	        ...this.feet[1].getLines(),
-            ...this.hand.getLines(),
-            ...this.face.getLines()
-        ];
+        return this.body.getLines();
     }
 
     getCollisionLines () {

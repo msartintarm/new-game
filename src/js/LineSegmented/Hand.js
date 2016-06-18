@@ -17,13 +17,9 @@ const HandWithScissors2 = [
 
 class Hand {
     constructor(opts) {
-    	this.ls = new LineSegmented(
+	    return new LineSegmented(
     		opts, HandWithScissors1, HandWithScissors2);
     }
-
-    setToFrame(num) { return this.ls.setToFrame(num); }
-    translate (vec) { return this.ls.translate(vec); }
-    getLines () { return this.ls.getLines(); }
 }
 
 export default Hand

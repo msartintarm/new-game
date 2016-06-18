@@ -10,15 +10,8 @@ const frameEnd = [
 ];
 
 /* The Foot */
-class Foot { 
-    constructor(opts) {
-    	this.ls = new LineSegmented(opts, frameStart, frameEnd);
-    }
+let FootSegment = (opts) => { 
+    return new LineSegmented(opts, frameStart, frameEnd);
+};
 
-    setToFrame(num) { return this.ls.setToFrame(num); }
-    translate (vec) { return this.ls.translate(vec); }
-    getLines () { return this.ls.getLines(); }
-
-}
-
-export default Foot;
+export default FootSegment;

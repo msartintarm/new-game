@@ -9,13 +9,16 @@ let _ropeList = []; // used in cut event
 
 class Knot {
     constructor(opts) {
-    	this.ls = new LineSegmented(opts, _theKnot);
-    	this.knotPoint = theFrame[6][2][1]; // highest point of the triangle
+    	opts.knotPoint = theFrame[6][2][1]; // highest point of the triangle
+        return new LineSegmented(opts, _theHook);
     }
-    setToFrame(num) { return this.ls.setToFrame(num); }
-    translate (vec) { return this.ls.translate(vec); }
-    getLines () { return this.ls.getLines(); }
 }
+
+let join = (thingA, thingB) => {
+	if (!thingA.knotPoint || !thingB.knotPoint) return;
+	this.translate(thingA.knotPoint);
+	_ropeList.push(this);
+};
 
 /* 
 	The Rope 
@@ -24,24 +27,16 @@ class Knot {
 */
 class Rope { 
     constructor(opts, thingA, thingB) {
-        this.ls = new LineSegmented(
+    	opts.translate = [-682, -256];
+        return new LineSegmented(
+			// two knots and a connector
         	opts,
-        	[..._theKnot, ..._theKnot,
+        	[..._theKnot, ..._theKnot],
         	[[0,0]]
-    	]); // two knots and a connector
-    	this.ls.translate([-682, -256]);
-        this.join(thingA, thingB);
+    	]).join(thingA, thingB);
     }
 
-    setToFrame(num) { return this.ls.setToFrame(num); }
-    translate (vec) { return this.ls.translate(vec); }
-    getLines () { return this.ls.getLines(); }
-
-    join(thingA, thingB) {
-    	if (!thingA.knotPoint || !thingB.knotPoint) return;
-    	this.translate(thingA.knotPoint);
-    	_ropeList.push(this);
-    }
+    join = join;
 
     /* Take snip event, if rope has been cut than create new object and init drop */
     checkSnip(lineSeg) {

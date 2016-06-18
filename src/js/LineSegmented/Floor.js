@@ -8,12 +8,8 @@ let floorFrame = [
 
 class Floor {
     constructor(opts) {
-    	this.ls = new LineSegmented(opts, floorFrame);
+	    return new LineSegmented(opts, floorFrame);
     }
-
-    setToFrame(num) { return this.ls.setToFrame(num); }
-    translate (vec) { return this.ls.translate(vec); }
-    getLines () { return this.ls.getLines(); }
 }
 
 export default Floor
