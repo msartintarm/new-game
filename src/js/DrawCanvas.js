@@ -139,7 +139,7 @@ class DrawCanvas extends Component {
 		<div className="container" >
 			<div className="canvas_real_container">
 				<TheCanvas scale={zoom} lineSegments={ game }/>
-				<TheCanvas size={200} lineSegments={ arrayToDraw } />
+				<TheCanvas size={1600} lineSegments={ arrayToDraw } />
 				<EventButton name="line drop" ref="line drop" />
 				<EventButton name="line end" ref="line end" />
 				<EventButton name="line loop" ref="line loop" />

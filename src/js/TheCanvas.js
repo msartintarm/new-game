@@ -1,8 +1,12 @@
 import Component from './Component';
 
+import { registerHandler } from './EventHandler';
+
 const DEFAULT_SIZE = 800;
 
 let warnCount = 0;
+
+let canvasNum = 0;
 
 /*
     Canvas class that binds passed-down line segments with DOM canvas
@@ -18,6 +22,15 @@ class TheCanvas extends Component {
         this.size = opts.size || DEFAULT_SIZE;
         this.scale = opts.scale || 1;
 
+        this.button_classname = "toggle_canvas" + canvasNum;
+
+        this.state = { show_canvas: true };
+
+
+        canvasNum += 1;
+
+        registerHandler('mousedown', this.button_classname,
+            this.toggleCanvasOnMouseDown);
     }
 
     defaultProps = {
@@ -55,6 +68,11 @@ class TheCanvas extends Component {
         } else return true;
         return false;
     }
+
+    toggleCanvasOnMouseDown = (e) => {
+    let newState = { show_canvas: (!this.state.show_canvas) };
+        this.setState(newState);
+    };
 
     /*
         input needs to be 'line segment' 
@@ -100,9 +118,11 @@ class TheCanvas extends Component {
     }
 
     render () {
+        let theCanvas = (<canvas {...this._getCanvasProps()} />);
         return (
-            <div className="canvas_container">
-                <canvas {...this._getCanvasProps()} />
+            <div className="canvas_ container">
+                <div className={this.button_classname}>Toggle Canvas!</div>
+                { this.state.show_canvas? theCanvas: null }
             </div>
         );
     }

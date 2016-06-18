@@ -40,6 +40,9 @@ class Player {
 
         this.body = new Body();
 
+        this.jumpFlag = false;
+        this.secondJumpFlag = false;
+
     	this.footFrame = 0;
         this.moveLeftFrames = 15;
         this.moveRightFrames = 15;
@@ -47,26 +50,18 @@ class Player {
 
         this.collisionLineList = []; // stores registered collision lines
 
-        this.footCollisionLine1 = this.addCollisionLine(
-            84, 100, 84, 169);
-        this.footCollisionLine2 = this.addCollisionLine(
-            158, 100, 158, 169);
-        this.bodyCollisionLine = this.addCollisionLine(
-            89, 39, 89, 129);
-        this.headCollisionLine1 = this.addCollisionLine(
-            92, 37, 92, 67);
-        this.headCollisionLine2 = this.addCollisionLine(
-            131, 37, 131, 67);
+        this.footCollisionLine1 = this.addCollisionLine(84, 100, 84, 169);
+        this.footCollisionLine2 = this.addCollisionLine(158, 100, 158, 169);
+        this.bodyCollisionLine = this.addCollisionLine(89, 39, 89, 129);
+        this.headCollisionLine1 = this.addCollisionLine(92, 37, 92, 67);
+        this.headCollisionLine2 = this.addCollisionLine(131, 37, 131, 67);
  
         this.body_offset_x = this.bodyCollisionLine[0] - this.pos[0];
         this.head_offset_y = this.headCollisionLine1[1] - this.pos[1];
 
-        registerHandler('keydown', 'play_area',
-            this.setPositionOnKeyDown);
-        registerHandler('keyup', 'play_area',
-            this.setPositionOnKeyUp);
-        registerTickEvent('adjustPosition',
-            this.adjustPosition, 0); // set fall
+        registerHandler('keydown', 'play_area', this.setPositionOnKeyDown);
+        registerHandler('keyup', 'play_area', this.setPositionOnKeyUp);
+        registerTickEvent('adjustPosition', this.adjustPosition, 0); // set fall
     }
 
     addCollisionLine(nums) {
@@ -75,10 +70,20 @@ class Player {
         return newLine;
     }
 
-    getPos = () => { return [...this.pos]; }
+    getPos = () => { return [...this.pos]; };
 
     jump = (e) => {
-        this.moveDist[1] = -20;
+        // check if we have already initiated a jump
+        if (!!this.jumpFlag && !!this.secondJumpFlag) {
+            return;
+        }
+        if (!!this.jumpFlag) {
+            this.secondJumpFlag = true;
+            this.moveDist[1] = -17;
+        } else {
+            this.jumpFlag = true;
+            this.moveDist[1] = -20;
+        }
     };
 
     moveRight = (e) => {
@@ -98,7 +103,8 @@ class Player {
     adjustPosition = () => {
         this.moveDist = this.checkFalling(this.moveDist);
         this.moveDist = this.checkPushing(this.moveDist);
-//        this.moveDist = this.checkCeiling(this.moveDist);
+        this.moveDist = this.checkCeiling(this.moveDist);
+        this.moveDist = this.checkEscaped(this.moveDist); // lol
         if (this.moveDist[0] === 0 & this.moveDist[1] === 0) return;
         this.translate(this.moveDist);
     };
@@ -135,17 +141,23 @@ class Player {
     checkFalling (moveDist) {
         let dist = [...moveDist];
 
+
         // check collision 
 
         let collisionPts = this.getFootCollisionPoints(dist);
         if (collisionPts) { // bam. hit ground
+            if (!!this.jumpFlag) { this.jumpFlag = false; }
+            if (!!this.secondJumpFlag) { this.secondJumpFlag = false; }
+
             // are we falling (y positive)? if so, set to line intercept
-            if (dist[1] >= -1) {
+//            if (dist[1] > 0 ||) {
                 let minY = getMinY(collisionPts);
-                dist[1] = minY - this.pos[1];
-            }
+                dist[1] = Math.max(-collisionPts.length, minY - this.pos[1]);
+//            }
         } else {
-            if (dist[1] < 20) { // accelerate
+            if (this.jumpFlag && dist[1] > 0 && dist[1] < 5) { // accelerate
+                dist[1] = dist[1] + .25;
+            } else if (dist[1] < 20) { // accelerate more
                 dist[1] = dist[1] + 1;
             }
             let newCollisionPts = this.getFootCollisionPoints(dist);
@@ -163,7 +175,6 @@ class Player {
     /* checks if you'd hit object with head and sets dist accordingly */
     checkCeiling (moveDist) {
         let dist = [...moveDist];
-        return dist;
 
         // check collision 
 
@@ -175,8 +186,8 @@ class Player {
                 console.log("Oh no!  Run into wall!");
                 console.log(maxY);
                     console.log(" From ", dist[1], " to ", (
-                        maxY - this.pos[1] + this.head_offset_y));
-                dist[1] = maxY - this.pos[1] + this.head_offset_y;
+                        maxY - (this.pos[1] + this.head_offset_y)));
+                dist[1] = maxY - (this.pos[1] + this.head_offset_y);
             }
         }
         return dist;
@@ -185,24 +196,35 @@ class Player {
     /* sets dist so you don't run into objects */
     checkPushing (moveDist) {
         let dist = [...moveDist];
-        return dist;
 
         // check collision
         let collisionPts = this.getBodyCollisionPoints(dist);
         if (collisionPts) { // fall!
             if (dist[0] < 0) { // moving left.. check left collision
                 let minX = getMinX(collisionPts);
-                if (dist[0] > minX - this.pos[0] + this.head_offset_y) {
+                if (dist[0] > minX - (this.pos[0] + this.body_offset_x)) {
                 console.log("OvershootX!");
-                    dist[0] = this.pos[0] - minX + this.head_offset_y;
+                    dist[0] = (this.pos[0] + this.body_offset_x) - minX ;
                 }
             } else {
                 let maxX = getMaxX(collisionPts);
-                if (dist[0] > this.pos[0] - maxX + this.head_offset_y) {
+                if (dist[0] > (this.pos[0] + this.body_offset_x) - maxX ) {
                 console.log("Undershoot!");
-                    dist[0] = maxX - this.pos[0] + this.head_offset_y;
+                    dist[0] = maxX - (this.pos[0] + this.body_offset_x);
                 }
             }
+        }
+        return dist;
+    }
+
+    /* checks if you've escaped the world..? */
+    checkEscaped (moveDist) {
+        let dist = [...moveDist];
+        if (Math.abs(this.pos[0]) > 3000 || 
+            Math.abs(this.pos[1]) > 3000 ||
+            Math.abs(dist[0]) > 1500 || // happens on the backswing ticks
+            Math.abs(dist[1]) > 1500) {
+            dist = [90 - this.pos[0], 90 - this.pos[1]];
         }
         return dist;
     }
