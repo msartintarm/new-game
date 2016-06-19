@@ -64,15 +64,19 @@ class ZoomController {
 		let zoomLev = null;
 		let x, y, a, arr;
 		for (let map of coordMaps) {
-			x = Math.floor(realPos[0] / map.boxSize);
-			y = Math.floor(realPos[1] / map.boxSize);
+			a = map.boxSize;
+			x = Math.floor(realPos[0] / a);
+			y = Math.floor(realPos[1] / a);
 			zoomLev = (arr = map[x]) && arr[y] || null;
 			if (zoomLev) { break; }
 		}
 		this.zoom = zoomLev || 1;
+		vec2.scale(this.playerOffset, [x,y], a);
+		console.log("player offset: ", JSON.stringify(this.playerOffset));
 	}
 
 	getZoom () { return this.zoom; }
+	getOffset () { return this.playerOffset; }
 }
 
 export default ZoomController

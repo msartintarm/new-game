@@ -130,15 +130,20 @@ class DrawCanvas extends Component {
 		this.zoom.setZoom(playerPos);
 
 		let zoom = this.zoom.getZoom();
+		let offset = this.zoom.getOffset();
 
 		let game = [...player, ...stuff];
+		let drawObjs = [this.player, this.stuff];
 		let arrayToDraw = [ polygon, example, 
 			...player, ...stuff, ...collisionLines];
 
 		return (
 		<div className="container" >
 			<div className="canvas_real_container">
-				<TheCanvas scale={zoom} lineSegments={ game }/>
+				<TheCanvas scale={zoom}
+					offset={offset}
+					lineSegments={ game }
+					drawObjs={ drawObjs }/>
 				<TheCanvas size={1600} lineSegments={ arrayToDraw } />
 				<EventButton name="line drop" ref="line drop" />
 				<EventButton name="line end" ref="line end" />

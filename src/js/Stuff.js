@@ -22,6 +22,13 @@ class Stuff {
 	getCollisionLines = () => {
 		return this.floor.getLines();
 	};
+
+    draw (ctx) {
+        this.hook.draw(ctx);
+        this.weight.draw(ctx);
+        this.floor.draw(ctx);
+    }
+
 }
 
 export default Stuff

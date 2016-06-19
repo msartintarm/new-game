@@ -56,6 +56,10 @@ class Body {
         ];
     }
 
+    draw (ctx) {
+        this.partList.map((a) => a.draw(ctx));
+    }
+
 }
 
 

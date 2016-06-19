@@ -17,16 +17,11 @@ class TheCanvas extends Component {
 
     constructor(opts) {
         super(opts);
-        if (opts.translateVec) { 
-            this.translateVec = [...opts.translateVec]; }
         this.size = opts.size || DEFAULT_SIZE;
-        this.scale = opts.scale || 1;
 
         this.button_classname = "toggle_canvas" + canvasNum;
 
         this.state = { show_canvas: true };
-
-
         canvasNum += 1;
 
         registerHandler('mousedown', this.button_classname,
@@ -40,7 +35,8 @@ class TheCanvas extends Component {
         // format: array of 2D array (same as lineSegments[0])
         // [[10, 20], [20, 30], [30, 40]]
         lineSegment: [],
-        scale: 1
+        scale: 1,
+        offset: [0,0]
     };
 
     componentDidMount () {
@@ -95,16 +91,23 @@ class TheCanvas extends Component {
         this.ctx.fillStyle = '#F00';
         this.ctx.fillRect(0, 0, this.size, this.size);
         this.ctx.save();
-        if (this.translateVec) { 
-            console.log(this.translateVec);
-            this.ctx.translate(...this.translateVec);
+        if (this.props.offset) { 
+            console.log(this.props.offset);
+            this.ctx.translate(...this.props.offset);
         }
         if (this.props.scale) {
             this.ctx.scale(this.props.scale, this.props.scale);
         }
         this.ctx.fillStyle = '#33E';
-        for (let i = 0; i < lineSegments.length; ++i) {
-            this._paintLineSegment(lineSegments[i]);
+
+        if (!!this.props.drawObjs) {
+            for (let obj of this.props.drawObjs) {
+                obj.draw(this.ctx);
+            }
+        } else {
+            for (let i = 0; i < lineSegments.length; ++i) {
+                this._paintLineSegment(lineSegments[i]);
+            }
         }
         this.ctx.restore();
     }

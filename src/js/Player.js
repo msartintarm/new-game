@@ -52,11 +52,12 @@ class Player {
 
         this.footCollisionLine1 = this.addCollisionLine(84, 100, 84, 169);
         this.footCollisionLine2 = this.addCollisionLine(158, 100, 158, 169);
-        this.bodyCollisionLine = this.addCollisionLine(89, 39, 89, 129);
+        this.bodyCollisionLine = this.addCollisionLine(82, 120, 160, 120);
         this.headCollisionLine1 = this.addCollisionLine(92, 37, 92, 67);
         this.headCollisionLine2 = this.addCollisionLine(131, 37, 131, 67);
  
-        this.body_offset_x = this.bodyCollisionLine[0] - this.pos[0];
+        this.body_offset_x_l = this.bodyCollisionLine[0] - this.pos[0];
+        this.body_offset_x_2 = this.bodyCollisionLine[2] - this.pos[0];
         this.head_offset_y = this.headCollisionLine1[1] - this.pos[1];
 
         registerHandler('keydown', 'play_area', this.setPositionOnKeyDown);
@@ -101,8 +102,8 @@ class Player {
     /* Called each tick. Makes adjustments to next distance 
         based on environment. Then changes player to position */
     adjustPosition = () => {
-        this.moveDist = this.checkFalling(this.moveDist);
         this.moveDist = this.checkPushing(this.moveDist);
+        this.moveDist = this.checkFalling(this.moveDist);
         this.moveDist = this.checkCeiling(this.moveDist);
         this.moveDist = this.checkEscaped(this.moveDist); // lol
         if (this.moveDist[0] === 0 & this.moveDist[1] === 0) return;
@@ -155,8 +156,10 @@ class Player {
                 dist[1] = Math.max(-collisionPts.length, minY - this.pos[1]);
 //            }
         } else {
-            if (this.jumpFlag && dist[1] > 0 && dist[1] < 5) { // accelerate
+            if (this.jumpFlag && dist[1] >= 0 && dist[1] < 5) { // accelerate
                 dist[1] = dist[1] + .25;
+            } else if (dist[1] >= 0 && dist[1] < 15) { // accelerate more
+                dist[1] = dist[1] + 0.5;
             } else if (dist[1] < 20) { // accelerate more
                 dist[1] = dist[1] + 1;
             }
@@ -200,18 +203,27 @@ class Player {
         // check collision
         let collisionPts = this.getBodyCollisionPoints(dist);
         if (collisionPts) { // fall!
-            if (dist[0] < 0) { // moving left.. check left collision
+            if (dist[0] > 0) { // moving right.. check right collision
                 let minX = getMinX(collisionPts);
-                if (dist[0] > minX - (this.pos[0] + this.body_offset_x)) {
-                console.log("OvershootX!");
-                    dist[0] = (this.pos[0] + this.body_offset_x) - minX ;
+                console.log("Movin right", minX,
+                    this.bodyCollisionLine[2]);
+                if (dist[0] + this.bodyCollisionLine[2] > minX) {
+//                    console.log("OvershootX!", dist[0]);
+                    dist[0] = minX - this.bodyCollisionLine[2] - 1;
+    //                console.log(dist[0]);
                 }
-            } else {
+      //      dist[0] = -1;
+            } else if (dist[0] < 0) {
+                console.log("Movin left");
                 let maxX = getMaxX(collisionPts);
-                if (dist[0] > (this.pos[0] + this.body_offset_x) - maxX ) {
-                console.log("Undershoot!");
-                    dist[0] = maxX - (this.pos[0] + this.body_offset_x);
+                if (dist[0] + this.bodyCollisionLine[0] < maxX) {
+                    dist[0] = maxX - this.bodyCollisionLine[0] + 1;
                 }
+            //    if (dist[0] + (this.pos[0] + this.body_offset_x) < maxX ) {
+              //  console.log("UndershootX!", dist[0]);
+                //    dist[0] = (this.pos[0] + this.body_offset_x) - maxX;
+                  //  console.log(dist[0]);
+//                }
             }
         }
         return dist;
@@ -298,6 +310,11 @@ class Player {
     getCollisionLines () {
         return this.collisionLineList;
     }
+
+    draw (ctx) {
+        this.body.draw(ctx);
+    }
+
 }
 
 export default Player;

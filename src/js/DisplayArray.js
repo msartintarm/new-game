@@ -25,7 +25,7 @@ class DisplayArray extends Component {
 				return Math.floor(arrOrNum);
 			}
 			return arrOrNum.map((num) => {
-				return Math.floor(num);
+					return Math.floor(num);
 			});
 		});
 	}

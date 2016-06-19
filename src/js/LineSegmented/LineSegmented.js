@@ -96,6 +96,21 @@ class LineSegmented {
         return this.lineSegments;
     }
 
+    draw (ctx) {
+        let ls = this.lineSegments;
+        ctx.save();
+        ctx.beginPath();
+        for (let line of ls) {
+            if (line.length < 2) break;
+            ctx.moveTo( line[0], line[1] );
+            for (let i = 2; i < line.length; i += 2) {
+                ctx.lineTo( line[i], line[i+1] );
+            }
+        }
+        ctx.stroke();
+        ctx.restore();
+    }
+
 }
 
 export default LineSegmented
