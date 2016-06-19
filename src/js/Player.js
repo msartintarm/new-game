@@ -24,6 +24,10 @@ let getMinX = getMaxMinFn(Math.min, 0);
 let getMaxX = getMaxMinFn(Math.max, 0);
 let getMaxY = getMaxMinFn(Math.max, 1);
 
+const MOVE_LR_DEC = 1;
+const MOVE_LR_ACC = 0.4;
+const MOVE_LR_TOP = 16;
+
 /* Has its own line segments and manages connections to feet and arms
     @collisionlinesFn: type [function] 
         Returns array of collision lines (arrays of 4 pts) when invoked.
@@ -88,16 +92,30 @@ class Player {
     };
 
     moveRight = (e) => {
-        this.moveDist[0] = 6;
-        this.footFrame = Math.min(this.footFrame + 1, this.moveRightFrames - 1);
-        this.body.setFeetToFrame(this.footFrame);
+        let x = this.moveDist[0];
+        if (x < 0) { // going left.. accelerate right!
+            x = Math.min(x + MOVE_LR_DEC, 0);
+        } else {
+            x = Math.min(x + MOVE_LR_ACC, MOVE_LR_TOP);
+        }
+        this.moveLR(x, this.moveRightFrames);
     };
 
     moveLeft = (e) => {
-        this.moveDist[0] = -6;
-        this.footFrame = Math.min(this.footFrame + 1, this.moveLeftFrames - 1);
-        this.body.setFeetToFrame(this.footFrame);
+        let x = this.moveDist[0];
+        if (x > 0) { // going right.. accelerate left!
+            x = Math.max(x - MOVE_LR_DEC, 0);
+        } else {
+            x = Math.max(x - MOVE_LR_ACC, -MOVE_LR_TOP)
+        }
+        this.moveLR(x, this.moveLeftFrames);
     };
+
+    moveLR (x, maxFrames) { // do things needed by both methods
+        this.moveDist[0] = x;
+        this.footFrame = Math.min(this.footFrame + 1, maxFrames - 1);
+        this.body.setFeetToFrame(this.footFrame);
+    }
 
     /* Called each tick. Makes adjustments to next distance 
         based on environment. Then changes player to position */
@@ -140,39 +158,38 @@ class Player {
 
     /* checks if you'd be falling into objects and sets dist accordingly */
     checkFalling (moveDist) {
-        let dist = [...moveDist];
-
-
+        let dY = moveDist[1];
         // check collision 
 
-        let collisionPts = this.getFootCollisionPoints(dist);
+        let collisionPts = this.getFootCollisionPoints(moveDist);
         if (collisionPts) { // bam. hit ground
-            if (!!this.jumpFlag) { this.jumpFlag = false; }
+            if (!!this.jumpFlag) { this.jumpFlag = false; } // reset powerups
             if (!!this.secondJumpFlag) { this.secondJumpFlag = false; }
 
             // are we falling (y positive)? if so, set to line intercept
-//            if (dist[1] > 0 ||) {
+            if (dY > 0  || (dY === 0 && moveDist[0] !== 0)) {
                 let minY = getMinY(collisionPts);
-                dist[1] = Math.max(-collisionPts.length, minY - this.pos[1]);
-//            }
-        } else {
-            if (this.jumpFlag && dist[1] >= 0 && dist[1] < 5) { // accelerate
-                dist[1] = dist[1] + .25;
-            } else if (dist[1] >= 0 && dist[1] < 15) { // accelerate more
-                dist[1] = dist[1] + 0.5;
-            } else if (dist[1] < 20) { // accelerate more
-                dist[1] = dist[1] + 1;
+                dY = Math.max(-collisionPts.length, minY - this.pos[1]);
             }
-            let newCollisionPts = this.getFootCollisionPoints(dist);
+        } else {
+            if (this.jumpFlag && dY >= 0 && dY < 5) { // accelerate
+                dY = dY + .25;
+            } else if (dY >= 0 && dY < 15) { // accelerate more
+                dY = dY + 0.5;
+            } else if (dY < 20) { // accelerate more
+                dY = dY + 1;
+            }
+            let newCollisionPts = this.getFootCollisionPoints([moveDist[0], dY]);
             if (newCollisionPts) { // could overshoot ground
-                console.log("Overshoot!");
                 let minY = getMinY(newCollisionPts);
-                if (dist[1] > minY - this.pos[1]) {
-                    dist[1] = this.pos[1] - minY;
+                if (dY > minY - this.pos[1]) {
+                    let _dY = dY;
+                    dY = this.pos[1] - minY;
+                    console.log("Overshoot! Change: ", dY - _dY);
                 }
             }
         }
-        return dist;
+        return [moveDist[0], dY];
     }
 
     /* checks if you'd hit object with head and sets dist accordingly */
@@ -184,12 +201,8 @@ class Player {
         let collisionPts = this.getHeadCollisionPoints(dist);
         if (collisionPts) { // bam. hit ceiling
             // are we going up (y negative)? if so, set to line intercept
-            if (dist[1] < 0) {
+            if (dist[1] < 0 || dist[1] === 0 && dist[0] !== 0) {
                 let maxY = getMaxY(collisionPts);
-                console.log("Oh no!  Run into wall!");
-                console.log(maxY);
-                    console.log(" From ", dist[1], " to ", (
-                        maxY - (this.pos[1] + this.head_offset_y)));
                 dist[1] = maxY - (this.pos[1] + this.head_offset_y);
             }
         }
@@ -205,26 +218,21 @@ class Player {
         if (collisionPts) { // fall!
             if (dist[0] > 0) { // moving right.. check right collision
                 let minX = getMinX(collisionPts);
-                console.log("Movin right", minX,
-                    this.bodyCollisionLine[2]);
                 if (dist[0] + this.bodyCollisionLine[2] > minX) {
-//                    console.log("OvershootX!", dist[0]);
                     dist[0] = minX - this.bodyCollisionLine[2] - 1;
-    //                console.log(dist[0]);
                 }
-      //      dist[0] = -1;
-            } else if (dist[0] < 0) {
-                console.log("Movin left");
+            } else if (dist[0] < 0) { || // moving left .. check right collision
                 let maxX = getMaxX(collisionPts);
                 if (dist[0] + this.bodyCollisionLine[0] < maxX) {
                     dist[0] = maxX - this.bodyCollisionLine[0] + 1;
                 }
-            //    if (dist[0] + (this.pos[0] + this.body_offset_x) < maxX ) {
-              //  console.log("UndershootX!", dist[0]);
-                //    dist[0] = (this.pos[0] + this.body_offset_x) - maxX;
-                  //  console.log(dist[0]);
-//                }
-            }
+            } else if (dist[0] === 0 && dist[1] !== 0) {
+                let minX = getMinX(collisionPts);
+                let maxX = getMaxX(collisionPts);
+                if (dist[0] + this.bodyCollisionLine[2] > minX) {
+                    dist[0] = minX - this.bodyCollisionLine[2] - 1;
+                }
+            } 
         }
         return dist;
     }
@@ -232,8 +240,8 @@ class Player {
     /* checks if you've escaped the world..? */
     checkEscaped (moveDist) {
         let dist = [...moveDist];
-        if (Math.abs(this.pos[0]) > 3000 || 
-            Math.abs(this.pos[1]) > 3000 ||
+        if (Math.abs(this.pos[0]) > 5000 || 
+            Math.abs(this.pos[1]) > 5000 ||
             Math.abs(dist[0]) > 1500 || // happens on the backswing ticks
             Math.abs(dist[1]) > 1500) {
             dist = [90 - this.pos[0], 90 - this.pos[1]];

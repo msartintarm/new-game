@@ -28,15 +28,25 @@ let coordMaps = [{
 	boxSize: 800,
 	0: {
 		0: 1
+	},
+	2: {
+		0: 1
 	}
 }, {
 	boxSize: 1600,
 	0: {
 		0: 0.5
+	},
+	1: {
+		0: 0.5
 	}
 }, {
 	boxSize:3200, 
+	"-1": {
+		0: 0.25
+	},
 	0: {
+		"-1": 0.25,
 		0: 0.25
 	}
 }];
@@ -72,7 +82,6 @@ class ZoomController {
 		}
 		this.zoom = zoomLev || 1;
 		vec2.scale(this.playerOffset, [x,y], a);
-		console.log("player offset: ", JSON.stringify(this.playerOffset));
 	}
 
 	getZoom () { return this.zoom; }

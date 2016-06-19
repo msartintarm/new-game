@@ -22,7 +22,7 @@ let DetectCollision = (theLine, theSegs) => {
         for (let i = 2; i < line.length; i += 2) {
         	bX = line[i];
         	bY = line[i+1];
-        	let res = lineIntersection(lnAX, lnAY, lnBX, lnBY, aX, aY, bX, bY)
+        	let res = lineIntersection(lnAX, lnAY, lnBX, lnBY, aX, aY, bX, bY);
 			if (res) {
 				resArr.push(res[0]);
 				resArr.push(res[1]);

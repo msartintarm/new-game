@@ -20,7 +20,10 @@ class Stuff {
 	}
 
 	getCollisionLines = () => {
-		return this.floor.getLines();
+		return [
+			...this.floor.getLines(),
+			...this.weight.getCollisionLines()
+		];
 	};
 
     draw (ctx) {

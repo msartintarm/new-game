@@ -2,7 +2,6 @@ import vec2 from 'gl-matrix/src/gl-matrix/vec2';
 
 import { registerHandler } from './EventHandler';
 
-import Component from './Component';
 import EventButton from './EventButton';
 import TheCanvas from './TheCanvas';
 import DisplayArray from './DisplayArray';
@@ -21,7 +20,7 @@ let getCoords = (e) => {
 };
 
 /* Tells canvas what to draw */
-class DrawCanvas extends Component {
+class DrawCanvas extends React.Component {
 
 	constructor () {
 		super();
@@ -132,6 +131,9 @@ class DrawCanvas extends Component {
 		let zoom = this.zoom.getZoom();
 		let offset = this.zoom.getOffset();
 
+		vec2.negate(offset, offset);
+		vec2.scale(offset, offset, zoom);
+
 		let game = [...player, ...stuff];
 		let drawObjs = [this.player, this.stuff];
 		let arrayToDraw = [ polygon, example, 
@@ -144,7 +146,7 @@ class DrawCanvas extends Component {
 					offset={offset}
 					lineSegments={ game }
 					drawObjs={ drawObjs }/>
-				<TheCanvas size={1600} lineSegments={ arrayToDraw } />
+				<TheCanvas size={3200} lineSegments={ arrayToDraw } />
 				<EventButton name="line drop" ref="line drop" />
 				<EventButton name="line end" ref="line end" />
 				<EventButton name="line loop" ref="line loop" />

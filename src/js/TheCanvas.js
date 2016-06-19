@@ -1,5 +1,3 @@
-import Component from './Component';
-
 import { registerHandler } from './EventHandler';
 
 const DEFAULT_SIZE = 800;
@@ -13,7 +11,7 @@ let canvasNum = 0;
     Supports line segments and mouse / touch events as props
 
 */
-class TheCanvas extends Component { 
+class TheCanvas extends React.Component { 
 
     constructor(opts) {
         super(opts);
@@ -92,7 +90,6 @@ class TheCanvas extends Component {
         this.ctx.fillRect(0, 0, this.size, this.size);
         this.ctx.save();
         if (this.props.offset) { 
-            console.log(this.props.offset);
             this.ctx.translate(...this.props.offset);
         }
         if (this.props.scale) {

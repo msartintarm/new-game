@@ -1,5 +1,3 @@
-import Component from './Component';
-
 import { registerHandler } from './EventHandler';
 
 // for keys that fromCharCode doesn't define
@@ -18,7 +16,7 @@ let getKeycodeName = (val) => {
 };
 
 let initial_val = 54; // first button has key '7'
-class EventButton extends Component {
+class EventButton extends React.Component {
 	constructor(props) {
 		super(props);
 		this.key_val = ++initial_val;

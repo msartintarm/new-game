@@ -1,8 +1,7 @@
-import Component from './Component';
 import DrawCanvas from './DrawCanvas';
 import { onTick } from './EventHandler';
 
-class App extends Component {
+class App extends React.Component {
 
 	constructor () {
 		super();
