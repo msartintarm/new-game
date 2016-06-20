@@ -221,7 +221,7 @@ class Player {
                 if (dist[0] + this.bodyCollisionLine[2] > minX) {
                     dist[0] = minX - this.bodyCollisionLine[2] - 1;
                 }
-            } else if (dist[0] < 0) { || // moving left .. check right collision
+            } else if (dist[0] < 0) { // moving left .. check right collision
                 let maxX = getMaxX(collisionPts);
                 if (dist[0] + this.bodyCollisionLine[0] < maxX) {
                     dist[0] = maxX - this.bodyCollisionLine[0] + 1;
