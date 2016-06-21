@@ -6,14 +6,14 @@ import { registerHandler, registerTickEvent,
 import Body from './LineSegmented/Body';
 
 import Stuff from './Stuff'
-import DetectCollision from './Collision'
+import { DetectCollision } from './Collision'
 
-// Returns function for max / min of all X or Y points
-let getMaxMinFn = (fn, start) => {
-    return (points) => {
-        let a = points[start];
-        for (let i = start + 2; i < points.length; i += 2) { // check each line collision
-            a = fn(a, points[i]);
+// Returns function for max / min of all X or Y collision points
+let getMaxMinFn = (fn, offset) => {
+    return (collisionPts) => {
+        let a = collisionPts[0].coords[offset];
+        for (let i = 1; i < collisionPts.length; ++i) { // check each line collision
+            a = fn(a, collisionPts[i].coords[offset]);
         }
         return a;
     };
@@ -39,6 +39,8 @@ class Player {
         this.collisionlinesFn = collisionRetrievalFunction;
 
         this.moveDist = [0, 0];
+
+        this.groundSpeed = 0; // speed at which player is going along ground
 
     	this.pos = [99,165];
 
@@ -88,6 +90,14 @@ class Player {
         } else {
             this.jumpFlag = true;
             this.moveDist[1] = -20;
+        }
+    };
+
+    decel = () => {
+        if (this.moveDist < 0) { 
+            this.moveDist = Math.min(this.moveDist + 0.25, 0);
+        } else if (this.moveDist > 0) { 
+            this.moveDist = Math.max(this.moveDist - 0.25, 0);
         }
     };
 
@@ -165,13 +175,20 @@ class Player {
         if (collisionPts) { // bam. hit ground
             if (!!this.jumpFlag) { this.jumpFlag = false; } // reset powerups
             if (!!this.secondJumpFlag) { this.secondJumpFlag = false; }
+            if (!this.onGround) { this.onGround = true; }
 
             // are we falling (y positive)? if so, set to line intercept
             if (dY > 0  || (dY === 0 && moveDist[0] !== 0)) {
+                let _dY = dY;
                 let minY = getMinY(collisionPts);
                 dY = Math.max(-collisionPts.length, minY - this.pos[1]);
+
+                let correctionAmt = Math.abs(Math.min(dY - _dY, 0));
+                if (moveDist[0] < 0) { moveDist[0] -= correctionAmt; }
+                if (moveDist[0] > 0) { moveDist[0] += correctionAmt; }
             }
         } else {
+            if (!!this.onGround) { this.onGround = false; }
             if (this.jumpFlag && dY >= 0 && dY < 5) { // accelerate
                 dY = dY + .25;
             } else if (dY >= 0 && dY < 15) { // accelerate more
@@ -186,11 +203,15 @@ class Player {
                     let _dY = dY;
                     dY = this.pos[1] - minY;
                     console.log("Overshoot! Change: ", dY - _dY);
+                    // Figure out how much of this to convert 
                 }
             }
         }
         return [moveDist[0], dY];
     }
+
+//    /* figures out a better value for the angle 
+//    preserveGroundSpeed(currSpeed, line, newSpeed)
 
     /* checks if you'd hit object with head and sets dist accordingly */
     checkCeiling (moveDist) {
@@ -250,26 +271,48 @@ class Player {
     }
 
     setupMoveEnd (event_name, num_frames) {
-        this.moveDist[0] = 0;
-		// set up ending of move right
-		let index = Math.min(
-			this.footFrame, 
-			Math.floor(num_frames / 2));
-		this.moveEndIndexMap = [
-			Math.round(index),
-			Math.round(index / 1.5),
-			Math.round(index / 3 ),
-			0
-		]
-		this.footFrame = 0;
-		registerTickEvent(event_name, this.moveEnd, this.moveEndFrames, true);
+
+        // set up ending of move right
+        let index = Math.min(
+            this.footFrame, 
+            Math.floor(num_frames / 2));
+        let moveEndIndexMap = [
+            Math.round(index),
+            Math.round(index / 1.5),
+            Math.round(index / 3 ),
+            0
+        ];
+
+        let initialEndSpeed = this.moveDist[0];
+
+        let moveEndCount = this.moveEndFrames;
+        let footFrame = 0;
+
+        let moveEnd = (e) => { // lose `1 velocity per second`
+            let newX = this.moveDist[0];
+
+            if (newX === 0 ) {
+                this.footFrame = 0;
+                deregisterTickEvent(event_name);
+            } else if (newX > 0 ) {
+                newX = Math.max(0, newX - 0.5);
+            } else { // newX < 0
+                newX = Math.min(0, newX + 0.5);
+            }
+
+            this.moveDist[0] = newX;
+
+            let f = (initialEndSpeed === 0)? 0:
+                Math.floor(
+                    num_frames * Math.abs(
+                        newX / initialEndSpeed));
+            this.body.setFeetToFrame(f);
+//            footFrame += 1;
+        };
+
+		registerTickEvent(event_name, moveEnd, 0, true);
     }
 
-    moveEnd = (e) => { 
-        let f = this.moveEndIndexMap[this.footFrame];
-        this.footFrame += 1;
-        this.body.setFeetToFrame(f);
-    };
 
     translate (vec) {
         for (let oneLine of this.collisionLineList) {
@@ -280,33 +323,40 @@ class Player {
         return this;
     }
 
+    keydownList = {};
+
     setPositionOnKeyDown = (e) => {
+        this.keydownList[e.keyCode] = true;
     	switch (e.keyCode) {
-            case 37: // 'Right'
-                deregisterTickEvent('moveright');
-                registerTickEvent('moveleft', this.moveLeft, 0);
+            case 37: // 'left'
+                registerTickEvent('move', this.moveLeft, 0, true);
                 break;
             case 38: // 'Up'
                 registerTickEvent('jump', this.jump, 1);
                 break;
             case 39: // 'Right'
-                deregisterTickEvent('moveleft');
-                registerTickEvent('moveright', this.moveRight, 0);
+                registerTickEvent('move', this.moveRight, 0, true);
                 break;
     		default: ;
     	}
     };
 
     setPositionOnKeyUp = (e) => {
+        this.keydownList[e.keyCode] = false;
     	switch (e.keyCode) {
             case 37: // 'Left'
-                if (checkTickEvent('moveright')) break;
-                this.setupMoveEnd('moveleft', this.moveLeftFrames);
+                if (!!this.keydownList[39]) {
+                    this.setPositionOnKeyDown({ keyCode: 39 });
+                } else {
+                    this.setupMoveEnd('move', this.moveLeftFrames);
+                }
                 break;
             case 39: // 'Right'
-                if (checkTickEvent('moveleft')) break;
-                this.setupMoveEnd('moveright', this.moveRightFrames);
-                break;
+                if (!!this.keydownList[37]) {
+                    this.setPositionOnKeyDown({ keyCode: 37 });
+                } else {
+                    this.setupMoveEnd('move', this.moveRightFrames);
+                }
     		default: ;
     	}
     };

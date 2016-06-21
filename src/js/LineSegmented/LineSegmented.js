@@ -39,9 +39,15 @@ class LineSegmented {
 	constructor(opts, frameOrSeg, frameEnd) {
 
         let _opts = opts || {};
+
+//        if (_opts.fillColor) { this.fillColor = _opts.fillColor; }
+
         let _t = _opts.translate;
         let _nF = _opts.numFrames;
         let _sF = _opts.setToFrame;
+        let _fC = _opts.fillColor;
+
+        if (_fC) { this.fillColor = _fC; }
 
         this.pos = vec2.clone(ZERO_VEC);
 
@@ -99,6 +105,7 @@ class LineSegmented {
     draw (ctx) {
         let ls = this.lineSegments;
         ctx.save();
+//        if (!!this.fillColor) { ctx.fillStyle = this.fillColor; }
         ctx.beginPath();
         for (let line of ls) {
             if (line.length < 2) break;
@@ -107,6 +114,7 @@ class LineSegmented {
                 ctx.lineTo( line[i], line[i+1] );
             }
         }
+        if (!!this.fillColor) { ctx.fill(); }
         ctx.stroke();
         ctx.restore();
     }

@@ -135,7 +135,7 @@ class DrawCanvas extends React.Component {
 		vec2.scale(offset, offset, zoom);
 
 		let game = [...player, ...stuff];
-		let drawObjs = [this.player, this.stuff];
+		let drawObjs = [this.stuff, this.player];
 		let arrayToDraw = [ polygon, example, 
 			...player, ...stuff, ...collisionLines];
 

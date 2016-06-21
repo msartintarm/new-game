@@ -2,9 +2,15 @@ import { registerHandler } from './EventHandler';
 
 const DEFAULT_SIZE = 800;
 
+const BRICK_SRC = "http://www.texturemate.com/image/view/2892/_original";
+
 let warnCount = 0;
 
 let canvasNum = 0;
+
+
+let image_brick = null;
+
 
 /*
     Canvas class that binds passed-down line segments with DOM canvas
@@ -39,6 +45,16 @@ class TheCanvas extends React.Component {
 
     componentDidMount () {
         this.ctx = this.refs.theCanvas.getContext('2d');
+        if(!image_brick) {
+            image_brick = new Image();
+            image_brick.onload = () => {
+                console.log("On load yesh");
+                this.pattern_brick = this.ctx.createPattern(image_brick, "repeat");
+            };
+            image_brick.src = BRICK_SRC;
+        } else {
+            this.pattern_brick = this.ctx.createPattern(image_brick, "repeat");
+        }
         this._paint(this.props.lineSegments);
     }
 
@@ -79,7 +95,9 @@ class TheCanvas extends React.Component {
         for (let i = 2; i < points.length; i += 2) {
             this.ctx.lineTo(points[i], points[i+1]);
         }
-//        this.ctx.fill();
+        if (!!this.pattern_brick) {
+            this.ctx.fill();
+        }
         this.ctx.stroke();
         this.ctx.restore();
     }
@@ -95,7 +113,9 @@ class TheCanvas extends React.Component {
         if (this.props.scale) {
             this.ctx.scale(this.props.scale, this.props.scale);
         }
-        this.ctx.fillStyle = '#33E';
+        if (!!this.pattern_brick) {
+            this.ctx.fillStyle = this.pattern_brick;
+        }
 
         if (!!this.props.drawObjs) {
             for (let obj of this.props.drawObjs) {
