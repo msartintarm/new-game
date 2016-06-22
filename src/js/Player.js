@@ -11,11 +11,19 @@ import { DetectCollision } from './Collision'
 // Returns function for max / min of all X or Y collision points
 let getMaxMinFn = (fn, offset) => {
     return (collisionPts) => {
-        let a = collisionPts[0].coords[offset];
+        let pt = collisionPts[0];
+        let a = pt.coords[offset];
+        let _a = null;  // terrible naming i know
+        let _pt = null; // temp storage for vars
         for (let i = 1; i < collisionPts.length; ++i) { // check each line collision
-            a = fn(a, collisionPts[i].coords[offset]);
+            _pt = collisionPts[i];
+            _a = fn(a, _pt.coords[offset]);
+            if (_a !== a) {
+                pt = _pt; // this check is done to capture the point not number alone
+                a = _a;
+            }
         }
-        return a;
+        return pt;
     };
 };
 
@@ -180,7 +188,7 @@ class Player {
             // are we falling (y positive)? if so, set to line intercept
             if (dY > 0  || (dY === 0 && moveDist[0] !== 0)) {
                 let _dY = dY;
-                let minY = getMinY(collisionPts);
+                let minY = getMinY(collisionPts).coords[1];
                 dY = Math.max(-collisionPts.length, minY - this.pos[1]);
 
                 let correctionAmt = Math.abs(Math.min(dY - _dY, 0));
@@ -198,7 +206,7 @@ class Player {
             }
             let newCollisionPts = this.getFootCollisionPoints([moveDist[0], dY]);
             if (newCollisionPts) { // could overshoot ground
-                let minY = getMinY(newCollisionPts);
+                let minY = getMinY(newCollisionPts).coords[1];
                 if (dY > minY - this.pos[1]) {
                     let _dY = dY;
                     dY = this.pos[1] - minY;
@@ -223,7 +231,7 @@ class Player {
         if (collisionPts) { // bam. hit ceiling
             // are we going up (y negative)? if so, set to line intercept
             if (dist[1] < 0 || dist[1] === 0 && dist[0] !== 0) {
-                let maxY = getMaxY(collisionPts);
+                let maxY = getMaxY(collisionPts).coords[1];
                 dist[1] = maxY - (this.pos[1] + this.head_offset_y);
             }
         }
@@ -238,18 +246,18 @@ class Player {
         let collisionPts = this.getBodyCollisionPoints(dist);
         if (collisionPts) { // fall!
             if (dist[0] > 0) { // moving right.. check right collision
-                let minX = getMinX(collisionPts);
+                let minX = getMinX(collisionPts).coords[0];
                 if (dist[0] + this.bodyCollisionLine[2] > minX) {
                     dist[0] = minX - this.bodyCollisionLine[2] - 1;
                 }
             } else if (dist[0] < 0) { // moving left .. check right collision
-                let maxX = getMaxX(collisionPts);
+                let maxX = getMaxX(collisionPts).coords[0];
                 if (dist[0] + this.bodyCollisionLine[0] < maxX) {
                     dist[0] = maxX - this.bodyCollisionLine[0] + 1;
                 }
             } else if (dist[0] === 0 && dist[1] !== 0) {
-                let minX = getMinX(collisionPts);
-                let maxX = getMaxX(collisionPts);
+                let minX = getMinX(collisionPts).coords[0];
+                let maxX = getMaxX(collisionPts).coords[0];
                 if (dist[0] + this.bodyCollisionLine[2] > minX) {
                     dist[0] = minX - this.bodyCollisionLine[2] - 1;
                 }

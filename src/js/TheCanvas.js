@@ -2,7 +2,7 @@ import { registerHandler } from './EventHandler';
 
 const DEFAULT_SIZE = 800;
 
-const BRICK_SRC = "http://www.texturemate.com/image/view/2892/_original";
+const BRICK_SRC = "http://4.bp.blogspot.com/__lKAPG3mt5k/TEYmLgadeaI/AAAAAAAAALE/iKewdsrZSwk/s640/Complex+Brick+Seamless+Texture.jpg";
 
 let warnCount = 0;
 
@@ -47,8 +47,8 @@ class TheCanvas extends React.Component {
         this.ctx = this.refs.theCanvas.getContext('2d');
         if(!image_brick) {
             image_brick = new Image();
-            image_brick.onload = () => {
-                console.log("On load yesh");
+            image_brick.onload = () => { 
+                console.log("On load yesh", BRICK_SRC);
                 this.pattern_brick = this.ctx.createPattern(image_brick, "repeat");
             };
             image_brick.src = BRICK_SRC;
