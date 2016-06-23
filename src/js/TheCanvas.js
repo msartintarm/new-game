@@ -104,6 +104,9 @@ class TheCanvas extends React.Component {
 
     _paint (lineSegments) {
 
+        // important optimization: do not draw canvases that are not being used
+        if (! this.state.show_canvas) { return; }
+
         this.ctx.fillStyle = '#F00';
         this.ctx.fillRect(0, 0, this.size, this.size);
         this.ctx.save();
@@ -138,11 +141,12 @@ class TheCanvas extends React.Component {
     }
 
     render () {
+        let aClass = this.state.show_canvas? null: 'hide_class';
         let theCanvas = (<canvas {...this._getCanvasProps()} />);
         return (
-            <div className="canvas_ container">
+            <div className="canvas_container">
                 <div className={this.button_classname}>Toggle Canvas!</div>
-                { this.state.show_canvas? theCanvas: null }
+                <canvas className={aClass} {...this._getCanvasProps()} />
             </div>
         );
     }

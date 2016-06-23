@@ -3,13 +3,13 @@ import LineSegmented from './LineSegmented';
 
 let floorFrame = [
 	[1,168,610,169,610,184,2,181,1,168],
-	[3,794,2,769,779,764,782,785,3,794],
+	[3,794,2,7,5,797,2,769,779,764,782,785,3,794],
 	[1596,1560,2,756],
 
-	[257,6,728,26,742,351,727,366,347,361,
+	[4,6,728,26,742,351,727,366,347,361,
 		346,378,773,389,762,22,1584,16,1564,
 		880,1123,969,935,939,1570,1198,1568,
-		1156,1164,998,1588,909,1552,14],
+		1156,1164,998,1588,909,1552,14,257,8,4,6],
 
 	[1606,1177,2441,546,2435,465,1660,1098,1687,
 		44,2264,47,2192,333,1870,339,1894,165,
@@ -60,10 +60,14 @@ let floorFrame = [
 
 ];
 
+let fillFrames = [true, true, true, true, false, false, false, false];
+
 class Floor {
     constructor(opts) {
     	if (!opts) opts = {};
     	opts.fillColor = true; // evetuaully could be an RGB  value or texture
+		opts.fillFrames = fillFrames;
+
 	    return new LineSegmented(opts, floorFrame);
     }
 }

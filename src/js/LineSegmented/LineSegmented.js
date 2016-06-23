@@ -46,8 +46,10 @@ class LineSegmented {
         let _nF = _opts.numFrames;
         let _sF = _opts.setToFrame;
         let _fC = _opts.fillColor;
+        let _fF = _opts.fillFrames;
 
         if (_fC) { this.fillColor = _fC; }
+        if (_fF) { this.fillFrames = _fF; }
 
         this.pos = vec2.clone(ZERO_VEC);
 
@@ -105,16 +107,21 @@ class LineSegmented {
     draw (ctx) {
         let ls = this.lineSegments;
         ctx.save();
-//        if (!!this.fillColor) { ctx.fillStyle = this.fillColor; }
+        let fill = (!!this.fillColor);
         ctx.beginPath();
+        let count = -1;
         for (let line of ls) {
             if (line.length < 2) break;
+            ++count;
             ctx.moveTo( line[0], line[1] );
             for (let i = 2; i < line.length; i += 2) {
                 ctx.lineTo( line[i], line[i+1] );
             }
+            if (!!this.fillFrames) { 
+                this.fillColor = !!this.fillFrames[count];
+            }
+            if (!!this.fillColor) { ctx.fill(); }
         }
-        if (!!this.fillColor) { ctx.fill(); }
         ctx.stroke();
         ctx.restore();
     }
