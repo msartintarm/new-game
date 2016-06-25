@@ -26,7 +26,7 @@ let registerHandler = (evName, key, theFunction) => {
 	if (!(evName in registeredHandlerMap)) {
 		eventmap[evName] = {};
 		registeredHandlerMap[evName] = 
-			(e) => { handler(e, eventmap[evName]) };
+			(e) => { handler(e, eventmap[evName]); };
 		document.addEventListener(evName, registeredHandlerMap[evName]);
 	}
 	eventmap[evName][key] = theFunction;

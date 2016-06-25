@@ -119,7 +119,7 @@ class Player {
         }
     };
 
-    moveRight = (e) => {
+    moveRight = () => {
         this.movingFlag = MOVING.RIGHT;
 
         let x = this.moveDist[0];
@@ -128,10 +128,10 @@ class Player {
         } else {
             x = Math.min(x + MOVE_LR_ACC, MOVE_LR_TOP);
         }
-        this.moveLR(x, this.moveRightFrames);
+        this.moveLR(x);
     };
 
-    moveLeft = (e) => {
+    moveLeft = () => {
         this.movingFlag = MOVING.LEFT;
 
         let x = this.moveDist[0];
@@ -140,7 +140,7 @@ class Player {
         } else {
             x = Math.max(x - MOVE_LR_ACC, -MOVE_LR_TOP)
         }
-        this.moveLR(x, this.moveLeftFrames);
+        this.moveLR(x);
     };
 
     moveLR (x) { // do things needed by both methods
@@ -374,6 +374,7 @@ class Player {
                 break;
     		default: ;
     	}
+        e.preventDefault();
     };
 
     setPositionOnKeyUp = (e) => {
@@ -381,14 +382,14 @@ class Player {
     	switch (e.keyCode) {
             case 37: // 'Left'
                 if (!!this.keydownList[39]) {
-                    this.setPositionOnKeyDown({ keyCode: 39 });
+                    registerTickEvent(MOVE, this.moveRight, 0, true);
                 } else {
                     registerTickEvent(MOVE, this.moveEnd, 0, true);
                 }
                 break;
             case 39: // 'Right'
                 if (!!this.keydownList[37]) {
-                    this.setPositionOnKeyDown({ keyCode: 37 });
+                registerTickEvent(MOVE, this.moveLeft, 0, true);
                 } else {
                     registerTickEvent(MOVE, this.moveEnd, 0, true);
                 }
