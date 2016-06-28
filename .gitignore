@@ -7,3 +7,6 @@ node_modules/*
 !node_modules/gl-matrix
 node_modules/gl-matrix/*
 !node_modules/gl-matrix/src
+
+# Wtf is this
+npm-debug.log

@@ -6,10 +6,6 @@ import EventButton from './EventButton';
 import TheCanvas from './TheCanvas';
 import DisplayArray from './DisplayArray';
 
-import ZoomController from './ZoomController';
-
-import Player from './Player';
-import Stuff from './Stuff';
 
 /* return array from event with offset relative to target */
 let getCoords = (e) => {
@@ -22,8 +18,8 @@ let getCoords = (e) => {
 /* Tells canvas what to draw */
 class DrawCanvas extends React.Component {
 
-	constructor () {
-		super();
+	constructor (props) {
+		super(props);
 
 		this.state = {
 			polygon_arr: [],
@@ -33,16 +29,6 @@ class DrawCanvas extends React.Component {
 			polygon_arr_committed: 0
 
 		};
-
-
-		this.stuff = new Stuff();
-
-
-		this.player = new Player(
-			this.stuff.getCollisionLines
-		);
-
-		this.zoom = new ZoomController(this.player.getPos());
 
 		for(let argList of [
 			["mousedown", "CANVAS", this.onCanvasMouseDown],
@@ -120,32 +106,20 @@ class DrawCanvas extends React.Component {
 
 		let polygon = this.state.polygon_arr,
 			example = this.state.example_line,
-			player = this.player.getLines(),
-			collisionLines = this.player.getCollisionLines(),
-			stuff = this.stuff.getLines();
+			player = this.props.player.getLines(),
+			collisionLines = this.props.player.getCollisionLines(),
+			stuff = this.props.stuff.getLines();
 
-		let playerPos = this.player.getPos();
-
-		this.zoom.setZoom(playerPos);
-
-		let zoom = this.zoom.getZoom();
-		let offset = this.zoom.getOffset();
-
-		vec2.negate(offset, offset);
-		vec2.scale(offset, offset, zoom);
+		let playerPos = this.props.player.getPos();
 
 		let game = [...player, ...stuff];
-		let drawObjs = [this.stuff, this.player];
 		let arrayToDraw = [ polygon, example, 
 			...player, ...stuff, ...collisionLines];
 
 		return (
-		<div className="container" >
 			<div className="canvas_real_container">
-				<TheCanvas scale={zoom}
-					offset={offset}
-					lineSegments={ game }
-					drawObjs={ drawObjs }/>
+				<TheCanvas size={ 150 }
+					lineSegments={ [ example ] } />
 				<TheCanvas size={3200} lineSegments={ arrayToDraw } />
 				<EventButton name="line drop" ref="line drop" />
 				<EventButton name="line end" ref="line end" />
@@ -160,7 +134,6 @@ class DrawCanvas extends React.Component {
 					<DisplayArray array={example} line_label="new line"/>
 				</div>
 			</div>
-		</div>
 		);
 	}
 }

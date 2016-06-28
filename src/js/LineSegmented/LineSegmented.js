@@ -28,7 +28,7 @@ let lerpLineSegments = (frame1, frame2, numFrames) => {
 
 class LineSegmented {
 
-	lerp = lerpLineSegments;
+	static lerp = lerpLineSegments;
 
     /*
         opts.numFrames: amount of frames to interpolate between
@@ -58,7 +58,7 @@ class LineSegmented {
             this.lineSegments = [...frameOrSeg];
         } else {
             this.frames = _nF?
-                this.lerp(frameOrSeg, frameEnd, _nF):
+                this.constructor.lerp(frameOrSeg, frameEnd, _nF):
                 [frameOrSeg, frameEnd];
             this.setToFrame(_sF || 0); // Load this.lineSegments
         }

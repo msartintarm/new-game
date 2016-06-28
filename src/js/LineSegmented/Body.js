@@ -2,6 +2,11 @@ import LineSegmented from './LineSegmented';
 import FootSegment from './Foot';
 import Hand from './Hand';
 
+
+
+
+
+
 class Body {
 	constructor() {
 

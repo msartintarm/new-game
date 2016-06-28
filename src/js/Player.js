@@ -210,8 +210,9 @@ class Player {
         // preserve groundspeed
         let gSpd = vec2.dot(moveDist, lineVec);
         if (Math.abs(gSpd) > 0.01) {
-            console.log("Ground speed:", gSpd);
             vec2.scale(moveDist, lineVec, gSpd);
+        } else {
+            vec2.set(moveDist, 0, 0);
         }
     }
 
@@ -242,6 +243,8 @@ class Player {
                 let minYLine = getMinY(collisionPts);
                 let minY = minYLine.coords[1];
                 this.correctionDist[1] = minY - this.pos[1];
+
+//                console.log()                
 
                 // after changing it, preserve ground speed
                 this.preserveGroundSpeed(minYLine.line, moveDist);
@@ -287,23 +290,39 @@ class Player {
         // check collision
         let collisionPts = this.getBodyCollisionPoints(dist);
         if (collisionPts) { // fall!
-            if (dist[0] > 0) { // moving right.. check right collision
+            // have to be careful here, since the character will jump wildly 
+            //  if the wrong detection is applied
+            // A couple options are:
+            // 1. Detect direction player is moving in
+            // 2. Detect whether a change would cause player to jump
+            // 3. Detect how close collision is to edges of line
+
+            if (dist[0] > 0) {
+                // check right collision.
                 let minX = getMinX(collisionPts).coords[0];
                 if (dist[0] + this.bodyCollisionLine[2] > minX) {
-                    dist[0] = minX - this.bodyCollisionLine[2] - 1;
+                    this.correctionDist[0] = minX - this.bodyCollisionLine[2] - 1;
+                    console.log("Collision moving right! From / to: ",
+                        dist[0], this.correctionDist[0]);
+                    dist[0] = 0;
                 }
+
             } else if (dist[0] < 0) { // moving left .. check right collision
                 let maxX = getMaxX(collisionPts).coords[0];
                 if (dist[0] + this.bodyCollisionLine[0] < maxX) {
-                    dist[0] = maxX - this.bodyCollisionLine[0] + 1;
-                }
-            } else if (dist[0] === 0 && dist[1] !== 0) {
-                let minX = getMinX(collisionPts).coords[0];
-                let maxX = getMaxX(collisionPts).coords[0];
-                if (dist[0] + this.bodyCollisionLine[2] > minX) {
-                    dist[0] = minX - this.bodyCollisionLine[2] - 1;
+                    this.correctionDist[0] = maxX - this.bodyCollisionLine[0] + 1;
+                    console.log("Collision moving left! From / to: ",
+                        dist[0], this.correctionDist[0]);
+                    dist[0] = 0;
                 }
             } 
+            //else if (dist[0] === 0 && dist[1] !== 0) {
+            //    let minX = getMinX(collisionPts).coords[0];
+            //    let maxX = getMaxX(collisionPts).coords[0];
+            //    if (dist[0] + this.bodyCollisionLine[2] > minX) {
+            //        dist[0] = minX - this.bodyCollisionLine[2] - 1;
+            //    }
+//            } 
         }
         return dist;
     }
