@@ -156,7 +156,7 @@ class Player {
         this.moveDist = this.checkFalling(this.moveDist);
         this.moveDist = this.checkCeiling(this.moveDist);
         this.moveDist = this.checkEscaped(this.moveDist); // lol
-        if (this.correctionDist[0] !== 0 && this.correctionDist[1] !== 0) {
+        if (this.correctionDist[0] !== 0 || this.correctionDist[1] !== 0) {
             this.translate(this.correctionDist);
             vec2.set(this.correctionDist, 0, 0);
         }
@@ -297,24 +297,29 @@ class Player {
             // 2. Detect whether a change would cause player to jump
             // 3. Detect how close collision is to edges of line
 
-            if (dist[0] > 0) {
+            //            max   min
+            //            ----M----
+
+            let minX = getMinX(collisionPts).coords[0];
+            let maxX = getMaxX(collisionPts).coords[0];
+            let midpoint = (this.bodyCollisionLine[2] / 2 +
+                this.bodyCollisionLine[0] / 2) + dist[0];
+            if (midpoint < minX && minX < this.bodyCollisionLine[2] + dist[0]) {
                 // check right collision.
-                let minX = getMinX(collisionPts).coords[0];
-                if (dist[0] + this.bodyCollisionLine[2] > minX) {
+//                if (dist[0] + this.bodyCollisionLine[2] > minX) {
                     this.correctionDist[0] = minX - this.bodyCollisionLine[2] - 1;
                     console.log("Collision moving right! From / to: ",
                         dist[0], this.correctionDist[0]);
-                    dist[0] = 0;
-                }
-
-            } else if (dist[0] < 0) { // moving left .. check right collision
-                let maxX = getMaxX(collisionPts).coords[0];
-                if (dist[0] + this.bodyCollisionLine[0] < maxX) {
+                    dist[0] = -1;
+//                }
+//            if (midpoint < minX && minX < this.bodyCollisionLine[2] + dist[0]) {
+            } else if (maxX < midpoint && maxX > this.bodyCollisionLine[0] + dist[0]) { // moving left .. check right collision
+ //               if (dist[0] + this.bodyCollisionLine[0] < maxX) {
                     this.correctionDist[0] = maxX - this.bodyCollisionLine[0] + 1;
                     console.log("Collision moving left! From / to: ",
                         dist[0], this.correctionDist[0]);
-                    dist[0] = 0;
-                }
+                    dist[0] = 1;
+  //              }
             } 
             //else if (dist[0] === 0 && dist[1] !== 0) {
             //    let minX = getMinX(collisionPts).coords[0];
