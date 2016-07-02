@@ -11,19 +11,22 @@ let canvasNum = 0;
 
 let image_brick = null;
 
-
 /*
-    Canvas class that binds passed-down line segments with DOM canvas
-    Supports line segments and mouse / touch events as props
+    Base-level canvas class that binds passed-down line segments with DOM canvas
+    Also has a toggle button to show / hide canvas
 
 */
 class TheCanvas extends React.Component { 
 
+    createBrickPattern = () => {
+        this.pattern_brick = this.ctx.createPattern(image_brick, "repeat");
+    };
+
     constructor(opts) {
         super(opts);
-        this.size = opts.size || DEFAULT_SIZE;
 
         this.button_classname = "toggle_canvas" + canvasNum;
+
 
         this.state = { show_canvas: true };
         canvasNum += 1;
@@ -32,28 +35,30 @@ class TheCanvas extends React.Component {
             this.toggleCanvasOnMouseDown);
     }
 
-    defaultProps = {
-        // format array of array of 2D array: 
-        // [ [[10, 20], [20, 30], [30, 40]], [[10, 30], [20, 30]] ]
+    static defaultProps = {
+
         lineSegments: [],
-        // format: array of 2D array (same as lineSegments[0])
-        // [[10, 20], [20, 30], [30, 40]]
-        lineSegment: [],
-        scale: 1,
-        offset: [0,0]
+        // Array of 2D arrays -- see this._isLineSegment check.
+        // The canvas draws them directly
+
+        drawObjs: [],
+        // objects with .draw methods can be passed in instead.
+        // They are passed the canvas context
+        // These two methods prob have very different perf under load
+
+        scale: 1,            // zoom level of canvas
+        size: DEFAULT_SIZE,  // size of canvas itself (in pixels)
+        offset: [0,0]        // offset of canvas viewport. Independent of scale
     };
 
     componentDidMount () {
         this.ctx = this.refs.theCanvas.getContext('2d');
         if(!image_brick) {
             image_brick = new Image();
-            image_brick.onload = () => { 
-                console.log("On load yesh", BRICK_SRC);
-                this.pattern_brick = this.ctx.createPattern(image_brick, "repeat");
-            };
+            image_brick.onload = this.createBrickPattern;
             image_brick.src = BRICK_SRC;
         } else {
-            this.pattern_brick = this.ctx.createPattern(image_brick, "repeat");
+            this.createBrickPattern();
         }
         this._paint(this.props.lineSegments);
     }
@@ -108,12 +113,12 @@ class TheCanvas extends React.Component {
         if (! this.state.show_canvas) { return; }
 
         this.ctx.fillStyle = '#F00';
-        this.ctx.fillRect(0, 0, this.size, this.size);
+        this.ctx.fillRect(0, 0, this.props.size, this.props.size);
         this.ctx.save();
         if (this.props.offset) { 
             this.ctx.translate(...this.props.offset);
         }
-        if (this.props.scale) {
+        if (!!this.props.scale && this.props.scale != 1) {
             this.ctx.scale(this.props.scale, this.props.scale);
         }
         if (!!this.pattern_brick) {
@@ -135,18 +140,17 @@ class TheCanvas extends React.Component {
     _getCanvasProps () {
         return {
             ref: "theCanvas",
-            width: this.size,
-            height: this.size
+            width: this.props.size,
+            height: this.props.size,
+            className: (this.state.show_canvas? '': 'hide_class')
         };
     }
 
     render () {
-        let aClass = this.state.show_canvas? null: 'hide_class';
-        let theCanvas = (<canvas {...this._getCanvasProps()} />);
         return (
             <div className="canvas_container">
                 <div className={this.button_classname}>Toggle Canvas!</div>
-                <canvas className={aClass} {...this._getCanvasProps()} />
+                <canvas {...this._getCanvasProps()} />
             </div>
         );
     }

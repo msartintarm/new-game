@@ -7,11 +7,6 @@ import TheCanvas from './TheCanvas';
 /* Tells canvas what to draw */
 class GameCanvas extends React.Component {
 
-	constructor (props) {
-		super(props);
-
-	}
-
 	render () {
 
 		this.props.zoom.setZoom(
