@@ -4,8 +4,8 @@ import { registerHandler, registerTickEvent,
     checkTickEvent, deregisterTickEvent } from './EventHandler';
 
 import Body from './LineSegmented/Body';
+import SpeechBubble from './SpeechBubble';
 
-import Stuff from './Stuff'
 import { DetectCollision } from './Collision'
 
 // Returns function for max / min of all X or Y collision points
@@ -13,13 +13,12 @@ let getMaxMinFn = (fn, offset) => {
     return (collisionPts) => {
         let pt = collisionPts[0];
         let a = pt.coords[offset];
-        let _a = null;  // terrible naming i know
-        let _pt = null; // temp storage for vars
+        let _a, _pt; // temp storage for vars
         for (let i = 1; i < collisionPts.length; ++i) { // check each line collision
             _pt = collisionPts[i];
             _a = fn(a, _pt.coords[offset]);
-            if (_a !== a) {
-                pt = _pt; // this check is done to capture the point not number alone
+            if (_a !== a) {  // this number is a different max / min
+                pt = _pt;    // Capture the point of collision, not number alone
                 a = _a;
             }
         }
@@ -63,12 +62,18 @@ class Player {
     	this.pos = [99,165];
         this.correctionDist = vec2.create();
         this.body = new Body();
+
+        this.speech_bubble = new SpeechBubble({
+            text: "Oh hey there pal. \n Wow, I can move using \n the arrow keys!"
+        });
+
         this.jumpFlag = false;
         this.secondJumpFlag = false;
+
         this.movingFlag = MOVING.NOT;
+
     	this.footFrame = 0;
         this.footMoveFrames = 15;
-        this.moveRightFrames = 15;
     	this.moveEndFrames = 4;
 
         this.collisionLineList = []; // stores registered collision lines
@@ -379,6 +384,7 @@ class Player {
         }
         vec2.add(this.pos, this.pos, vec);
         this.body.translate(vec);
+        this.speech_bubble.translate(vec);
         return this;
     }
 
@@ -431,6 +437,7 @@ class Player {
 
     draw (ctx) {
         this.body.draw(ctx);
+        this.speech_bubble.draw(ctx);
     }
 
 }

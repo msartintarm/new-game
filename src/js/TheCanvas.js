@@ -140,7 +140,8 @@ class TheCanvas extends React.Component {
             ref: "theCanvas",
             width: this.props.size,
             height: this.props.size,
-            className: (this.props.show_canvas? '': 'hide_class')
+            className: (this.props.show_canvas?
+                'the_canvas': 'the_hidden_canvas')
         };
     }
 

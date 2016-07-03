@@ -7,9 +7,6 @@ import Background from './Background';
 
 const GAME_SIZE = 800;
 
-let canvasNum = 0;
-
-
 /* Tells canvas what to draw */
 class GameCanvas extends React.Component {
 
@@ -18,10 +15,6 @@ class GameCanvas extends React.Component {
 		this.background = new Background({ size: GAME_SIZE });
 
 		this.state = { show_game_canvas: false };
-        this.button_classname = "zzz toggle_canvas" + canvasNum;
-        canvasNum += 1;
-        registerHandler('mousedown', this.button_classname,
-            this.toggleGameCanvasOnMouseDown);
         registerHandler('mousedown', "play_focuser_big",
             this.focusOnPlayArea);
         registerHandler('mousedown', "play_focuser_small",
@@ -37,8 +30,11 @@ class GameCanvas extends React.Component {
 
     focusOnPlayArea = (e) => {
     	e.preventDefault();
-	    let newState = { show_game_canvas: true };
-        this.setState(newState, () => { this.refs.play_area.focus(); });
+	    let newState = { show_game_canvas: (!this.state.show_game_canvas) };
+        this.setState(newState, (
+        	newState.show_game_canvas?
+        	() => { this.refs.play_area.focus(); }: null
+    	));
     };
 
 	render () {
@@ -55,20 +51,26 @@ class GameCanvas extends React.Component {
 
 		let containerAttrs = {
 			className: "canvas_real_container",
-			width: (GAME_SIZE + 100),
-			height: (GAME_SIZE + 100)  };
+			style: {
+				width: GAME_SIZE + 4,
+				height: GAME_SIZE + 4,
+				position: "relative"
+			}
+		};
 		let commonCanvasAttrs = {
 			show_canvas: this.state.show_game_canvas,
 			positionAbsolute: true,
 			scale: zoom,
 			size: GAME_SIZE,
-			offset: offset  };
+			offset: offset
+		};
 		let dynamicCanvasAttrs = {
-				drawObjs: [ this.props.player ]  };
+			drawObjs: [ this.props.player ]
+		};
 		let staticCanvasAttrs = {
-				drawObjs: [ this.props.stuff ],
-				backgroundObj: this.background };
-
+			drawObjs: [ this.props.stuff ],
+			backgroundObj: this.background
+		};
 		let playFocuserAttrs = {
 			className: (this.state.show_game_canvas?
 				"play_focuser_small": "play_focuser_big"
@@ -77,15 +79,12 @@ class GameCanvas extends React.Component {
 			className: "play_area", ref: "play_area"
 		};
 
-		return (<div {...containerAttrs}>
+		return (
+<div {...containerAttrs}>
 	<TheCanvas {...commonCanvasAttrs} {...staticCanvasAttrs} />
 	<TheCanvas {...commonCanvasAttrs} {...dynamicCanvasAttrs} />
 	<div {...playFocuserAttrs}>
-		Play!
 		<textarea {...playAreaAttrs}></textarea>
-	</div>
-    <div className={this.button_classname}>
-    	Toggle Canvas!
 	</div>
 </div>
 		);
