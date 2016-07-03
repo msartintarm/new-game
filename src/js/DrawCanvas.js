@@ -117,17 +117,13 @@ class DrawCanvas extends React.Component {
 			...player, ...stuff, ...collisionLines];
 
 		return (
-			<div className="canvas_real_container">
+			<div className="canvas_real_container" style={ {display: 'none'} }> 
 				<TheCanvas size={ 150 }
 					lineSegments={ [ example ] } />
 				<TheCanvas size={3200} lineSegments={ arrayToDraw } />
 				<EventButton name="line drop" ref="line drop" />
 				<EventButton name="line end" ref="line end" />
 				<EventButton name="line loop" ref="line loop" />
-				<div>
-					Play!
-					<textarea className="play_area"></textarea>
-				</div>
 				<div>
 					<DisplayArray array={[playerPos]} line_label="Playuh"/>
 					<DisplayArray array={polygon} line_label="polygon"/>

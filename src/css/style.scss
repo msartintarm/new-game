@@ -44,3 +44,11 @@ div {
 .hide_class {
 	display: none;
 }
+
+.absolute_class, .zzz, .play_focuser {
+	position: absolute;
+	top: 0;
+}
+.absolute_class { left: 0; }
+.zzz { right: 0; }
+.play_focuser { right: -50px; }
