@@ -43,12 +43,49 @@ div {
 
 .hide_class {
 	display: none;
+	opacity: 0;
 }
 
-.absolute_class, .zzz, .play_focuser {
+.absolute_class, .zzz {
 	position: absolute;
 	top: 0;
 }
-.absolute_class { left: 0; }
-.zzz { right: 0; }
-.play_focuser { right: -50px; }
+.absolute_class {
+	left: 0;
+}
+.zzz {
+	right: 0;
+}
+
+.play_focuser_big, .play_focuser_small {
+	transition:
+		color 1.2s linear,
+		background-color 1.2s linear,
+		top 0.9s ease-out,
+		right 1.2s ease-in,
+		font-size 0.6s ease-out;
+	position: absolute;
+	overflow: hidden;
+}
+.play_focuser_small {
+	top: 0;
+	right: 0;
+	font-size: 0.3rem;
+	color: rgb(140,255,0);
+	background-color: rgb(0,0,255);
+}
+.play_focuser_big { 
+	top: 40%;
+	right: 50%;
+	font-size: 2rem;
+	color: rgb(255,255,255);
+	background-color: rgb(0,0,0);
+}
+
+.play_area {
+	tabindex: 0;
+	position: absolute;
+	top: 0;
+	left: -3000;
+	opacity: 0;
+}

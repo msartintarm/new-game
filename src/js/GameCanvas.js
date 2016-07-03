@@ -22,7 +22,9 @@ class GameCanvas extends React.Component {
         canvasNum += 1;
         registerHandler('mousedown', this.button_classname,
             this.toggleGameCanvasOnMouseDown);
-        registerHandler('mousedown', "play_focuser",
+        registerHandler('mousedown', "play_focuser_big",
+            this.focusOnPlayArea);
+        registerHandler('mousedown', "play_focuser_small",
             this.focusOnPlayArea);
 	};
 
@@ -35,7 +37,8 @@ class GameCanvas extends React.Component {
 
     focusOnPlayArea = (e) => {
     	e.preventDefault();
-	    this.refs.play_area.focus();
+	    let newState = { show_game_canvas: true };
+        this.setState(newState, () => { this.refs.play_area.focus(); });
     };
 
 	render () {
@@ -64,14 +67,22 @@ class GameCanvas extends React.Component {
 				drawObjs: [ this.props.player ]  };
 		let staticCanvasAttrs = {
 				drawObjs: [ this.props.stuff ],
-				backgroundObj: this.background  };
+				backgroundObj: this.background };
+
+		let playFocuserAttrs = {
+			className: (this.state.show_game_canvas?
+				"play_focuser_small": "play_focuser_big"
+		)};
+		let playAreaAttrs = {
+			className: "play_area", ref: "play_area"
+		};
 
 		return (<div {...containerAttrs}>
 	<TheCanvas {...commonCanvasAttrs} {...staticCanvasAttrs} />
 	<TheCanvas {...commonCanvasAttrs} {...dynamicCanvasAttrs} />
-	<div className="play_focuser">Play!
-		<textarea className="play_area" ref="play_area">
-		</textarea>
+	<div {...playFocuserAttrs}>
+		Play!
+		<textarea {...playAreaAttrs}></textarea>
 	</div>
     <div className={this.button_classname}>
     	Toggle Canvas!

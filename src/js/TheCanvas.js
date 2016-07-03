@@ -106,7 +106,7 @@ class TheCanvas extends React.Component {
             this.ctx.translate(...this.props.offset);
         }
         if (!!this.props.scale && this.props.scale != 1) {
-            this.ctx.lineWidth = 2 / this.props.scale;
+            this.ctx.lineWidth = 1 / this.props.scale;
             this.ctx.scale(this.props.scale, this.props.scale);
         }
         if (!!this.pattern_brick &&
