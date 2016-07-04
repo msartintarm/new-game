@@ -30,7 +30,8 @@ let DetectCollision = (theLine, theSegs) => {
 			if (res) {
 				resArr.push({
 					coords: [...res],
-					line: [aX, aY, bX, bY]
+					line: [aX, aY, bX, bY],
+					srcLine: [...theLine]
 				});
 			}
         }

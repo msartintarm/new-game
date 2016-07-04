@@ -39,20 +39,20 @@ class App extends React.Component {
 			player: this.player,
 			stuff: this.stuff,
 			zoom: this.zoom,
-			frameNum: this.state.frameNum // change on tick
 		};		
 
-		let hideProp = { style: { display: "none" } };
-		let gameHideProp = this.showGame? null: hideProp;
-		let drawHideProp = this.showDraw? null: hideProp;
+		let game_canvas = this.showGame?
+			<GameCanvas {...props} />: null;
+		let draw_canvas = this.showDraw?
+			<DrawCanvas {...props} />: null;
 
 		return (
 <div>
-	<div className="container" {...gameHideProp}>
-		<GameCanvas {...props} />
+	<div className="container">
+		{game_canvas}
 	</div>
-	<div className="container" {...drawHideProp}>
-		<DrawCanvas {...props} />
+	<div className="container">
+		{draw_canvas}
 	</div>
 </div>
 		);

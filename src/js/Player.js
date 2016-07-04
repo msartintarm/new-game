@@ -245,13 +245,17 @@ class Player {
             if (!this.onGround) { this.onGround = true; }
 
             // are we falling (y positive)? if so, set to line intercept
-            if (moveDist[1] > 0  || (moveDist[1] === 0 && moveDist[0] !== 0)) {
+//            if (moveDist[1] > 0  || (moveDist[1] === 0 && moveDist[0] !== 0)) {
+            if (moveDist[1] !== 0 || moveDist[0] !== 0) {
                 let minYLine = getMinY(collisionPts);
                 let minY = minYLine.coords[1];
-                this.correctionDist[1] = minY - this.pos[1];
+  //              let a = this.correctionDist[0];
 
-//                console.log()                
+                let thePos = [minYLine.srcLine[2], minYLine.srcLine[3]];
 
+                vec2.sub(this.correctionDist, minYLine.coords, thePos);
+//                this.correctionDist[0] = a;
+//                this.correctionDist[1] = minY - this.pos[1];
                 // after changing it, preserve ground speed
                 this.preserveGroundSpeed(minYLine.line, moveDist);
             }
@@ -282,8 +286,14 @@ class Player {
         if (collisionPts) { // bam. hit ceiling
             // are we going up (y negative)? if so, set to line intercept
             if (dist[1] < 0 || dist[1] === 0 && dist[0] !== 0) {
-                let maxY = getMaxY(collisionPts).coords[1];
-                dist[1] = maxY - (this.pos[1] + this.head_offset_y);
+                let maxYLine = getMaxY(collisionPts);
+                let maxY = maxYLine.coords[1];
+//                this.correctionDist[1] = this.pos[1] - maxY;
+                this.correctionDist[1] = maxY - (this.pos[1] + this.head_offset_y);
+                // after changing it, preserve ground speed
+                this.preserveGroundSpeed(maxYLine.line, dist);
+//                let maxY = getMaxY(collisionPts).coords[1];
+//                dist[1] = maxY - (this.pos[1] + this.head_offset_y);
             }
         }
         return dist;

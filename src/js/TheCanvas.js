@@ -1,6 +1,6 @@
 const DEFAULT_SIZE = 800;
 
-const BRICK_SRC = "http://4.bp.blogspot.com/__lKAPG3mt5k/TEYmLgadeaI/AAAAAAAAALE/iKewdsrZSwk/s640/Complex+Brick+Seamless+Texture.jpg";
+const BRICK_SRC = "img/brick.jpg";
 
 let warnCount = 0;
 

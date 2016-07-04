@@ -6,6 +6,7 @@ body {
 
 div {
 	box-sizing: border-box;
+	margin: auto;
 }
 
 .canvas_real_container > div,
@@ -46,7 +47,7 @@ filter: blur(0px);
 		filter 3s cubic-bezier(.02,.58,.5,.97),
 		max-height 0.75s linear;
 	opacity: 1;
-	max-height: 2000px;
+	max-height: 5000px;
 }
 
 .the_hidden_canvas {

@@ -12,6 +12,7 @@ let getCoords = (e) => {
 	let t = e.target;
 	let x = e.pageX - t.offsetLeft;
 	let y = e.pageY - t.offsetTop;
+	console.log(JSON.stringify([x, y]));	
 	return [x, y];
 };
 
@@ -26,8 +27,8 @@ class DrawCanvas extends React.Component {
 			polygon_arr_text: 'no coords bro',
 			example_line: [],
 			example_line_text: 'no coords bro',
-			polygon_arr_committed: 0
-
+			polygon_arr_committed: 0,
+			offset: [0,0]
 		};
 
 		for(let argList of [
@@ -60,6 +61,8 @@ class DrawCanvas extends React.Component {
 		var ll = this.refs['line loop'].key_val;
 		var ld = this.refs['line drop'].key_val;
 
+		let offs = [...this.state.offset];
+
 		if (e.keyCode === le) {
 			// Copy entry from example line to end of latest segment
 			newArr.push(this.state.example_line[2]);
@@ -68,6 +71,14 @@ class DrawCanvas extends React.Component {
 			newArr.push([...this.state.example_line[1]]);
 			newArr.push([...newArr[1][0]]);
 		} else if (e.keyCode === ld) { 
+		} else if (e.keyCode === 37) {
+			offs[0] -= 800;
+		} else if (e.keyCode === 38) {
+			offs[1] -= 800;
+		} else if (e.keyCode === 37) {
+			offs[0] += 800;
+		} else if (e.keyCode === 37) {
+			offs[1] += 800;
 		} else {
 			return;
 		}
@@ -77,7 +88,8 @@ class DrawCanvas extends React.Component {
 			polygon_arr_text: JSON.stringify(newArr),
 			example_line: [],
 			example_line_text: 'no coords bro',
-			polygon_arr_committed: newArr.length
+			polygon_arr_committed: newArr.length,
+			offset: offs
 		};
 		this.setState(newState);
 	}
@@ -112,19 +124,26 @@ class DrawCanvas extends React.Component {
 
 		let playerPos = this.props.player.getPos();
 
-		let arrayToDraw = [ polygon, example, 
-			...player, ...stuff, ...collisionLines];
+		let arrayToDraw = [
+			polygon, example, ...player, ...stuff, ...collisionLines];
 
 
 
 		return (
-			<div className="canvas_real_container" style={{backgroundColor: "red"}} >
-				<TheCanvas size={ 150 }
-					lineSegments={ [ example ] } />
-				<TheCanvas size={3200} lineSegments={ arrayToDraw } />
-				<EventButton name="line drop" ref="line drop" />
-				<EventButton name="line end" ref="line end" />
-				<EventButton name="line loop" ref="line loop" />
+			<div className="canvas_real_container" 
+				style={{backgroundColor: "red"}} >
+				<TheCanvas
+					size={3200}
+					offset={ this.state.offset }
+					lineSegments={ arrayToDraw } />
+				<EventButton
+					name="line drop"
+					ref="line drop" />
+				<EventButton
+					name="line end" ref="line end" />
+				<EventButton
+					name="line loop"
+					ref="line loop" />
 				<div>
 					<DisplayArray array={[playerPos]} line_label="Playuh"/>
 					<DisplayArray array={polygon} line_label="polygon"/>
