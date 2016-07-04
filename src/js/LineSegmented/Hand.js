@@ -22,4 +22,4 @@ class Hand {
     }
 }
 
-export default Hand
+export default Hand;

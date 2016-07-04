@@ -28,12 +28,12 @@ let join = (thingA, thingB) => {
 class Rope { 
     constructor(opts, thingA, thingB) {
     	opts.translate = [-682, -256];
-        return new LineSegmented(
+        return (new LineSegmented(
 			// two knots and a connector
         	opts,
         	[..._theKnot, ..._theKnot],
         	[[0,0]]
-    	]).join(thingA, thingB);
+    	)).join(thingA, thingB);
     }
 
     join = join;
@@ -57,4 +57,4 @@ class Rope {
 
 }
 
-export default Rope
+export default Rope;

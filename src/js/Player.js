@@ -244,18 +244,10 @@ class Player {
             if (!!this.secondJumpFlag) { this.secondJumpFlag = false; }
             if (!this.onGround) { this.onGround = true; }
 
-            // are we falling (y positive)? if so, set to line intercept
-//            if (moveDist[1] > 0  || (moveDist[1] === 0 && moveDist[0] !== 0)) {
             if (moveDist[1] !== 0 || moveDist[0] !== 0) {
                 let minYLine = getMinY(collisionPts);
-                let minY = minYLine.coords[1];
-  //              let a = this.correctionDist[0];
-
                 let thePos = [minYLine.srcLine[2], minYLine.srcLine[3]];
-
                 vec2.sub(this.correctionDist, minYLine.coords, thePos);
-//                this.correctionDist[0] = a;
-//                this.correctionDist[1] = minY - this.pos[1];
                 // after changing it, preserve ground speed
                 this.preserveGroundSpeed(minYLine.line, moveDist);
             }

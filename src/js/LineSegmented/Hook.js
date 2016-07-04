@@ -14,4 +14,4 @@ class Hook {
     }
 } 
 
-export default Hook
+export default Hook;

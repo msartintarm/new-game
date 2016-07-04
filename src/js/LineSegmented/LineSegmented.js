@@ -127,4 +127,4 @@ class LineSegmented {
 
 }
 
-export default LineSegmented
+export default LineSegmented;

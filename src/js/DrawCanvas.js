@@ -7,15 +7,6 @@ import TheCanvas from './TheCanvas';
 import DisplayArray from './DisplayArray';
 
 
-/* return array from event with offset relative to target */
-let getCoords = (e) => {
-	let t = e.target;
-	let x = e.pageX - t.offsetLeft;
-	let y = e.pageY - t.offsetTop;
-	console.log(JSON.stringify([x, y]));	
-	return [x, y];
-};
-
 /* Tells canvas what to draw */
 class DrawCanvas extends React.Component {
 
@@ -40,9 +31,18 @@ class DrawCanvas extends React.Component {
 		]) { registerHandler(...argList); }
 	}
 
+	/* return array from event with offset relative to target */
+	getCoords (e) {
+		let t = e.target;
+		let x = e.pageX - t.offsetLeft - this.state.offset[0];
+		let y = e.pageY - t.offsetTop - this.state.offset[1];
+		console.log(JSON.stringify([x, y]));	
+		return [x, y];
+	}
+
 	/* Update polygon array with point from latest canvas click. */
 	onCanvasMouseDown = (e) => { // ES2016 auto bind syntax
-		let newArr = [...this.state.polygon_arr, ...getCoords(e)]; // make copy
+		let newArr = [...this.state.polygon_arr, ...this.getCoords(e)]; // make copy
 		let newState = {
 			polygon_arr: newArr,
 			polygon_arr_text: JSON.stringify(newArr)
@@ -53,6 +53,7 @@ class DrawCanvas extends React.Component {
 	/* Cut off this line. Only for a given key and if canvas was last clicked
 		Takes it directly from last draw of example line */
 	onCanvasKeyDown = (e) => { // ES2016 auto bind syntax
+		e.preventDefault();
 		if (this.state.example_line.length < 2) { return; }
 
 		let newArr = [...this.state.polygon_arr]; // add entry
@@ -75,9 +76,9 @@ class DrawCanvas extends React.Component {
 			offs[0] -= 800;
 		} else if (e.keyCode === 38) {
 			offs[1] -= 800;
-		} else if (e.keyCode === 37) {
+		} else if (e.keyCode === 39) {
 			offs[0] += 800;
-		} else if (e.keyCode === 37) {
+		} else if (e.keyCode === 40) {
 			offs[1] += 800;
 		} else {
 			return;
@@ -101,7 +102,7 @@ class DrawCanvas extends React.Component {
 		let newArr = [
 			this.state.polygon_arr[len - 2], // copy last coord in line
 			this.state.polygon_arr[len - 1], // copy last coord in line
-			...getCoords(e)
+			...this.getCoords(e)
 		];
 		let newState = {
 			example_line: newArr,
