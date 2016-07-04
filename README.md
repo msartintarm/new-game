@@ -3,21 +3,16 @@ The new game.
 
 # Dev Env Setup
 1. Install Git Bash. 
-  - This is a shell that uses the Bash language and also has a lot of Unix command line programs.
-  - It's used in this project so this program also would work on Linux / Mac.
-2. Generate a SSH key for your machine + GitHub.
-  - Otherwise you'd have to check out using HTTPS and authenticate each push.
+2. Install ConEmu and configure it to use Git Bash: https://conemu.github.io/
+3. Generate a SSH key for your machine + GitHub.
   - Follow instructions here: https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
   - Make sure the SSH key is added in your Github account (link on bottom of page).
-3. Clone this repo using SSH: `git clone git@github.com:msartintarm/new-game.git game-dir`
-  - Replace game-dir with your chosen directory
+3. Clone this repo: `git clone git@github.com:msartintarm/new-game.git game-dir`
 4. Change into the dir: `cd game-dir`
 5. Make sure you have a couple dependencies installed:
-  - npm
-    - version should not matter but mine is v2.5.3
+  - npm + node
     - https://nodejs.org/download/release/v6.2.2/
-    - npm comes with node
-    - `npm -v` needs to return a version number after install -- if not you need to add the NPM binary directory to your PATH.
+    - `npm -v` needs to return a version number after install -- directory should be in your PATH.
   - Python v2 or v3
     - Honestly the only thing Python does here is serve as a webserver. PHP would work equally well
 
@@ -25,24 +20,21 @@ The new game.
 - `make install`
   - This makes NPM install some libraries [See Description Of Libraries]
 
-# Build + Run Stuff
-- `make serve`
-  - The Makefile magically knows what's changed since the last build
-- If Python2, you'll get an error -- use `make serve2`
+# Build + Run
+- `make serve -j`
+  - The Makefile only builds source files that have changed since the last build
+  - `-j` uses multiple cores
+- To run server with Python 2-, use `make serve2`
 - A webserver will start on http://localhost:3000
 
 # Play Game
-- open on your browser http://localhost:3000
-- Toggle the bottom Canvas
-- Play the game by clicking on the textarea field near 'Play'
-  - Keyboard input is only accepted while focusing on tha telement
-  - Use the left, right, and up arrow keys
-- Draw stuff on the bottom canvas by clicking on it
+- http://localhost:3000 to play game
+- http://localhost:3000#draw to draw on canvas
   - The lines you draw show up on the page as coordinates
   - You can copy + paste the coordinates into the source files
 
 # Description Of Libraries
-- The sole purpose of these libraries are to let us write in ES6
+- Most of these libraries are to let us write in ES6
 - Except for one library `vec2` which is used as a math tool
 
 ### ES2015

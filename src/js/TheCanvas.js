@@ -38,6 +38,8 @@ class TheCanvas extends React.Component {
         show_canvas: true    // is canvas shown?
     };
 
+    static CLASS = "the_canvas";
+
     componentDidMount () {
         this.ctx = this.refs.theCanvas.getContext('2d');
         if(!image_brick) {
@@ -114,22 +116,17 @@ class TheCanvas extends React.Component {
             this.ctx.fillStyle = this.pattern_brick;
         }
 
-        if (!!this.props.drawObjs) {
-            for (let obj of this.props.drawObjs) {
-                obj.draw(this.ctx);
-            }
-        } else {
-            for (let i = 0; i < lineSegments.length; ++i) {
-                this._paintLineSegment(lineSegments[i]);
-            }
+        for (let obj of this.props.drawObjs) {
+            obj.draw(this.ctx);
+        }
+        for (let i = 0; i < lineSegments.length; ++i) {
+            this._paintLineSegment(lineSegments[i]);
         }
         this.ctx.restore();
     }
 
     _getContainerProps () {
         return {
-            width: this.props.size,
-            height: this.props.size,
             className: (this.props.positionAbsolute?
                 'absolute_class canvas_container': 'canvas_container')
         };
@@ -141,7 +138,7 @@ class TheCanvas extends React.Component {
             width: this.props.size,
             height: this.props.size,
             className: (this.props.show_canvas?
-                'the_canvas': 'the_hidden_canvas')
+                TheCanvas.CLASS: 'the_hidden_canvas')
         };
     }
 

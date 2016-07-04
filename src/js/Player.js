@@ -67,6 +67,7 @@ class Player {
             text: "Oh hey there pal. \n Wow, I can move using \n the arrow keys!"
         });
 
+
         this.jumpFlag = false;
         this.secondJumpFlag = false;
 
@@ -363,6 +364,7 @@ class Player {
         if (newX === 0 ) {
             this.footFrame = 0;
             deregisterTickEvent(MOVE);
+            this.speech_bubble.hide();
         } else if (newX > 0 ) {
             newX = Math.max(0, newX - 0.5);
         } else { // newX < 0

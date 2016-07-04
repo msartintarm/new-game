@@ -6,6 +6,8 @@ import DrawCanvas from './DrawCanvas';
 import GameCanvas from './GameCanvas';
 import { onTick } from './EventHandler';
 
+const drawHash = window.location.hash.includes("draw");
+
 class App extends React.Component {
 
 	constructor () {
@@ -18,13 +20,13 @@ class App extends React.Component {
 		);
 		this.zoom = new ZoomController(this.player.getPos());
 
-
+		this.showGame = !drawHash;
+		this.showDraw = drawHash;
 	}
 
 	tick = () => {
-		this.setState({ frameNum: this.state.frameNum + 1 });
 		requestAnimationFrame(this.tick);
-		onTick();
+		this.setState({ frameNum: this.state.frameNum + 1 }, onTick);
 	};
 
 	componentDidMount () {
@@ -40,11 +42,19 @@ class App extends React.Component {
 			frameNum: this.state.frameNum // change on tick
 		};		
 
+		let hideProp = { style: { display: "none" } };
+		let gameHideProp = this.showGame? null: hideProp;
+		let drawHideProp = this.showDraw? null: hideProp;
+
 		return (
-			<div className="container">
-				<GameCanvas {...props} />
-				<DrawCanvas {...props} />
-			</div>
+<div>
+	<div className="container" {...gameHideProp}>
+		<GameCanvas {...props} />
+	</div>
+	<div className="container" {...drawHideProp}>
+		<DrawCanvas {...props} />
+	</div>
+</div>
 		);
 	}
 }

@@ -31,11 +31,11 @@ class DrawCanvas extends React.Component {
 		};
 
 		for(let argList of [
-			["mousedown", "CANVAS", this.onCanvasMouseDown],
-			["touchdown", "CANVAS", this.onCanvasTouchDown],
+			["mousedown", TheCanvas.CLASS, this.onCanvasMouseDown],
+			["touchdown", TheCanvas.CLASS, this.onCanvasTouchDown],
 			["keydown", "default", this.onCanvasKeyDown],
-			["mouseover", "CANVAS", this.onCanvasMouseOver],
-			["mousemove", "CANVAS", this.onCanvasMouseMove]
+			["mouseover", TheCanvas.CLASS, this.onCanvasMouseOver],
+			["mousemove", TheCanvas.CLASS, this.onCanvasMouseMove]
 		]) { registerHandler(...argList); }
 	}
 
@@ -112,12 +112,13 @@ class DrawCanvas extends React.Component {
 
 		let playerPos = this.props.player.getPos();
 
-		let game = [...player, ...stuff];
 		let arrayToDraw = [ polygon, example, 
 			...player, ...stuff, ...collisionLines];
 
+
+
 		return (
-			<div className="canvas_real_container" style={ {display: 'none'} }> 
+			<div className="canvas_real_container" style={{backgroundColor: "red"}} >
 				<TheCanvas size={ 150 }
 					lineSegments={ [ example ] } />
 				<TheCanvas size={3200} lineSegments={ arrayToDraw } />

@@ -107,7 +107,6 @@ class LineSegmented {
     draw (ctx) {
         let ls = this.lineSegments;
         ctx.save();
-        let fill = (!!this.fillColor);
         ctx.beginPath();
         let count = -1;
         for (let line of ls) {
@@ -117,10 +116,10 @@ class LineSegmented {
             for (let i = 2; i < line.length; i += 2) {
                 ctx.lineTo( line[i], line[i+1] );
             }
-            if (!!this.fillFrames) { 
-                this.fillColor = !!this.fillFrames[count];
+            if (this.fillColor && (
+                !this.fillFrames || !!this.fillFrames[count])) {
+                ctx.fill();
             }
-            if (!!this.fillColor) { ctx.fill(); }
         }
         ctx.stroke();
         ctx.restore();
