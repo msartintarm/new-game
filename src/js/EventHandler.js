@@ -10,7 +10,7 @@ const getElemKey = (elem) => { return elem.className || elem.tagName; };
 const handler = (e, map) => {
 	const theFunction = map[getElemKey(e.target)];
 	return theFunction? theFunction(e):
-		map['default']? map['default'](e):
+		map.default? map.default(e):
 			null;
 };
 
@@ -18,7 +18,7 @@ const eventmap = {
 	tick: {}
 };
 
-const registeredHandlerMap = { 'tick': {} };
+const registeredHandlerMap = { tick: {} };
 const tickCountMap = {};
 
 const registerHandler = (evName, key, theFunction) => {
@@ -44,14 +44,14 @@ const deregisterHandler = (evName, key) => {
 
 /* lets you query whether a tick event is active */
 const checkTickEvent = (key) => {
-	return (key in registeredHandlerMap['tick']);
+	return (key in registeredHandlerMap.tick);
 };
 
 /* get rid of this event */
 const deregisterTickEvent = (key) => {
 	if (checkTickEvent(key)) {
-		delete eventmap['tick'][key];
-		delete registeredHandlerMap['tick'][key];
+		delete eventmap.tick[key];
+		delete registeredHandlerMap.tick[key];
 		return;
 	}
 };
@@ -61,25 +61,25 @@ const deregisterTickEvent = (key) => {
 	num times to run (0 if unlimited),
 	replace if should override previous function */
 const registerTickEvent = (key, theFunction, numTimes, replace) => {
-	if (key in registeredHandlerMap['tick']) {
+	if (key in registeredHandlerMap.tick) {
 		if (!replace) return; // no duplicate functions
 	}
 
-	eventmap['tick'][key] = theFunction;
+	eventmap.tick[key] = theFunction;
 	tickCountMap[key] = 0;
 
-	registeredHandlerMap['tick'][key] = () => {
+	registeredHandlerMap.tick[key] = () => {
 		if (numTimes > 0 && tickCountMap[key] >= numTimes ) {
 			deregisterTickEvent(key);
 			return;
 		}
 		tickCountMap[key] += 1;
-		eventmap['tick'][key]();
+		eventmap.tick[key]();
 	};
 };
 
 const onTick = () => { // call after requesting animation frame
-	const theList = registeredHandlerMap['tick'];
+	const theList = registeredHandlerMap.tick;
 	for (const name in theList) {
 		theList[name]();
 	}

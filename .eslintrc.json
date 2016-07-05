@@ -45,6 +45,8 @@
         "object-shorthand": 2,
         "prefer-rest-params": 2,
         "no-multi-spaces": 2,
-        "no-trailing-spaces": 2
+        "no-trailing-spaces": 2,
+        "no-useless-concat": 2,
+        "dot-notation": 2
     }
 }
