@@ -56,9 +56,9 @@ class Player {
 
         this.collisionlinesFn = collisionRetrievalFunction;
 
-        this.moveDist = [0, 0];
+        this.moveDist = [ 0, 0 ];
         this.groundSpeed = 0; // speed at which player is going along ground
-        this.pos = [99,165];
+        this.pos = [ 99,165 ];
         this.correctionDist = vec2.create();
         this.body = new Body();
 
@@ -245,7 +245,7 @@ class Player {
 
             if (moveDist[1] !== 0 || moveDist[0] !== 0) {
                 let minYLine = getMinY(collisionPts);
-                let thePos = [minYLine.srcLine[2], minYLine.srcLine[3]];
+                let thePos = [ minYLine.srcLine[2], minYLine.srcLine[3] ];
                 vec2.sub(this.correctionDist, minYLine.coords, thePos);
                 // after changing it, preserve ground speed
                 this.preserveGroundSpeed(minYLine.line, moveDist);
@@ -346,7 +346,7 @@ class Player {
             Math.abs(this.pos[1]) > 5000 ||
             Math.abs(dist[0]) > 1500 || // happens on the backswing ticks
             Math.abs(dist[1]) > 1500) {
-            dist = [90 - this.pos[0], 90 - this.pos[1]];
+            dist = [ 90 - this.pos[0], 90 - this.pos[1] ];
         }
         return dist;
     }

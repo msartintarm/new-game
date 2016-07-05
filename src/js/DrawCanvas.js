@@ -18,15 +18,15 @@ class DrawCanvas extends Component {
 			example_line: [],
 			example_line_text: 'no coords bro',
 			polygon_arr_committed: 0,
-			offset: [0,0]
+			offset: [ 0,0 ]
 		};
 
 		for(let argList of [
-			["mousedown", TheCanvas.CLASS, this.onCanvasMouseDown],
-			["touchdown", TheCanvas.CLASS, this.onCanvasTouchDown],
-			["keydown", "default", this.onCanvasKeyDown],
-			["mouseover", TheCanvas.CLASS, this.onCanvasMouseOver],
-			["mousemove", TheCanvas.CLASS, this.onCanvasMouseMove]
+			[ "mousedown", TheCanvas.CLASS, this.onCanvasMouseDown ],
+			[ "touchdown", TheCanvas.CLASS, this.onCanvasTouchDown ],
+			[ "keydown", "default", this.onCanvasKeyDown ],
+			[ "mouseover", TheCanvas.CLASS, this.onCanvasMouseOver ],
+			[ "mousemove", TheCanvas.CLASS, this.onCanvasMouseMove ]
 		]) { registerHandler(...argList); }
 	}
 
@@ -35,13 +35,13 @@ class DrawCanvas extends Component {
 		let t = e.target;
 		let x = e.pageX - t.offsetLeft - this.state.offset[0];
 		let y = e.pageY - t.offsetTop - this.state.offset[1];
-		console.log(JSON.stringify([x, y]));	
-		return [x, y];
+		console.log(JSON.stringify([ x, y ]));	
+		return [ x, y ];
 	}
 
 	/* Update polygon array with point from latest canvas click. */
 	onCanvasMouseDown = (e) => { // ES2016 auto bind syntax
-		let newArr = [...this.state.polygon_arr, ...this.getCoords(e)]; // make copy
+		let newArr = [ ...this.state.polygon_arr, ...this.getCoords(e) ]; // make copy
 		let newState = {
 			polygon_arr: newArr,
 			polygon_arr_text: JSON.stringify(newArr)
@@ -134,7 +134,7 @@ class DrawCanvas extends Component {
 		let playerPos = this.props.player.getPos();
 
 		let arrayToDraw = [
-			polygon, example, ...player, ...stuff, ...collisionLines];
+			polygon, example, ...player, ...stuff, ...collisionLines ];
 
 
 

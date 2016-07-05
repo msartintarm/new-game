@@ -22,11 +22,20 @@
     ],
     "rules": {
         "no-unused-vars": 2,
+        "no-use-before-define": 2,
         "no-console": 0,
         "no-undef": 1,
         "react/jsx-uses-vars": 2,
         "react/prefer-es6-class": 2,
         "react/react-in-jsx-scope": 0,
-        "react/prop-types": 0
+        "react/prop-types": 0,
+        "array-bracket-spacing": [
+            "error", "always", {
+                "singleValue": false,
+                "objectsInArrays": false,
+                "arraysInArrays": false
+            }
+        ],
+        "eol-last": true,
     }
 }

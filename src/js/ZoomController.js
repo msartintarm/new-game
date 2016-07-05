@@ -63,7 +63,7 @@ class ZoomController {
 			if (zoomLev) { break; }
 		}
 		this.zoom = zoomLev || 1;
-		vec2.scale(this.playerOffset, [x,y], a);
+		vec2.scale(this.playerOffset, [ x,y ], a);
 	}
 
 	getZoom () { return this.zoom; }

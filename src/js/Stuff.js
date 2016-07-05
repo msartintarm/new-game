@@ -4,9 +4,9 @@ import Floor from './LineSegmented/Floor';
 
 class Stuff {
 	constructor () {
-		let theOffset = [-582, 202];
+		let theOffset = [ -582, 202 ];
 		this.hook = new Hook().translate(theOffset);
-		this.weight = (new TwoTonWeight()).translate([597,227]).translate(theOffset);
+		this.weight = (new TwoTonWeight()).translate([ 597,227 ]).translate(theOffset);
 		this.floor = new Floor();
 	}
 

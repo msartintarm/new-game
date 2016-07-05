@@ -28,7 +28,7 @@ class Background {
 
     setFillStyle() {
         this.fillStyle =
-            "rgb(" + [this.r_val, this.g_val, this.b_val].join(',') + ")";
+            "rgb(" + [ this.r_val, this.g_val, this.b_val ].join(',') + ")";
     }
 
     incRedVal() {

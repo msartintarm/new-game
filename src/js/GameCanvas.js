@@ -67,10 +67,10 @@ class GameCanvas extends Component {
             offset: offset
         };
         let dynamicCanvasAttrs = {
-            drawObjs: [ this.props.player ]
+            drawObjs: [this.props.player]
         };
         let staticCanvasAttrs = {
-            drawObjs: [ this.props.stuff ],
+            drawObjs: [this.props.stuff],
             backgroundObj: this.background
         };
         let playFocuserAttrs = {

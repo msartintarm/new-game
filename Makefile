@@ -35,7 +35,7 @@ $(JS_LIB_TARGET): $(LIB_JS)
 	cat $^ >& $@
 
 $(JS_TARGET): $(ENTRY_JS) $(SRC_JS)
-	eslint src/**/*.js
+	eslint src/**/*.js --fix
 	$(BR) $< -o $@ $(BR_FLAGS) 
 #	$(BR) $< $(BR_FLAGS) | $(EXORCIST) $(JS_MAP) > $@ 
 

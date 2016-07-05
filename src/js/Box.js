@@ -1,6 +1,6 @@
 import LineSegmented from './LineSegmented/LineSegmented';
 
-const boxLines = [100,200,200,200,200,100,100,100];
+const boxLines = [ 100,200,200,200,200,100,100,100 ];
 
 const TEXT_SIZE = 16;
 

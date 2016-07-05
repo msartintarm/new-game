@@ -34,7 +34,7 @@ class TheCanvas extends Component {
 
         scale: 1,            // zoom level of canvas
         size: DEFAULT_SIZE,  // size of canvas itself (in pixels)
-        offset: [0,0],       // offset of canvas viewport. Independent of scale
+        offset: [ 0,0 ],       // offset of canvas viewport. Independent of scale
         positionAbsolute: false,  // be relative by default,
         backgroundObj: null, // is drawn before offset and scaling
         show_canvas: true    // is canvas shown?
