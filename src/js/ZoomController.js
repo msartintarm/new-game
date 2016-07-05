@@ -1,31 +1,14 @@
 import vec2 from 'gl-matrix/src/gl-matrix/vec2';
 
-let ROOM_SIZE = 800; // can be made smaller
-let MAP_SIZE = 6400; // max size of game map
+const ROOM_SIZE = 800; // can be made smaller
 
 /* 
-	This is all internal to the
-	add / lookup functions and could
-	be changed
-
 	The lookup function looks for the smallest
 	matching box in the map.
-
-	coord numbering system (outdated already):
-
- 0 1 2 3 4 5 6 7   64  65   66   67
- 8            17                      80      81
-16            25   68  69   70   71
-24            33
-32            41   72  73   74   75
-40            49                      82      83
-48            57   76  77   78   79
-56            65
- 
 */
 
 let coordMaps = [{
-	boxSize: 800,
+	boxSize: ROOM_SIZE,
 	0: {
 		0: 1
 	},
@@ -33,7 +16,7 @@ let coordMaps = [{
 		0: 1
 	}
 }, {
-	boxSize: 1600,
+	boxSize: (ROOM_SIZE * 2),
 	0: {
 		0: 0.5
 	},
@@ -41,7 +24,7 @@ let coordMaps = [{
 		0: 0.5
 	}
 }, {
-	boxSize:3200, 
+	boxSize: (ROOM_SIZE * 4), 
 	"-1": {
 		0: 0.25
 	},
@@ -70,7 +53,6 @@ class ZoomController {
 		let realPos = pos;
 
 		// lookup coord map
-		let size = ROOM_SIZE;
 		let zoomLev = null;
 		let x, y, a, arr;
 		for (let map of coordMaps) {

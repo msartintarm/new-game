@@ -1,6 +1,8 @@
+import Component from './Component';
+
 const BAD_JSON_WARNING = 'JSON does not like the array passed';
 
-class DisplayArray extends React.Component {
+class DisplayArray extends Component {
 	constructor (propz) {
 		super(propz);
 		this.timer =  0;
@@ -46,4 +48,4 @@ class DisplayArray extends React.Component {
 	}
 }
 
-export default DisplayArray
+export default DisplayArray;

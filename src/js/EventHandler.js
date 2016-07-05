@@ -32,6 +32,15 @@ let registerHandler = (evName, key, theFunction) => {
 	eventmap[evName][key] = theFunction;
 };
 
+let deregisterHandler = (evName, key) => {
+
+	// invoke page level function if it doesn't exist already
+	if (evName in registeredHandlerMap &&
+		key in registeredHandlerMap[evName]) {
+		delete eventmap[evName][key];
+	}
+};
+
 /* lets you query whether a tick event is active */
 let checkTickEvent = (key) => {
 	return (key in registeredHandlerMap['tick']);
@@ -75,4 +84,4 @@ let onTick = () => { // call after requesting animation frame
 	}
 }
 
-export { registerHandler, checkTickEvent, registerTickEvent, deregisterTickEvent, onTick };
+export { registerHandler, deregisterHandler, checkTickEvent, registerTickEvent, deregisterTickEvent, onTick };

@@ -1,6 +1,4 @@
 
-let image = null;
-
 const FILL_STYLE_TICK_CHANGE = 40; // higher number means slower change
 
 /* Draws background. */

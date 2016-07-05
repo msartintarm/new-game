@@ -1,7 +1,5 @@
 import LineSegmented from './LineSegmented/LineSegmented';
 
-import TextCanvas from './textCanvas';
-
 const boxLines = [100,200,200,200,200,100,100,100];
 
 const TEXT_SIZE = 16;
@@ -11,7 +9,7 @@ class Box {
 
     static boxList = {};
     static _id = -1;
-    static getId = () { return ++_id; };
+    static getId () { return ++Box._id; }
 
     constructor(opts) {
         this.box = new LineSegmented(opts, boxLines);
@@ -47,4 +45,4 @@ class Box {
 
 }
 
-export default SpeechBubble;
+export default Box;

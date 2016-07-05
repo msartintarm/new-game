@@ -1,4 +1,6 @@
-import { registerHandler } from './EventHandler';
+import Component from './Component';
+
+import { registerHandler, deregisterHandler } from './EventHandler';
 
 // for keys that fromCharCode doesn't define
 const keyCodeMap = {
@@ -16,7 +18,7 @@ let getKeycodeName = (val) => {
 };
 
 let initial_val = 54; // first button has key '7'
-class EventButton extends React.Component {
+class EventButton extends Component {
 	constructor(props) {
 		super(props);
 		this.key_val = ++initial_val;
@@ -51,14 +53,14 @@ class EventButton extends React.Component {
 		let newState = {};
 		this.addSetButtonText(newState);
 		this.setState(newState);
-		document.body.removeEventListener('keydown', this.setKey);
+		deregisterHandler('keydown', 'default');
 	};
 
 	/* Returns function indexed by key that can be bound to DOM elements */
-	buttonMouseDown = (e) => {
+	buttonMouseDown = () => {
 		let newState = { button_text: 'next key down..' };
 		this.setState(newState);
-		document.body.addEventListener('keydown', this.setKey);
+		registerHandler('keydown', 'default', this.setKey);
 	};
 
 	render () {

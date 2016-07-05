@@ -1,3 +1,5 @@
+import Component from './Component';
+
 const DEFAULT_SIZE = 800;
 
 const BRICK_SRC = "img/brick.jpg";
@@ -13,7 +15,7 @@ let image_brick = null;
     Also has a toggle button to show / hide canvas
     Is position: absolute and fills parent element starting at {0,0}
 */
-class TheCanvas extends React.Component { 
+class TheCanvas extends Component { 
 
     createBrickPattern = () => {
         this.pattern_brick = this.ctx.createPattern(image_brick, "repeat");
@@ -84,7 +86,7 @@ class TheCanvas extends React.Component {
         for (let i = 2; i < points.length; i += 2) {
             this.ctx.lineTo(points[i], points[i+1]);
         }
-        if (!!this.pattern_brick) {
+        if (this.pattern_brick) {
             this.ctx.fill();
         }
         this.ctx.stroke();
@@ -97,7 +99,7 @@ class TheCanvas extends React.Component {
         if (!this.props.show_canvas) { return; }
 
         // either draw background or clear screen
-        if (!!this.props.backgroundObj) {
+        if (this.props.backgroundObj) {
             this.props.backgroundObj.draw(this.ctx);
         } else {
             this.ctx.clearRect(0, 0, this.props.size, this.props.size);

@@ -1,7 +1,6 @@
 import vec2 from 'gl-matrix/src/gl-matrix/vec2';
 
-import { registerHandler, registerTickEvent,
-    checkTickEvent, deregisterTickEvent } from './EventHandler';
+import { registerHandler, registerTickEvent, deregisterTickEvent } from './EventHandler';
 
 import Body from './LineSegmented/Body';
 import SpeechBubble from './SpeechBubble';
@@ -40,7 +39,7 @@ const MOVING = {
     NOT: (++_n),
     LEFT: (++_n),
     RIGHT: (++_n),
-    END: (++_n),
+    END: (++_n)
 };
 
 // stringz
@@ -59,7 +58,7 @@ class Player {
 
         this.moveDist = [0, 0];
         this.groundSpeed = 0; // speed at which player is going along ground
-    	this.pos = [99,165];
+        this.pos = [99,165];
         this.correctionDist = vec2.create();
         this.body = new Body();
 
@@ -73,9 +72,9 @@ class Player {
 
         this.movingFlag = MOVING.NOT;
 
-    	this.footFrame = 0;
+        this.footFrame = 0;
         this.footMoveFrames = 15;
-    	this.moveEndFrames = 4;
+        this.moveEndFrames = 4;
 
         this.collisionLineList = []; // stores registered collision lines
 
@@ -95,20 +94,20 @@ class Player {
         registerTickEvent('adjustPosition', this.adjustPosition, 0); // set fall
     }
 
-    addCollisionLine(nums) { // registers lines in a useful list
-        let newLine = Array.from(arguments);
+    addCollisionLine(a,b,c,d) { // registers lines in a useful list
+        let newLine = new Array(a,b,c,d);
         this.collisionLineList.push(newLine);
         return newLine;
     }
 
     getPos = () => { return [...this.pos]; };
 
-    jump = (e) => {
+    jump = () => {
         // check if we have already initiated a jump
         if (!!this.jumpFlag && !!this.secondJumpFlag) {
             return;
         }
-        if (!!this.jumpFlag) {
+        if (this.jumpFlag) {
             this.secondJumpFlag = true;
             this.moveDist[1] = -17;
         } else {
@@ -240,8 +239,8 @@ class Player {
         // check collision 
         let collisionPts = this.getFootCollisionPoints(moveDist);
         if (collisionPts) { // bam. hit ground
-            if (!!this.jumpFlag) { this.jumpFlag = false; } // reset powerups
-            if (!!this.secondJumpFlag) { this.secondJumpFlag = false; }
+            if (this.jumpFlag) { this.jumpFlag = false; } // reset powerups
+            if (this.secondJumpFlag) { this.secondJumpFlag = false; }
             if (!this.onGround) { this.onGround = true; }
 
             if (moveDist[1] !== 0 || moveDist[0] !== 0) {
@@ -252,7 +251,7 @@ class Player {
                 this.preserveGroundSpeed(minYLine.line, moveDist);
             }
         } else {
-            if (!!this.onGround) { this.onGround = false; }
+            if (this.onGround) { this.onGround = false; }
             this.accelerateGravity(moveDist);
             let newCollisionPts = this.getFootCollisionPoints([moveDist]);
             if (newCollisionPts) { // could overshoot ground
@@ -353,7 +352,7 @@ class Player {
     }
 
     moveEndInitialSpeed = null;
-    moveEnd = (e) => { // lose `1 velocity per second`
+    moveEnd = () => { // lose `1 velocity per second`
 
         // set up things if first run
         if (this.movingFlag !== MOVING.END) {
@@ -396,7 +395,7 @@ class Player {
 
     setPositionOnKeyDown = (e) => {
         this.keydownList[e.keyCode] = true;
-    	switch (e.keyCode) {
+        switch (e.keyCode) {
             case 37: // 'left'
                 registerTickEvent(MOVE, this.moveLeft, 0, true);
                 break;
@@ -406,29 +405,30 @@ class Player {
             case 39: // 'Right'
                 registerTickEvent(MOVE, this.moveRight, 0, true);
                 break;
-    		default: ;
-    	}
+            default: null;
+        }
         e.preventDefault();
     };
 
     setPositionOnKeyUp = (e) => {
         this.keydownList[e.keyCode] = false;
-    	switch (e.keyCode) {
+        switch (e.keyCode) {
             case 37: // 'Left'
-                if (!!this.keydownList[39]) {
+                if (this.keydownList[39]) {
                     registerTickEvent(MOVE, this.moveRight, 0, true);
                 } else {
                     registerTickEvent(MOVE, this.moveEnd, 0, true);
                 }
                 break;
             case 39: // 'Right'
-                if (!!this.keydownList[37]) {
+                if (this.keydownList[37]) {
                 registerTickEvent(MOVE, this.moveLeft, 0, true);
                 } else {
                     registerTickEvent(MOVE, this.moveEnd, 0, true);
                 }
-    		default: ;
-    	}
+                break;
+            default: break;
+        }
     };
 
     getLines () {

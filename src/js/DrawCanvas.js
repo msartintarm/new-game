@@ -1,4 +1,4 @@
-import vec2 from 'gl-matrix/src/gl-matrix/vec2';
+import Component from './Component';
 
 import { registerHandler } from './EventHandler';
 
@@ -6,9 +6,8 @@ import EventButton from './EventButton';
 import TheCanvas from './TheCanvas';
 import DisplayArray from './DisplayArray';
 
-
 /* Tells canvas what to draw */
-class DrawCanvas extends React.Component {
+class DrawCanvas extends Component {
 
 	constructor (props) {
 		super(props);
@@ -49,11 +48,19 @@ class DrawCanvas extends React.Component {
 		};
 		this.setState(newState);
 	}
+/*
+	handleMove(keyCode) {
 
+	}
+*/
 	/* Cut off this line. Only for a given key and if canvas was last clicked
 		Takes it directly from last draw of example line */
 	onCanvasKeyDown = (e) => { // ES2016 auto bind syntax
 		e.preventDefault();
+
+
+
+
 		if (this.state.example_line.length < 2) { return; }
 
 		let newArr = [...this.state.polygon_arr]; // add entry
@@ -72,6 +79,7 @@ class DrawCanvas extends React.Component {
 			newArr.push([...this.state.example_line[1]]);
 			newArr.push([...newArr[1][0]]);
 		} else if (e.keyCode === ld) { 
+			null;
 		} else if (e.keyCode === 37) {
 			offs[0] -= 800;
 		} else if (e.keyCode === 38) {
@@ -112,8 +120,8 @@ class DrawCanvas extends React.Component {
 	}
 
 	/* Todo: something cool */
-	onCanvasMouseOver = (e) => {}
-	onCanvasTouchDown = (e) => {}
+	onCanvasMouseOver = (e) => { return e; }
+	onCanvasTouchDown = (e) => { return e; }
 
 	render () {
 
@@ -155,4 +163,4 @@ class DrawCanvas extends React.Component {
 	}
 }
 
-export default DrawCanvas
+export default DrawCanvas;

@@ -16,12 +16,12 @@ let Det2 = (x1, x2, y1, y2) => {
 /// Source: http://mathworld.wolfram.com/Line-LineIntersection.html
 /// </summary>
 let lineIntersection = (x1, y1, x2, y2, x3, y3, x4, y4) => {
-	// type checking because JS doesn't have it...
-	for (let oneArg of [x1, y1, x2, y2, x3, y3, x4, y4]) {
-		if (typeof oneArg != "number") {
-			throw (NON_NUMBER_WARNING);
+    // type checking because JS doesn't have it...
+    for (let oneArg of [x1, y1, x2, y2, x3, y3, x4, y4]) {
+        if (typeof oneArg != "number") {
+            throw (NON_NUMBER_WARNING);
         }
-	}
+    }
 
     let tolerance = 0.000001;
     let EmptyPt = null;
@@ -35,13 +35,13 @@ let lineIntersection = (x1, y1, x2, y2, x3, y3, x4, y4) => {
     let y = Det2(d1, y1 - y2, d2, y3 - y4) / a;
 
     if (x < Math.min(x1, x2) - tolerance ||
-    	x > Math.max(x1, x2) + tolerance) return EmptyPt;
+        x > Math.max(x1, x2) + tolerance) return EmptyPt;
     if (y < Math.min(y1, y2) - tolerance ||
-    	y > Math.max(y1, y2) + tolerance) return EmptyPt;
+        y > Math.max(y1, y2) + tolerance) return EmptyPt;
     if (x < Math.min(x3, x4) - tolerance ||
-    	x > Math.max(x3, x4) + tolerance) return EmptyPt;
+        x > Math.max(x3, x4) + tolerance) return EmptyPt;
     if (y < Math.min(y3, y4) - tolerance ||
-    	y > Math.max(y3, y4) + tolerance) return EmptyPt;
+        y > Math.max(y3, y4) + tolerance) return EmptyPt;
 
     return [x, y];
 

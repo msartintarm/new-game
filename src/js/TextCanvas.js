@@ -21,7 +21,7 @@ class TextCanvas {
                 Math.log(ctx.measureText(this.text).width) / Math.LN2));
     }
 
-    setCanvasHeight(ctx) {
+    setCanvasHeight() {
         this.canvas.height = Math.pow(
             2, Math.ceil(
                 Math.log(this.textSize) / Math.LN2));
@@ -32,7 +32,7 @@ class TextCanvas {
         let ctx = this.canvas.getContext("2d");
         ctx.font = this.font;
         this.setCanvasWidth(ctx);
-        this.setCanvasHeight(ctx);
+        this.setCanvasHeight();
 
         // Use logs to round the text width and height to the nearest power of 2
 

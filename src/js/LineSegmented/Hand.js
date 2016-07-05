@@ -17,8 +17,8 @@ const HandWithScissors2 = [
 
 class Hand {
     constructor(opts) {
-	    return new LineSegmented(
-    		opts, HandWithScissors1, HandWithScissors2);
+        return new LineSegmented(
+            opts, HandWithScissors1, HandWithScissors2);
     }
 }
 

@@ -1,3 +1,5 @@
+import Component from './Component';
+
 import ZoomController from './ZoomController';
 import Player from './Player';
 import Stuff from './Stuff';
@@ -8,7 +10,7 @@ import { onTick } from './EventHandler';
 
 const drawHash = window.location.hash.includes("draw");
 
-class App extends React.Component {
+class App extends Component {
 
 	constructor () {
 		super();
@@ -38,7 +40,7 @@ class App extends React.Component {
 		let props = {
 			player: this.player,
 			stuff: this.stuff,
-			zoom: this.zoom,
+			zoom: this.zoom
 		};		
 
 		let game_canvas = this.showGame?
