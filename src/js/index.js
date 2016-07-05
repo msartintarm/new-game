@@ -37,11 +37,11 @@ class App extends Component {
 
 	render () {
 
-		let props = {
+		const props = {
 			player: this.player,
 			stuff: this.stuff,
 			zoom: this.zoom
-		};		
+		};
 
 		let game_canvas = this.showGame?
 			<GameCanvas {...props} />: null;

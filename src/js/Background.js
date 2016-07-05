@@ -2,7 +2,7 @@
 const FILL_STYLE_TICK_CHANGE = 40; // higher number means slower change
 
 /* Draws background. */
-class Background { 
+class Background {
 
     constructor(opts) {
         this.width = opts.width || opts.size || 200;

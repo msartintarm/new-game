@@ -12,7 +12,7 @@ const bubbleLines = [[ 225,69,224,38,208,23 ],
 const TEXT_SIZE = 16;
 
 /* Draws the speech bubble and the text. */
-class SpeechBubble { 
+class SpeechBubble {
 
     constructor(opts) {
         if (!opts.text) { return null; }
@@ -20,7 +20,7 @@ class SpeechBubble {
             (text) => {
                 return new TextCanvas({
                     textSize: TEXT_SIZE,
-                    text: text
+                    text
             });
         });
         this.bubble = new LineSegmented(opts, bubbleLines);
@@ -45,7 +45,7 @@ class SpeechBubble {
         let [ x, y ] = this.bubble.pos;
         x += 230;
         y += 35;
-        for (let c of this.textCanvases) {
+        for (const c of this.textCanvases) {
             ctx.drawImage(c.getCanvas(), x, y);
             y += TEXT_SIZE;
         }

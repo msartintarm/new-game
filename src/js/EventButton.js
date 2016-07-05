@@ -11,7 +11,8 @@ const keyCodeMap = {
 	39: 'Right',
 	40: 'Down'
 };
-let getKeycodeName = (val) => {
+
+const getKeycodeName = (val) => {
 	return keyCodeMap[val]
 		|| String.fromCharCode(val).trim()
 		|| '\'' + val + '\'';
@@ -31,7 +32,7 @@ class EventButton extends Component {
 
 	/* Edits provided object and adds key / val pair for button text */
 	addStartButtonText (obj) {
-		let keyName = getKeycodeName(this.key_val);
+		const keyName = getKeycodeName(this.key_val);
 		obj.button_text = 'Set ' + (this.props.name || 'the')
 			+ ' keycode (currently ' + keyName + ')';
 		return obj;
@@ -39,7 +40,7 @@ class EventButton extends Component {
 
 	/* Edits provided object and adds key / val pair for button text */
 	addSetButtonText (obj) {
-		let keyName = getKeycodeName(this.key_val);
+		const keyName = getKeycodeName(this.key_val);
 		obj.button_text = 'The ' + (this.props.name || 'event')
 			+ ' set to ' + keyName;
 	}
@@ -48,9 +49,9 @@ class EventButton extends Component {
 		to DOM elements and deletes itself after execution
 	*/
 	setKey = (ev) => {
-		let theCode = ev.keyCode;
+		const theCode = ev.keyCode;
 		this.key_val = theCode;
-		let newState = {};
+		const newState = {};
 		this.addSetButtonText(newState);
 		this.setState(newState);
 		deregisterHandler('keydown', 'default');
@@ -58,7 +59,7 @@ class EventButton extends Component {
 
 	/* Returns function indexed by key that can be bound to DOM elements */
 	buttonMouseDown = () => {
-		let newState = { button_text: 'next key down..' };
+		const newState = { button_text: 'next key down..' };
 		this.setState(newState);
 		registerHandler('keydown', 'default', this.setKey);
 	};
@@ -66,7 +67,7 @@ class EventButton extends Component {
 	render () {
 		return (
 			<button className={this.className} >
-				{this.state.button_text} 
+				{this.state.button_text}
 			</button>
 		)
 	}

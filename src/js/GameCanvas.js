@@ -24,7 +24,7 @@ class GameCanvas extends Component {
     }
 
     toggleGameCanvasOnMouseDown = () => {
-        let newState = {
+        const newState = {
             show_game_canvas: (!this.state.show_game_canvas)
         };
         this.setState(newState);
@@ -32,7 +32,7 @@ class GameCanvas extends Component {
 
     focusOnPlayArea = (e) => {
         e.preventDefault();
-        let newState = { show_game_canvas: (!this.state.show_game_canvas) };
+        const newState = { show_game_canvas: (!this.state.show_game_canvas) };
         this.setState(newState, (
             newState.show_game_canvas?
             () => { this.refs.play_area.focus(); }: null
@@ -45,13 +45,13 @@ class GameCanvas extends Component {
             this.props.player.getPos()
         );
 
-        let zoom = this.props.zoom.getZoom();
-        let offset = this.props.zoom.getOffset();
+        const zoom = this.props.zoom.getZoom();
+        const offset = this.props.zoom.getOffset();
 
         vec2.negate(offset, offset);
         vec2.scale(offset, offset, zoom);
 
-        let containerAttrs = {
+        const containerAttrs = {
             className: "canvas_real_container",
             style: {
                 width: GAME_SIZE + 4,
@@ -59,25 +59,25 @@ class GameCanvas extends Component {
                 position: "relative"
             }
         };
-        let commonCanvasAttrs = {
+        const commonCanvasAttrs = {
             show_canvas: this.state.show_game_canvas,
             positionAbsolute: true,
             scale: zoom,
             size: GAME_SIZE,
-            offset: offset
+            offset
         };
-        let dynamicCanvasAttrs = {
+        const dynamicCanvasAttrs = {
             drawObjs: [this.props.player]
         };
-        let staticCanvasAttrs = {
+        const staticCanvasAttrs = {
             drawObjs: [this.props.stuff],
             backgroundObj: this.background
         };
-        let playFocuserAttrs = {
+        const playFocuserAttrs = {
             className: (this.state.show_game_canvas?
                 "play_focuser_small": "play_focuser_big"
         )};
-        let playAreaAttrs = {
+        const playAreaAttrs = {
             className: "play_area", ref: "play_area"
         };
 

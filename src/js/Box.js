@@ -5,7 +5,7 @@ const boxLines = [ 100,200,200,200,200,100,100,100 ];
 const TEXT_SIZE = 16;
 
 /* A box to bash your head into. */
-class Box { 
+class Box {
 
     static boxList = {};
     static _id = -1;
@@ -36,7 +36,7 @@ class Box {
         let [ x, y ] = this.bubble.pos;
         x += 230;
         y += 35;
-        for (let c of this.textCanvases) {
+        for (const c of this.textCanvases) {
             ctx.drawImage(c.getCanvas(), x, y);
             y += TEXT_SIZE;
         }

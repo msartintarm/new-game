@@ -8,7 +8,7 @@ import SpeechBubble from './SpeechBubble';
 import { DetectCollision } from './Collision'
 
 // Returns function for max / min of all X or Y collision points
-let getMaxMinFn = (fn, offset) => {
+const getMaxMinFn = (fn, offset) => {
     return (collisionPts) => {
         let pt = collisionPts[0];
         let a = pt.coords[offset];
@@ -25,10 +25,10 @@ let getMaxMinFn = (fn, offset) => {
     };
 };
 
-let getMinY = getMaxMinFn(Math.min, 1);
-let getMinX = getMaxMinFn(Math.min, 0);
-let getMaxX = getMaxMinFn(Math.max, 0);
-let getMaxY = getMaxMinFn(Math.max, 1);
+const getMinY = getMaxMinFn(Math.min, 1);
+const getMinX = getMaxMinFn(Math.min, 0);
+const getMaxX = getMaxMinFn(Math.max, 0);
+const getMaxY = getMaxMinFn(Math.max, 1);
 
 const MOVE_LR_DEC = 1;
 const MOVE_LR_ACC = 0.4;
@@ -47,10 +47,10 @@ const MOVE = 'move';
 const JUMP = 'jump';
 
 /* Has its own line segments and manages connections to feet and arms
-    @collisionlinesFn: type [function] 
+    @collisionlinesFn: type [function]
         Returns array of collision lines (arrays of 4 pts) when invoked.
 */
-class Player { 
+class Player {
 
     constructor(collisionRetrievalFunction) {
 
@@ -84,7 +84,7 @@ class Player {
         this.bodyCollisionLine = this.addCollisionLine(82, 120, 160, 120);
         this.headCollisionLine1 = this.addCollisionLine(92, 37, 92, 67);
         this.headCollisionLine2 = this.addCollisionLine(131, 37, 131, 67);
- 
+
         this.body_offset_x_l = this.bodyCollisionLine[0] - this.pos[0];
         this.body_offset_x_2 = this.bodyCollisionLine[2] - this.pos[0];
         this.head_offset_y = this.headCollisionLine1[1] - this.pos[1];
@@ -95,7 +95,7 @@ class Player {
     }
 
     addCollisionLine(a,b,c,d) { // registers lines in a useful list
-        let newLine = new Array(a,b,c,d);
+        const newLine = new Array(a,b,c,d);
         this.collisionLineList.push(newLine);
         return newLine;
     }
@@ -117,9 +117,9 @@ class Player {
     };
 
     decel = () => {
-        if (this.moveDist < 0) { 
+        if (this.moveDist < 0) {
             this.moveDist = Math.min(this.moveDist + 0.25, 0);
-        } else if (this.moveDist > 0) { 
+        } else if (this.moveDist > 0) {
             this.moveDist = Math.max(this.moveDist - 0.25, 0);
         }
     };
@@ -154,7 +154,7 @@ class Player {
         this.body.setFeetToFrame(this.footFrame);
     }
 
-    /* Called each tick. Makes adjustments to next distance 
+    /* Called each tick. Makes adjustments to next distance
         based on environment. Then changes player to position */
     adjustPosition = () => {
         this.moveDist = this.checkPushing(this.moveDist);
@@ -171,13 +171,13 @@ class Player {
 
     getCollisionPoints (line, vec) {
         // check collision
-        let newCollision = [...line];
+        const newCollision = [...line];
         vec2.forEach(newCollision, 0, 0, 0, vec2.add, vec);
         return DetectCollision(newCollision, this.collisionlinesFn());
     }
 
     getFootCollisionPoints(vec) {
-        let a = [
+        const a = [
             ...this.getCollisionPoints(this.footCollisionLine1, vec),
             ...this.getCollisionPoints(this.footCollisionLine2, vec)
         ];
@@ -185,7 +185,7 @@ class Player {
     }
 
     getHeadCollisionPoints(vec) {
-        let a = [
+        const a = [
             ...this.getCollisionPoints(this.headCollisionLine1, vec),
             ...this.getCollisionPoints(this.headCollisionLine2, vec)
         ];
@@ -193,7 +193,7 @@ class Player {
     }
 
     getBodyCollisionPoints(vec) {
-        let a = this.getCollisionPoints(this.bodyCollisionLine, vec);
+        const a = this.getCollisionPoints(this.bodyCollisionLine, vec);
         return (a.length < 1)? null: a;
     }
 
@@ -204,7 +204,7 @@ class Player {
     */
     preserveGroundSpeed (line, moveDist) {
 
-        let lineVec = [  // get direction of line.
+        const lineVec = [  // get direction of line.
             line[2] - line[0], line[3] - line[1]
         ];
         // direction-only, not magnitude
@@ -213,7 +213,7 @@ class Player {
         if (lineVec[1] < 0) { vec2.negate(lineVec, lineVec); }
 
         // preserve groundspeed
-        let gSpd = vec2.dot(moveDist, lineVec);
+        const gSpd = vec2.dot(moveDist, lineVec);
         if (Math.abs(gSpd) > 0.01) {
             vec2.scale(moveDist, lineVec, gSpd);
         } else {
@@ -223,7 +223,7 @@ class Player {
 
     /* add some fall distance in freefall */
     accelerateGravity (moveVec) {
-        let dY = moveVec[1];
+        const dY = moveVec[1];
         if (this.jumpFlag && dY >= 0 && dY < 5) { // accelerate
             moveVec[1] = dY + .25;
         } else if (dY >= 0 && dY < 15) { // accelerate more
@@ -236,16 +236,16 @@ class Player {
     /* checks if you'd be falling into objects and sets dist accordingly */
     checkFalling (moveDist) {
 
-        // check collision 
-        let collisionPts = this.getFootCollisionPoints(moveDist);
+        // check collision
+        const collisionPts = this.getFootCollisionPoints(moveDist);
         if (collisionPts) { // bam. hit ground
             if (this.jumpFlag) { this.jumpFlag = false; } // reset powerups
             if (this.secondJumpFlag) { this.secondJumpFlag = false; }
             if (!this.onGround) { this.onGround = true; }
 
             if (moveDist[1] !== 0 || moveDist[0] !== 0) {
-                let minYLine = getMinY(collisionPts);
-                let thePos = [ minYLine.srcLine[2], minYLine.srcLine[3] ];
+                const minYLine = getMinY(collisionPts);
+                const thePos = [ minYLine.srcLine[2], minYLine.srcLine[3] ];
                 vec2.sub(this.correctionDist, minYLine.coords, thePos);
                 // after changing it, preserve ground speed
                 this.preserveGroundSpeed(minYLine.line, moveDist);
@@ -253,9 +253,9 @@ class Player {
         } else {
             if (this.onGround) { this.onGround = false; }
             this.accelerateGravity(moveDist);
-            let newCollisionPts = this.getFootCollisionPoints([moveDist]);
+            const newCollisionPts = this.getFootCollisionPoints([moveDist]);
             if (newCollisionPts) { // could overshoot ground
-                let minY = getMinY(newCollisionPts).coords[1];
+                const minY = getMinY(newCollisionPts).coords[1];
                 if (moveDist[1] > minY - this.pos[1]) {
                     moveDist[1] = this.pos[1] - minY;
                 }
@@ -264,21 +264,21 @@ class Player {
         return moveDist;
     }
 
-//    /* figures out a better value for the angle 
+//    /* figures out a better value for the angle
 //    preserveGroundSpeed(currSpeed, line, newSpeed)
 
     /* checks if you'd hit object with head and sets dist accordingly */
     checkCeiling (moveDist) {
-        let dist = [...moveDist];
+        const dist = [...moveDist];
 
-        // check collision 
+        // check collision
 
-        let collisionPts = this.getHeadCollisionPoints(dist);
+        const collisionPts = this.getHeadCollisionPoints(dist);
         if (collisionPts) { // bam. hit ceiling
             // are we going up (y negative)? if so, set to line intercept
             if (dist[1] < 0 || dist[1] === 0 && dist[0] !== 0) {
-                let maxYLine = getMaxY(collisionPts);
-                let maxY = maxYLine.coords[1];
+                const maxYLine = getMaxY(collisionPts);
+                const maxY = maxYLine.coords[1];
 //                this.correctionDist[1] = this.pos[1] - maxY;
                 this.correctionDist[1] = maxY - (this.pos[1] + this.head_offset_y);
                 // after changing it, preserve ground speed
@@ -292,12 +292,12 @@ class Player {
 
     /* sets dist so you don't run into objects */
     checkPushing (moveDist) {
-        let dist = [...moveDist];
+        const dist = [...moveDist];
 
         // check collision
-        let collisionPts = this.getBodyCollisionPoints(dist);
+        const collisionPts = this.getBodyCollisionPoints(dist);
         if (collisionPts) { // fall!
-            // have to be careful here, since the character will jump wildly 
+            // have to be careful here, since the character will jump wildly
             //  if the wrong detection is applied
             // A couple options are:
             // 1. Detect direction player is moving in
@@ -307,9 +307,9 @@ class Player {
             //            max   min
             //            ----M----
 
-            let minX = getMinX(collisionPts).coords[0];
-            let maxX = getMaxX(collisionPts).coords[0];
-            let midpoint = (this.bodyCollisionLine[2] / 2 +
+            const minX = getMinX(collisionPts).coords[0];
+            const maxX = getMaxX(collisionPts).coords[0];
+            const midpoint = (this.bodyCollisionLine[2] / 2 +
                 this.bodyCollisionLine[0] / 2) + dist[0];
             if (midpoint < minX && minX < this.bodyCollisionLine[2] + dist[0]) {
                 // check right collision.
@@ -327,14 +327,14 @@ class Player {
                         dist[0], this.correctionDist[0]);
                     dist[0] = 1;
   //              }
-            } 
+            }
             //else if (dist[0] === 0 && dist[1] !== 0) {
             //    let minX = getMinX(collisionPts).coords[0];
             //    let maxX = getMaxX(collisionPts).coords[0];
             //    if (dist[0] + this.bodyCollisionLine[2] > minX) {
             //        dist[0] = minX - this.bodyCollisionLine[2] - 1;
             //    }
-//            } 
+//            }
         }
         return dist;
     }
@@ -342,7 +342,7 @@ class Player {
     /* checks if you've escaped the world..? */
     checkEscaped (moveDist) {
         let dist = [...moveDist];
-        if (Math.abs(this.pos[0]) > 5000 || 
+        if (Math.abs(this.pos[0]) > 5000 ||
             Math.abs(this.pos[1]) > 5000 ||
             Math.abs(dist[0]) > 1500 || // happens on the backswing ticks
             Math.abs(dist[1]) > 1500) {
@@ -374,7 +374,7 @@ class Player {
 
         this.moveDist[0] = newX;
 
-        let f = (this.moveEndInitialSpeed === 0)? 0:
+        const f = (this.moveEndInitialSpeed === 0)? 0:
             Math.floor(
                 this.footMoveFrames * Math.abs(
                     newX / this.moveEndInitialSpeed));
@@ -382,7 +382,7 @@ class Player {
     };
 
     translate (vec) {
-        for (let oneLine of this.collisionLineList) {
+        for (const oneLine of this.collisionLineList) {
             vec2.forEach(oneLine, 0, 0, 0, vec2.add, vec);
         }
         vec2.add(this.pos, this.pos, vec);

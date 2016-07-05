@@ -2,12 +2,12 @@ import vec2 from 'gl-matrix/src/gl-matrix/vec2';
 
 const ROOM_SIZE = 800; // can be made smaller
 
-/* 
+/*
 	The lookup function looks for the smallest
 	matching box in the map.
 */
 
-let coordMaps = [{
+const coordMaps = [{
 	boxSize: ROOM_SIZE,
 	0: {
 		0: 1
@@ -24,7 +24,7 @@ let coordMaps = [{
 		0: 0.5
 	}
 }, {
-	boxSize: (ROOM_SIZE * 4), 
+	boxSize: (ROOM_SIZE * 4),
 	"-1": {
 		0: 0.25
 	},
@@ -50,12 +50,12 @@ class ZoomController {
 	setZoom (pos) {
 
 ///		let realPos = vec2.sub(vec2.create(), pos, this.playerOffset);
-		let realPos = pos;
+		const realPos = pos;
 
 		// lookup coord map
 		let zoomLev = null;
 		let x, y, a, arr;
-		for (let map of coordMaps) {
+		for (const map of coordMaps) {
 			a = map.boxSize;
 			x = Math.floor(realPos[0] / a);
 			y = Math.floor(realPos[1] / a);

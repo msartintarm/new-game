@@ -15,7 +15,7 @@ let image_brick = null;
     Also has a toggle button to show / hide canvas
     Is position: absolute and fills parent element starting at {0,0}
 */
-class TheCanvas extends Component { 
+class TheCanvas extends Component {
 
     createBrickPattern = () => {
         this.pattern_brick = this.ctx.createPattern(image_brick, "repeat");
@@ -44,12 +44,12 @@ class TheCanvas extends Component {
 
     componentDidMount () {
         this.ctx = this.refs.theCanvas.getContext('2d');
-        if(!image_brick) {
+        if(image_brick) {
+            this.createBrickPattern();
+        } else {
             image_brick = new Image();
             image_brick.onload = this.createBrickPattern;
             image_brick.src = BRICK_SRC;
-        } else {
-            this.createBrickPattern();
         }
         this._paint(this.props.lineSegments);
     }
@@ -63,20 +63,22 @@ class TheCanvas extends Component {
         let t;
         if (!points) {
             console.warn("No point list provided");
-        } else if (points.length < 2) { 
+        } else if (points.length < 2) {
             // empty array.. means no points in list
-        } else if ((t = typeof points[0]) .toLowerCase() !== "number") {
+        } else if ((t = typeof points[0]) .toLowerCase() === "number") {
+            return true;
+        } else {
             if (warnCount <= 5) { // this can be printed out millions of times otherwise
                 console.warn("Wrong type (non number) for line segment: " + t + "! :o");
                 console.warn("Point list is:" + JSON.stringify(points));
                 warnCount += 1;
             }
-        } else return true;
+        }
         return false;
     }
 
     /*
-        input needs to be 'line segment' 
+        input needs to be 'line segment'
     */
     _paintLineSegment (points) {
         if (!this._isLineSegment(points)) return; // make sure input is 'line segment format'
@@ -106,7 +108,7 @@ class TheCanvas extends Component {
         }
 
         this.ctx.save();
-        if (this.props.offset) { 
+        if (this.props.offset) {
             this.ctx.translate(...this.props.offset);
         }
         if (!!this.props.scale && this.props.scale != 1) {
@@ -118,7 +120,7 @@ class TheCanvas extends Component {
             this.ctx.fillStyle = this.pattern_brick;
         }
 
-        for (let obj of this.props.drawObjs) {
+        for (const obj of this.props.drawObjs) {
             obj.draw(this.ctx);
         }
         for (let i = 0; i < lineSegments.length; ++i) {
@@ -146,7 +148,7 @@ class TheCanvas extends Component {
 
     render () {
         return (
-            <div  {...this._getContainerProps()}>
+            <div {...this._getContainerProps()}>
                 <canvas {...this._getCanvasProps()} />
             </div>
         );

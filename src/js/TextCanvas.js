@@ -1,6 +1,6 @@
 
 /* Draws text onto a canvas */
-class TextCanvas { 
+class TextCanvas {
 
     // Render text on a hidden canvas
     constructor(opts) {
@@ -29,7 +29,7 @@ class TextCanvas {
 
     /* Keeps around its own internal canvas to render to */
     renderTextIntoCanvas() {
-        let ctx = this.canvas.getContext("2d");
+        const ctx = this.canvas.getContext("2d");
         ctx.font = this.font;
         this.setCanvasWidth(ctx);
         this.setCanvasHeight();

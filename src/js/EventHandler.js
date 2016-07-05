@@ -1,38 +1,39 @@
 
-/* 
+/*
 	Determines precedence of elements in handler map
 	1. target element class name -- example the_button
 	2. target element tag name (uppercase) -- for example Canvas
 */
-let getElemKey = (elem) => { return elem.className || elem.tagName; };
+const getElemKey = (elem) => { return elem.className || elem.tagName; };
 
 /* Looks for handler defined in mapping for target element */
-let handler = (e, map) => {
-	let theFunction = map[getElemKey(e.target)];
+const handler = (e, map) => {
+	const theFunction = map[getElemKey(e.target)];
 	return theFunction? theFunction(e):
 		map['default']? map['default'](e):
 			null;
 };
 
-let eventmap = {
-	tick: {}	
+const eventmap = {
+	tick: {}
 };
-let registeredHandlerMap = { 'tick': {} };
-let tickCountMap = {};
 
-let registerHandler = (evName, key, theFunction) => {
+const registeredHandlerMap = { 'tick': {} };
+const tickCountMap = {};
+
+const registerHandler = (evName, key, theFunction) => {
 
 	// invoke page level function if it doesn't exist already
 	if (!(evName in registeredHandlerMap)) {
 		eventmap[evName] = {};
-		registeredHandlerMap[evName] = 
+		registeredHandlerMap[evName] =
 			(e) => { handler(e, eventmap[evName]); };
 		document.addEventListener(evName, registeredHandlerMap[evName]);
 	}
 	eventmap[evName][key] = theFunction;
 };
 
-let deregisterHandler = (evName, key) => {
+const deregisterHandler = (evName, key) => {
 
 	// invoke page level function if it doesn't exist already
 	if (evName in registeredHandlerMap &&
@@ -42,12 +43,12 @@ let deregisterHandler = (evName, key) => {
 };
 
 /* lets you query whether a tick event is active */
-let checkTickEvent = (key) => {
+const checkTickEvent = (key) => {
 	return (key in registeredHandlerMap['tick']);
 };
 
 /* get rid of this event */
-let deregisterTickEvent = (key) => {
+const deregisterTickEvent = (key) => {
 	if (checkTickEvent(key)) {
 		delete eventmap['tick'][key];
 		delete registeredHandlerMap['tick'][key];
@@ -56,10 +57,10 @@ let deregisterTickEvent = (key) => {
 };
 
 /* unique key for function,
-	function itself, 
+	function itself,
 	num times to run (0 if unlimited),
 	replace if should override previous function */
-let registerTickEvent = (key, theFunction, numTimes, replace) => {
+const registerTickEvent = (key, theFunction, numTimes, replace) => {
 	if (key in registeredHandlerMap['tick']) {
 		if (!replace) return; // no duplicate functions
 	}
@@ -77,9 +78,9 @@ let registerTickEvent = (key, theFunction, numTimes, replace) => {
 	};
 };
 
-let onTick = () => { // call after requesting animation frame
-	var theList = registeredHandlerMap['tick'];
-	for (let name in theList) {
+const onTick = () => { // call after requesting animation frame
+	const theList = registeredHandlerMap['tick'];
+	for (const name in theList) {
 		theList[name]();
 	}
 }
