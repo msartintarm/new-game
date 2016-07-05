@@ -9,6 +9,11 @@ import Background from './Background';
 
 const GAME_SIZE = 800;
 
+const cMD = "mousedown";
+const cPFB = "play_focuser_big";
+const cPFS = "play_focuser_small";
+const cPA = "play_area";
+
 /* Tells canvas what to draw */
 class GameCanvas extends Component {
 
@@ -17,10 +22,8 @@ class GameCanvas extends Component {
         this.background = new Background({ size: GAME_SIZE });
 
         this.state = { show_game_canvas: false };
-        registerHandler('mousedown', "play_focuser_big",
-            this.focusOnPlayArea);
-        registerHandler('mousedown', "play_focuser_small",
-            this.focusOnPlayArea);
+        registerHandler(cMD, cPFB, this.focusOnPlayArea);
+        registerHandler(cMD, cPFS, this.focusOnPlayArea);
     }
 
     toggleGameCanvasOnMouseDown = () => {
@@ -75,10 +78,10 @@ class GameCanvas extends Component {
         };
         const playFocuserAttrs = {
             className: (this.state.show_game_canvas?
-                "play_focuser_small": "play_focuser_big"
+                cPFS: cPFB
         )};
         const playAreaAttrs = {
-            className: "play_area", ref: "play_area"
+            className: cPA, ref: cPA
         };
 
         return (

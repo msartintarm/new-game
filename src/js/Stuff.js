@@ -3,11 +3,11 @@ import TwoTonWeight from './LineSegmented/TwoTonWeight';
 import Floor from './LineSegmented/Floor';
 
 class Stuff {
-	constructor () {
+	constructor (ctx) {
 		const theOffset = [ -582, 202 ];
 		this.hook = new Hook().translate(theOffset);
 		this.weight = (new TwoTonWeight()).translate([ 597,227 ]).translate(theOffset);
-		this.floor = new Floor();
+		this.floor = new Floor(ctx);
 	}
 
 	getLines () {

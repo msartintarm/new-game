@@ -2,13 +2,7 @@ import Component from './Component';
 
 const DEFAULT_SIZE = 800;
 
-const BRICK_SRC = "img/brick.jpg";
-
 let warnCount = 0;
-
-
-
-let image_brick = null;
 
 /*
     Base-level canvas class that binds passed-down line segments with DOM canvas
@@ -16,10 +10,6 @@ let image_brick = null;
     Is position: absolute and fills parent element starting at {0,0}
 */
 class TheCanvas extends Component {
-
-    createBrickPattern = () => {
-        this.pattern_brick = this.ctx.createPattern(image_brick, "repeat");
-    };
 
     static defaultProps = {
 
@@ -44,13 +34,6 @@ class TheCanvas extends Component {
 
     componentDidMount () {
         this.ctx = this.refs.theCanvas.getContext('2d');
-        if(image_brick) {
-            this.createBrickPattern();
-        } else {
-            image_brick = new Image();
-            image_brick.onload = this.createBrickPattern;
-            image_brick.src = BRICK_SRC;
-        }
         this._paint(this.props.lineSegments);
     }
 
