@@ -1,5 +1,6 @@
 include Makefile.inc
 
+SHELL := /bin/bash
 PWD := $(shell pwd)
 
 # if windows, make sure 'make -v' returns 3.82 or higher

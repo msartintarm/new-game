@@ -1,6 +1,6 @@
 import LineSegmented from './LineSegmented/LineSegmented';
 
-import TextCanvas from './textCanvas';
+import TextCanvas from './TextCanvas';
 
 //let bubbleLines = [100,200,200,200,200,100,100,100];
 const bubbleLines = [[ 225,69,224,38,208,23 ],
