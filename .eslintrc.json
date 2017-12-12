@@ -31,6 +31,7 @@
         "react/prefer-es6-class": 2,
         "react/react-in-jsx-scope": 0,
         "react/prop-types": 0,
+	"react/no-string-refs": 1,
         "array-bracket-spacing": [
             "error", "always", {
                 "singleValue": false,

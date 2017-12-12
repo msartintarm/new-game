@@ -16,8 +16,8 @@ const getMaxMinFn = (fn, offset) => {
         for (let i = 1; i < collisionPts.length; ++i) { // check each line collision
             _pt = collisionPts[i];
             _a = fn(a, _pt.coords[offset]);
-            if (_a !== a) {  // this number is a different max / min
-                pt = _pt;    // Capture the point of collision, not number alone
+            if (_a !== a) { // this number is a different max / min
+                pt = _pt; // Capture the point of collision, not number alone
                 a = _a;
             }
         }
@@ -204,7 +204,7 @@ class Player {
     */
     preserveGroundSpeed (line, moveDist) {
 
-        const lineVec = [  // get direction of line.
+        const lineVec = [ // get direction of line.
             line[2] - line[0], line[3] - line[1]
         ];
         // direction-only, not magnitude

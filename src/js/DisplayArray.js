@@ -30,14 +30,15 @@ class DisplayArray extends Component {
 		});
 	}
 	render () {
-		let text, label;
+
+		let text;
 
 		try {
 			text = JSON.stringify(this.floorArr);
 		} catch(e) {
 			text = BAD_JSON_WARNING;
 		}
-		label = "Coords for " + this.props.line_label;
+		const label = "Coords for " + this.props.line_label;
 
 		return(
 			<div className="display_array" >

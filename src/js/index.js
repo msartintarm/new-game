@@ -43,9 +43,9 @@ class App extends Component {
 			zoom: this.zoom
 		};
 
-		let game_canvas = this.showGame?
+		const game_canvas = this.showGame?
 			<GameCanvas {...props} />: null;
-		let draw_canvas = this.showDraw?
+		const draw_canvas = this.showDraw?
 			<DrawCanvas {...props} />: null;
 
 		return (

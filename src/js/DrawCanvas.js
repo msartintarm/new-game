@@ -125,15 +125,15 @@ class DrawCanvas extends Component {
 
 	render () {
 
-		let polygon = this.state.polygon_arr;
-		let example = this.state.example_line;
+		const polygon = this.state.polygon_arr;
+		const example = this.state.example_line;
 		const player = this.props.player.getLines(),
 			collisionLines = this.props.player.getCollisionLines(),
 			stuff = this.props.stuff.getLines();
 
 		const playerPos = this.props.player.getPos();
 
-		let arrayToDraw = [
+		const arrayToDraw = [
 			polygon, example, ...player, ...stuff, ...collisionLines ];
 
 

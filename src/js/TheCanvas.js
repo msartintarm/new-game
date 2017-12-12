@@ -22,12 +22,12 @@ class TheCanvas extends Component {
         // They are passed the canvas context
         // These two methods prob have very different perf under load
 
-        scale: 1,            // zoom level of canvas
-        size: DEFAULT_SIZE,  // size of canvas itself (in pixels)
-        offset: [ 0,0 ],       // offset of canvas viewport. Independent of scale
-        positionAbsolute: false,  // be relative by default,
+        scale: 1, // zoom level of canvas
+        size: DEFAULT_SIZE, // size of canvas itself (in pixels)
+        offset: [ 0,0 ], // offset of canvas viewport. Independent of scale
+        positionAbsolute: false, // be relative by default,
         backgroundObj: null, // is drawn before offset and scaling
-        show_canvas: true    // is canvas shown?
+        show_canvas: true // is canvas shown?
     };
 
     static CLASS = "the_canvas";
