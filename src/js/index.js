@@ -3,6 +3,7 @@ import Component from './Component';
 import ZoomController from './ZoomController';
 import Player from './Player';
 import Stuff from './Stuff';
+import GameController from './GameController';
 
 import DrawCanvas from './DrawCanvas';
 import GameCanvas from './GameCanvas';
@@ -47,7 +48,8 @@ class App extends Component {
 			<GameCanvas {...props} />: null;
 		const draw_canvas = this.showDraw?
 			<DrawCanvas {...props} />: null;
-
+	    const game_controller = this.showGame?
+			<GameController {...props} />: null;
 		return (
 <div>
 	<div className="container">
@@ -55,6 +57,9 @@ class App extends Component {
 	</div>
 	<div className="container">
 		{draw_canvas}
+	</div>
+	<div className="container">
+		{game_controller}
 	</div>
 </div>
 		);

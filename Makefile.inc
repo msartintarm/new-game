@@ -11,7 +11,7 @@ LIB_JS:= lib/react.15.1.0.js \
 	lib/babel.browser.min.js
 
 JS_TARGET:= $(WORK_DIR)/bundle.js
-JS_MAP:= $(WORK_DIR)//map.js
+JS_MAP:= $(WORK_DIR)/map.js
 JS_TARGET_TEMP:= $(JS_TARGET).temp
 JS_LIB_TARGET:= $(WORK_DIR)/bundle-lib.js
 

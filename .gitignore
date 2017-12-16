@@ -10,3 +10,6 @@ node_modules/gl-matrix/*
 
 # Wtf is this
 npm-debug.log
+
+# Ignore Emacs artifacts yo
+*~

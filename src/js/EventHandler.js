@@ -34,9 +34,7 @@ const registerHandler = (evName, key, theFunction) => {
 };
 
 const deregisterHandler = (evName, key) => {
-
-	// invoke page level function if it doesn't exist already
-	if (evName in registeredHandlerMap &&
+ 	if (evName in registeredHandlerMap &&
 		key in registeredHandlerMap[evName]) {
 		delete eventmap[evName][key];
 	}

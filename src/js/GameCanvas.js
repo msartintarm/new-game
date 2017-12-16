@@ -14,6 +14,8 @@ const cPFB = "play_focuser_big";
 const cPFS = "play_focuser_small";
 const cPA = "play_area";
 
+const CANVAS_CONTAINER_CLASS = "canvas_real_container";
+
 /* Tells canvas what to draw */
 class GameCanvas extends Component {
 
@@ -24,6 +26,7 @@ class GameCanvas extends Component {
         this.state = { show_game_canvas: false };
         registerHandler(cMD, cPFB, this.focusOnPlayArea);
         registerHandler(cMD, cPFS, this.focusOnPlayArea);
+	registerHandler("mouseup", CANVAS_CONTAINER_CLASS, this.preventDefocus);
     }
 
     toggleGameCanvasOnMouseDown = () => {
@@ -38,8 +41,18 @@ class GameCanvas extends Component {
         const newState = { show_game_canvas: (!this.state.show_game_canvas) };
         this.setState(newState, (
             newState.show_game_canvas?
-            () => { this.refs.play_area.focus(); }: null
+		() => {
+		    this.refs.play_area.focus();
+ //		    registerHandler(cMD, CANVAS_CONTAINER_CLASS, this.preventDefocus);
+		    console.log("Registered.");
+		}: null
         ));
+    };
+
+    /** Block page level elements from removing focus on the textbox */
+    preventDefocus = (e) => {
+	console.log("Hey there you're preventing defocus");
+	e.preventDefault();
     };
 
     render () {
@@ -55,7 +68,7 @@ class GameCanvas extends Component {
         vec2.scale(offset, offset, zoom);
 
         const containerAttrs = {
-            className: "canvas_real_container",
+            className: CANVAS_CONTAINER_CLASS,
             style: {
                 width: GAME_SIZE + 4,
                 height: GAME_SIZE + 4,

@@ -393,19 +393,40 @@ class Player {
 
     keydownList = {};
 
+	/* Starts a move. Intended to be exposed to callers. */
+	startMoveLeft () {
+        registerTickEvent(MOVE, this.moveLeft, 0, true);
+	}
+
+	startJump () {
+        registerTickEvent(JUMP, this.jump, 1);
+	}
+
+	startMoveRight () {
+        registerTickEvent(MOVE, this.moveRight, 0, true);
+	}
+
+	/** Terminate ongoing moves */
+	startMoveEnd () {
+		registerTickEvent(MOVE, this.moveEnd, 0, true);
+	}
+
     setPositionOnKeyDown = (e) => {
         this.keydownList[e.keyCode] = true;
         switch (e.keyCode) {
-            case 37: // 'left'
-                registerTickEvent(MOVE, this.moveLeft, 0, true);
-                break;
-            case 38: // 'Up'
-                registerTickEvent(JUMP, this.jump, 1);
-                break;
-            case 39: // 'Right'
-                registerTickEvent(MOVE, this.moveRight, 0, true);
-                break;
-            default: null;
+        case 37: // Left
+		case 65: // 'a'
+			this.startMoveLeft();
+            break;
+        case 38: // Up
+		case 87: // 'w'
+			this.startJump();
+            break;
+        case 39: // Right
+ 		case 68: // 'd'
+			this.startMoveRight();
+            break;
+        default: null;
         }
         e.preventDefault();
     };
@@ -413,21 +434,25 @@ class Player {
     setPositionOnKeyUp = (e) => {
         this.keydownList[e.keyCode] = false;
         switch (e.keyCode) {
-            case 37: // 'Left'
-                if (this.keydownList[39]) {
-                    registerTickEvent(MOVE, this.moveRight, 0, true);
-                } else {
-                    registerTickEvent(MOVE, this.moveEnd, 0, true);
-                }
-                break;
-            case 39: // 'Right'
-                if (this.keydownList[37]) {
-                registerTickEvent(MOVE, this.moveLeft, 0, true);
-                } else {
-                    registerTickEvent(MOVE, this.moveEnd, 0, true);
-                }
-                break;
-            default: break;
+        case 37: // Left
+		case 65: // 'a'
+            if (this.keydownList[39]
+				|| this.keydownList[68]) {
+				this.startMoveRight();
+            } else {
+				this.startMoveEnd();
+            }
+            break;
+        case 39: // Right
+ 		case 68: // 'd'
+            if (this.keydownList[37]
+				|| this.keydownList[65]) {
+				this.startMoveLeft();
+            } else {
+				this.startMoveEnd();
+            }
+            break;
+        default: break;
         }
     };
 
