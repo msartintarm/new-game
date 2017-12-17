@@ -10,7 +10,7 @@ class GameController extends Component {
     static RIGHT_BUTTON = "rb";
     static JUMP_BUTTON = "jb";
 
-	static CONTAINER_STYLE = {
+ 	static CONTAINER_STYLE = {
 		position: "relative",
 		width: "100%",
 		textAlign: "center",
@@ -39,7 +39,7 @@ class GameController extends Component {
 	static JUMP_BUTTON_STYLE = {
 		height: "100%",
 		width: "40%",
-		backgroundColor: "rg(24,2,3)"
+		backgroundColor: "rgb(24,2,3)"
 	};
 
 	constructor (props) {
@@ -48,7 +48,7 @@ class GameController extends Component {
  		this.state = {
 			left_button_pressed: false,
 			right_button_pressed: false,
-			up_button_pressed: false
+			jump_button_pressed: false
 		};
 
 		for(const argList of [
@@ -74,14 +74,17 @@ class GameController extends Component {
 	/* Control the player's moves. */
 	onLeftButtonMouseDown = () => {
 		this.props.player.startMoveLeft();
+		this.setState({ left_button_pressed: true });
 	};
 
 	onRightButtonMouseDown = () => {
 		this.props.player.startMoveRight();
+		this.setState({ right_button_pressed: true });
 	};
 
 	onJumpButtonMouseDown = () => {
 		this.props.player.startJump();
+		this.setState({ jump_button_pressed: true });
 	};
 
     /* Control the player's moves. */
@@ -98,7 +101,7 @@ class GameController extends Component {
 	onButtonMouseMove = (e) => { return e; }
 
 	/* Todo: something cool */
-	onBuuttonMouseOver = (e) => { return e; }
+	onButtonMouseOver = (e) => { return e; }
 	onButtonTouchDown = (e) => { return e; }
 
 	render () {

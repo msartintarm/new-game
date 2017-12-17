@@ -32,7 +32,7 @@ EXORCIST := node_modules/exorcist/bin/exorcist.js
 
 UGLIFY_FLAGS := --uglify [ --compress [ --warnings --unsafe --side_effects --join_vars --loops --evaluate --properties --sequences --comparisons --booleans --hoist_funs --hoist_vars if_return --dead_code --conditionals --unused --if_return ] --mangle --screw-ie8 ]
 
-MINIFYIFY := minifyify --map $(JS_MAP) --output $(JS_MAP) 	$(UGLIFY_FLAGS)
+MINIFYIFY := minifyify --map map.js --output $(JS_MAP) $(UGLIFY_FLAGS)
 
 BABELIFY := babelify  --sourceMapsAbsolute --presets [ es2015 react ] --plugins [ transform-class-properties ]
 BR_FLAGS := --detect-globals=false -d -p [ $(MINIFYIFY) ] -t [ $(BABELIFY) ]
