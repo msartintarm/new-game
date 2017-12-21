@@ -1,15 +1,16 @@
 
-# Ignore build artifacts yo
+# Ignore build artifacts
 work/
 
-# Ignore local install artifacts yo (except for gl-matrix)
+# Ignore local install artifacts (except for gl-matrix)
 node_modules/*
 !node_modules/gl-matrix
 node_modules/gl-matrix/*
 !node_modules/gl-matrix/src
 
-# Wtf is this
 npm-debug.log
 
-# Ignore Emacs artifacts yo
+# Emacs artifacts
 *~
+
+*#
