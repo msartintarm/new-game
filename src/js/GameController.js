@@ -1,9 +1,9 @@
-import Component from './Component';
+import * as React from 'react';
 
 import { registerHandler } from './EventHandler';
 
 /* Tells canvas what to draw */
-class GameController extends Component {
+class GameController extends React.Component {
 
 	static BUTTONS_CONTAINER = "bc";
     static LEFT_BUTTON = "lb";

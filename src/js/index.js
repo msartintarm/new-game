@@ -1,4 +1,5 @@
-import Component from './Component';
+import * as React from 'react';
+import ReactDOM from 'react-dom';
 
 import ZoomController from './ZoomController';
 import Player from './Player';
@@ -11,7 +12,7 @@ import { onTick } from './EventHandler';
 
 const drawHash = window.location.hash.includes("draw");
 
-class App extends Component {
+class App extends React.Component {
 
 	constructor () {
 		super();

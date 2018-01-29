@@ -1,4 +1,4 @@
-import Component from './Component';
+import * as React from 'react';
 
 import vec2 from 'gl-matrix/src/gl-matrix/vec2';
 
@@ -17,7 +17,7 @@ const cPA = "play_area";
 const CANVAS_CONTAINER_CLASS = "canvas_real_container";
 
 /* Tells canvas what to draw */
-class GameCanvas extends Component {
+class GameCanvas extends React.Component {
 
     constructor(props) {
         super(props);

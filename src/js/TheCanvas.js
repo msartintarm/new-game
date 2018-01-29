@@ -1,4 +1,4 @@
-import Component from './Component';
+import * as React from 'react';
 
 const DEFAULT_SIZE = 800;
 
@@ -9,7 +9,7 @@ let warnCount = 0;
     Also has a toggle button to show / hide canvas
     Is position: absolute and fills parent element starting at {0,0}
 */
-class TheCanvas extends Component {
+class TheCanvas extends React.Component {
 
     static defaultProps = {
 

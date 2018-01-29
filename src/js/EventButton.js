@@ -1,4 +1,4 @@
-import Component from './Component';
+import * as React from 'react';
 
 import { registerHandler, deregisterHandler } from './EventHandler';
 
@@ -19,7 +19,7 @@ const getKeycodeName = (val) => {
 };
 
 let initial_val = 54; // first button has key '7'
-class EventButton extends Component {
+class EventButton extends React.Component {
 	constructor(props) {
 		super(props);
 		this.key_val = ++initial_val;

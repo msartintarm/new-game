@@ -1,4 +1,4 @@
-import Component from './Component';
+import * as React from 'react';
 
 import { registerHandler } from './EventHandler';
 
@@ -7,7 +7,7 @@ import TheCanvas from './TheCanvas';
 import DisplayArray from './DisplayArray';
 
 /* Tells canvas what to draw */
-class DrawCanvas extends Component {
+class DrawCanvas extends React.Component {
 
 	constructor (props) {
 		super(props);
