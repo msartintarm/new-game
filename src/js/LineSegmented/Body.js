@@ -1,3 +1,5 @@
+// @flow
+
 import LineSegmented from './LineSegmented';
 import FootSegment from './Foot';
 import Hand from './Hand';
@@ -8,6 +10,13 @@ import Hand from './Hand';
 
 
 class Body {
+
+	face: LineSegmented;
+	body: LineSegmented;
+	hand: Hand;
+	feet: FootSegment[];
+	partList: LineSegmented[];
+
     constructor() {
 
         this.face = new LineSegmented({}, [
@@ -21,12 +30,10 @@ class Body {
         this.hand = (new Hand()).translate([ 120, 100 ]);
         this.feet = [
             FootSegment({
-                setToFrame: this.footFrame,
                 numFrames: 15,
                 translate: [ 73, 130 ]
             }),
             FootSegment({
-                setToFrame: this.footFrame,
                 numFrames: 15,
                 translate: [ 109, 130 ]
             })
@@ -41,12 +48,12 @@ class Body {
         ];
     }
 
-    translate (vec) {
+    translate (vec: number[]) {
         this.partList.map((a) => a.translate(vec));
     }
 
     /* Sets only object that supports multiple frames (the foot) */
-    setFeetToFrame (theFrame) {
+    setFeetToFrame (theFrame: number) {
         this.feet[0].setToFrame(theFrame);
         this.feet[1].setToFrame(theFrame);
     }
@@ -61,7 +68,7 @@ class Body {
         ];
     }
 
-    draw (ctx) {
+    draw (ctx: CanvasRenderingContext2D) {
         this.partList.map((a) => a.draw(ctx));
     }
 

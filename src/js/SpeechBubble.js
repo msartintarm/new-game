@@ -1,3 +1,4 @@
+// @flow
 import LineSegmented from './LineSegmented/LineSegmented';
 
 import TextCanvas from './TextCanvas';
@@ -14,7 +15,11 @@ const TEXT_SIZE = 16;
 /* Draws the speech bubble and the text. */
 class SpeechBubble {
 
-    constructor(opts) {
+	textCanvases: TextCanvas[];
+	bubble: LineSegmented;
+	showBubble: bool;
+
+    constructor(opts: { text: string }) {
         if (!opts.text) { return null; }
         this.textCanvases = opts.text.split('\n').map(
             (text) => {
@@ -27,7 +32,7 @@ class SpeechBubble {
         this.showBubble = true;
     }
 
-    translate(vec) {
+    translate(vec: number[]) {
         this.bubble.translate(vec);
     }
 

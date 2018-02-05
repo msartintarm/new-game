@@ -28,18 +28,18 @@ const lerpLineSegments = (frame1: (number[])[], frame2: (number[])[], numFrames:
     return retArr;
 };
 
-type Options = {
-	translate: number[],
-	numFrames: number,
+export type Options = {
+	translate?: number[],
+	numFrames?: number,
 	setToFrame?: number,
-	fillStyle?: string,
+	fillStyle?: CanvasPattern,
 	fillFrames?: boolean[],
 };
 
 class LineSegmented {
 
 	lineSegments: (number[])[];
-	fillStyle: string;
+	fillStyle: CanvasPattern;
 	fillFrames: boolean[];
 	pos: number[];
 	frames: ((number[])[])[];
@@ -51,7 +51,7 @@ class LineSegmented {
         frameEnd: optional, if present and structure mirrors frameStart
             allow interpolarion.
     */
-	constructor(opts: Options, frameOrSeg: (number[])[], frameEnd: (number[][])) {
+	constructor(opts: Options, frameOrSeg: (number[])[], frameEnd?: (number[][])) {
 
         const _opts = opts || {};
 

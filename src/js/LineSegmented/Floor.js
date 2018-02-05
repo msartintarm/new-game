@@ -1,5 +1,6 @@
 // @flow
 import LineSegmented from './LineSegmented';
+import type {Options} from './LineSegmented';
 
 const floorFrame = [
     [ 1,168,610,169,610,184,2,181,1,168 ],
@@ -74,15 +75,17 @@ image_brick.onload = () => {
 image_brick.src = BRICK_SRC;
 
 class Floor {
-    constructor(opts) {
-        if (!opts) opts = {};
-        opts.fillFrames = fillFrames;
+    constructor(opts: Options) {
+        if (!opts) {
+			opts = {};
+		}
+		opts.fillFrames = fillFrames;
         const ls = new LineSegmented(opts, floorFrame);
         if (pattern_brick) opts.fillStyle = pattern_brick;
         else {
             const a = image_brick.onload;
             image_brick.onload = () => {
-                a();
+                if (a) { a(); }
                 ls.fillStyle = pattern_brick;
                 console.log("sdd22`22FR");
             };

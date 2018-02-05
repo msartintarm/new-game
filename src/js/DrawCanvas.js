@@ -1,3 +1,4 @@
+// @flow
 import * as React from 'react';
 
 import { registerHandler } from './EventHandler';
@@ -6,11 +7,41 @@ import EventButton from './EventButton';
 import TheCanvas from './TheCanvas';
 import DisplayArray from './DisplayArray';
 import GameSettings from './GameSettings';
+import Player from './Player';
+import Stuff from './Stuff';
+
+type Props = {
+	player: Player,
+	stuff: Stuff
+};
+
+type State = {
+	status: string,
+	polygon_arr: number[],
+	polygon_arr_text: string,
+	example_line: number[],
+	example_line_text: string,
+	polygon_arr_committed: number,
+	offset: number[],
+	scale: number
+};
 
 /* Tells canvas what to draw */
-class DrawCanvas extends React.Component {
+class DrawCanvas extends React.Component<Props, State> {
 
-	constructor (props) {
+	getCoords: (MouseEvent) => number[];
+	onCanvasMouseDown: (MouseEvent) => void;
+	onCanvasTouchDown: (MouseEvent) => void;
+	onCanvasKeyDown: (MouseEvent) => void;
+	onCanvasMouseOver: (MouseEvent) => void;
+	onCanvasMouseMove: (MouseEvent) => void;
+
+	line_end: EventButton;
+	line_drop: EventButton;
+	line_loop: EventButton;
+
+
+	constructor (props: Props) {
 		super(props);
 
 		this.state = {
@@ -34,7 +65,7 @@ class DrawCanvas extends React.Component {
 	}
 
 	/* return array from event with offset relative to target */
-	getCoords (e) {
+	getCoords (e: MouseEvent) {
 		const t = e.target;
 		const x = e.pageX - t.offsetLeft - this.state.offset[0];
 		const y = e.pageY - t.offsetTop - this.state.offset[1];
@@ -43,7 +74,7 @@ class DrawCanvas extends React.Component {
 	}
 
 	/* Update polygon array with point from latest canvas click. */
-	onCanvasMouseDown = (e) => { // ES2016 auto bind syntax
+	onCanvasMouseDown = (e: MouseEvent) => {
 		const newArr = [ ...this.state.polygon_arr, ...this.getCoords(e) ]; // make copy
 		const newState = {
 			status: 'new point added',
@@ -52,23 +83,19 @@ class DrawCanvas extends React.Component {
 		};
 		this.setState(newState);
 	}
-/*
-	handleMove(keyCode) {
 
-	}
-*/
 	/* Cut off this line. Only for a given key and if canvas was last clicked
 		Takes it directly from last draw of example line */
-	onCanvasKeyDown = (e) => {
+	onCanvasKeyDown = (e: KeyboardEvent) => {
 		e.preventDefault();
 
 		if (this.state.example_line.length < 2) { return; }
 
 		const newArr = [...this.state.polygon_arr]; // add entry
 
-		const le = this.refs['line end'].key_val;
-		const ll = this.refs['line loop'].key_val;
-		const ld = this.refs['line drop'].key_val;
+		const le = this.line_end.key_val;
+		const ll = this.line_loop.key_val;
+		const ld = this.line_drop.key_val;
 
 		const offs = [...this.state.offset];
 
@@ -77,8 +104,8 @@ class DrawCanvas extends React.Component {
 			newArr.push(this.state.example_line[2]);
 			newArr.push(this.state.example_line[3]);
 		} else if (e.keyCode === ll){
-			newArr.push([...this.state.example_line[1]]);
-			newArr.push([...newArr[1][0]]);
+			newArr.push(this.state.example_line[1]);
+			newArr.push(newArr[0]);
 		} else if (e.keyCode === ld) {
 			null;
 		} else if (e.keyCode === 37) {
@@ -105,7 +132,7 @@ class DrawCanvas extends React.Component {
 	}
 
 	/* Draws example line with last point */
-	onCanvasMouseMove = (e) => {
+	onCanvasMouseMove = (e: EventTarget) => {
 		const len = this.state.polygon_arr.length;
 		if (len - this.state.polygon_arr_committed < 2) { return; }
 		const newArr = [
@@ -150,14 +177,9 @@ class DrawCanvas extends React.Component {
 			decreaseScale={this.decreaseScale}
 			status={this.state.status}
 				>
-				<EventButton
-					name="line drop"
-					ref="line drop" />
-				<EventButton
-					name="line end" ref="line end" />
-				<EventButton
-					name="line loop"
-					ref="line loop" />
+				<EventButton name="line drop" ref={(c) => {this.line_drop = c;}} />
+				<EventButton name="line end" ref={(c) => {this.line_end = c;}} />
+				<EventButton name="line loop" ref={(c) => {this.line_end = c;}} />
 					<DisplayArray array={[playerPos]} line_label="Playuh"/>
 					<DisplayArray array={polygon} line_label="polygon"/>
 					<DisplayArray array={example} line_label="new line"/>

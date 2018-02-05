@@ -1,3 +1,5 @@
+// @flow
+
 import vec2 from 'gl-matrix/src/gl-matrix/vec2';
 
 import { registerHandler, registerTickEvent, deregisterTickEvent } from './EventHandler';
@@ -46,13 +48,40 @@ const MOVING = {
 const MOVE = 'move';
 const JUMP = 'jump';
 
+type CollisionFn = () => (number[])[];
+
 /* Has its own line segments and manages connections to feet and arms
     @collisionlinesFn: type [function]
         Returns array of collision lines (arrays of 4 pts) when invoked.
 */
 class Player {
 
-    constructor(collisionRetrievalFunction) {
+	body: Body;
+	speech_bubble: SpeechBubble;
+	collisionlinesFn: CollisionFn;
+	moveDist: number[];
+	groundSpeed: number;
+	pos: number[];
+	correctionDist: number[];
+	jumpFlag: boolean;
+	secondJumpFlag: boolean;
+	footFrame: number;
+	footMoveFrames: number;
+	moveEndFrames: number;
+	collisionLineList: (number[])[];
+	onGround: boolean;
+	bodyCollisionLine: number[];
+	footCollisionLine1: number[];
+	footCollisionLine2: number[];
+	headCollisionLine1: number[];
+	headCollisionLine2: number[];
+	body_offset_x_1: number;
+	body_offset_x_2: number;
+	head_offset_y: number;
+
+	movingFlag: number;
+
+    constructor(collisionRetrievalFunction: CollisionFn) {
 
         this.collisionlinesFn = collisionRetrievalFunction;
 
@@ -85,7 +114,7 @@ class Player {
         this.headCollisionLine1 = this.addCollisionLine(92, 37, 92, 67);
         this.headCollisionLine2 = this.addCollisionLine(131, 37, 131, 67);
 
-        this.body_offset_x_l = this.bodyCollisionLine[0] - this.pos[0];
+        this.body_offset_x_1 = this.bodyCollisionLine[0] - this.pos[0];
         this.body_offset_x_2 = this.bodyCollisionLine[2] - this.pos[0];
         this.head_offset_y = this.headCollisionLine1[1] - this.pos[1];
 
@@ -94,8 +123,8 @@ class Player {
         registerTickEvent('adjustPosition', this.adjustPosition, 0); // set fall
     }
 
-    addCollisionLine(a,b,c,d) { // registers lines in a useful list
-        const newLine = new Array(a,b,c,d);
+    addCollisionLine(a: number, b: number, c: number, d: number) { // registers lines in a useful list
+        const newLine = [a,b,c,d];
         this.collisionLineList.push(newLine);
         return newLine;
     }
@@ -113,14 +142,6 @@ class Player {
         } else {
             this.jumpFlag = true;
             this.moveDist[1] = -20;
-        }
-    };
-
-    decel = () => {
-        if (this.moveDist < 0) {
-            this.moveDist = Math.min(this.moveDist + 0.25, 0);
-        } else if (this.moveDist > 0) {
-            this.moveDist = Math.max(this.moveDist - 0.25, 0);
         }
     };
 
@@ -148,7 +169,7 @@ class Player {
         this.moveLR(x);
     };
 
-    moveLR (x) { // do things needed by both methods
+    moveLR (x: number) { // do things needed by both methods
         this.moveDist[0] = x;
         this.footFrame = Math.min(this.footFrame + 1, this.footMoveFrames - 1);
         this.body.setFeetToFrame(this.footFrame);
@@ -169,14 +190,14 @@ class Player {
         this.translate(this.moveDist);
     };
 
-    getCollisionPoints (line, vec) {
+    getCollisionPoints (line: number[], vec: number[]) {
         // check collision
         const newCollision = [...line];
         vec2.forEach(newCollision, 0, 0, 0, vec2.add, vec);
         return DetectCollision(newCollision, this.collisionlinesFn());
     }
 
-    getFootCollisionPoints(vec) {
+    getFootCollisionPoints(vec: number[]) {
         const a = [
             ...this.getCollisionPoints(this.footCollisionLine1, vec),
             ...this.getCollisionPoints(this.footCollisionLine2, vec)
@@ -184,7 +205,7 @@ class Player {
         return (a.length < 1)? null: a;
     }
 
-    getHeadCollisionPoints(vec) {
+    getHeadCollisionPoints(vec: number[]) {
         const a = [
             ...this.getCollisionPoints(this.headCollisionLine1, vec),
             ...this.getCollisionPoints(this.headCollisionLine2, vec)
@@ -192,7 +213,7 @@ class Player {
         return (a.length < 1)? null: a;
     }
 
-    getBodyCollisionPoints(vec) {
+    getBodyCollisionPoints(vec: number[]) {
         const a = this.getCollisionPoints(this.bodyCollisionLine, vec);
         return (a.length < 1)? null: a;
     }
@@ -202,7 +223,7 @@ class Player {
         - line: line that is being collided with
         - moveDist: original distance (is modified)
     */
-    preserveGroundSpeed (line, moveDist) {
+    preserveGroundSpeed (line: number[], moveDist: number[]) {
 
         const lineVec = [ // get direction of line.
             line[2] - line[0], line[3] - line[1]
@@ -222,7 +243,7 @@ class Player {
     }
 
     /* add some fall distance in freefall */
-    accelerateGravity (moveVec) {
+    accelerateGravity (moveVec: number[]) {
         const dY = moveVec[1];
         if (this.jumpFlag && dY >= 0 && dY < 5) { // accelerate
             moveVec[1] = dY + .25;
@@ -234,7 +255,7 @@ class Player {
     }
 
     /* checks if you'd be falling into objects and sets dist accordingly */
-    checkFalling (moveDist) {
+    checkFalling (moveDist: number[]) {
 
         // check collision
         const collisionPts = this.getFootCollisionPoints(moveDist);
@@ -253,7 +274,7 @@ class Player {
         } else {
             if (this.onGround) { this.onGround = false; }
             this.accelerateGravity(moveDist);
-            const newCollisionPts = this.getFootCollisionPoints([moveDist]);
+            const newCollisionPts = this.getFootCollisionPoints(moveDist);
             if (newCollisionPts) { // could overshoot ground
                 const minY = getMinY(newCollisionPts).coords[1];
                 if (moveDist[1] > minY - this.pos[1]) {
@@ -268,7 +289,7 @@ class Player {
 //    preserveGroundSpeed(currSpeed, line, newSpeed)
 
     /* checks if you'd hit object with head and sets dist accordingly */
-    checkCeiling (moveDist) {
+    checkCeiling (moveDist: number[]) {
         const dist = [...moveDist];
 
         // check collision
@@ -291,7 +312,7 @@ class Player {
     }
 
     /* sets dist so you don't run into objects */
-    checkPushing (moveDist) {
+    checkPushing (moveDist: number[]) {
         const dist = [...moveDist];
 
         // check collision
@@ -340,7 +361,7 @@ class Player {
     }
 
     /* checks if you've escaped the world..? */
-    checkEscaped (moveDist) {
+    checkEscaped (moveDist: number[]) {
         let dist = [...moveDist];
         if (Math.abs(this.pos[0]) > 5000 ||
             Math.abs(this.pos[1]) > 5000 ||
@@ -351,7 +372,7 @@ class Player {
         return dist;
     }
 
-    moveEndInitialSpeed = null;
+    moveEndInitialSpeed = 0;
     moveEnd = () => { // lose `1 velocity per second`
 
         // set up things if first run
@@ -381,7 +402,7 @@ class Player {
         this.body.setFeetToFrame(f);
     };
 
-    translate (vec) {
+    translate (vec: number[]) {
         for (const oneLine of this.collisionLineList) {
             vec2.forEach(oneLine, 0, 0, 0, vec2.add, vec);
         }
@@ -411,7 +432,7 @@ class Player {
 		registerTickEvent(MOVE, this.moveEnd, 0, true);
 	}
 
-    setPositionOnKeyDown = (e) => {
+    setPositionOnKeyDown = (e: KeyboardEvent) => {
         this.keydownList[e.keyCode] = true;
         switch (e.keyCode) {
         case 37: // Left
@@ -431,7 +452,7 @@ class Player {
         e.preventDefault();
     };
 
-    setPositionOnKeyUp = (e) => {
+    setPositionOnKeyUp = (e: KeyboardEvent) => {
         this.keydownList[e.keyCode] = false;
         switch (e.keyCode) {
         case 37: // Left
@@ -464,7 +485,7 @@ class Player {
         return this.collisionLineList;
     }
 
-    draw (ctx) {
+    draw (ctx: CanvasRenderingContext2D) {
         this.body.draw(ctx);
         this.speech_bubble.draw(ctx);
     }
