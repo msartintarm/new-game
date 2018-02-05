@@ -14,6 +14,7 @@ class DrawCanvas extends React.Component {
 		super(props);
 
 		this.state = {
+			status: 'hovering',
 			polygon_arr: [],
 			polygon_arr_text: 'no coords bro',
 			example_line: [],
@@ -45,6 +46,7 @@ class DrawCanvas extends React.Component {
 	onCanvasMouseDown = (e) => { // ES2016 auto bind syntax
 		const newArr = [ ...this.state.polygon_arr, ...this.getCoords(e) ]; // make copy
 		const newState = {
+			status: 'new point added',
 			polygon_arr: newArr,
 			polygon_arr_text: JSON.stringify(newArr)
 		};
@@ -57,11 +59,8 @@ class DrawCanvas extends React.Component {
 */
 	/* Cut off this line. Only for a given key and if canvas was last clicked
 		Takes it directly from last draw of example line */
-	onCanvasKeyDown = (e) => { // ES2016 auto bind syntax
+	onCanvasKeyDown = (e) => {
 		e.preventDefault();
-
-
-
 
 		if (this.state.example_line.length < 2) { return; }
 
@@ -106,7 +105,7 @@ class DrawCanvas extends React.Component {
 	}
 
 	/* Draws example line with last point */
-	onCanvasMouseMove = (e) => { // ES2016 auto bind syntax
+	onCanvasMouseMove = (e) => {
 		const len = this.state.polygon_arr.length;
 		if (len - this.state.polygon_arr_committed < 2) { return; }
 		const newArr = [
@@ -115,15 +114,12 @@ class DrawCanvas extends React.Component {
 			...this.getCoords(e)
 		];
 		const newState = {
+			status: 'new line being drawn',
 			example_line: newArr,
 			example_line_text: JSON.stringify(newArr)
 		};
 		this.setState(newState);
 	}
-
-	/* Todo: something cool */
-	onCanvasMouseOver = (e) => { return e; }
-	onCanvasTouchDown = (e) => { return e; }
 
 	increaseScale = () => { this.setState({ scale: this.state.scale * 1.25 }); };
 	decreaseScale = () => { this.setState({ scale: this.state.scale * 0.8 }); };
@@ -141,8 +137,6 @@ class DrawCanvas extends React.Component {
 		const arrayToDraw = [
 			polygon, example, ...player, ...stuff, ...collisionLines ];
 
-
-
 		return (
 			<div className="canvas_real_container"
 				style={{backgroundColor: "red"}} >
@@ -151,11 +145,11 @@ class DrawCanvas extends React.Component {
 			scale={this.state.scale}
 					offset={ this.state.offset }
 					lineSegments={ arrayToDraw } />
-				<GameSettings scale={{
-					val: this.state.scale,
-					increase: this.increaseScale,
-					decrease: this.decreaseScale
-				}} >
+				<GameSettings scale={this.state.scale}
+			increaseScale={this.increaseScale}
+			decreaseScale={this.decreaseScale}
+			status={this.state.status}
+				>
 				<EventButton
 					name="line drop"
 					ref="line drop" />

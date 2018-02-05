@@ -12,7 +12,7 @@ JS_LIB_TARGET:= $(WORK_DIR)/bundle-lib.js
 CSS_TARGET:= $(WORK_DIR)/bundle.css
 
 # Get ES6 + React compilation + type checking
-BABELIFY_PACKAGES := babel-core babelify babel-preset-react babel-preset-env babel-plugin-transform-class-properties
+BABELIFY_PACKAGES := babel-core babelify babel-preset-react babel-preset-flow babel-preset-env babel-plugin-transform-class-properties
 BROWSERIFY_PACKAGES := browserify envify uglify-js uglifyify
 ESLINT_PACKAGES := eslint babel-eslint eslint-plugin-react eslint-plugin-node
 REACT_PACKAGES := react react-dom
@@ -22,7 +22,7 @@ ESLINT := node_modules/eslint/bin/eslint.js
 ESLINT_FLAGS := --fix
 
 BROWSERIFY := $(ENV) node_modules/browserify/bin/cmd.js
-BABELIFY := babelify --presets [ env react ] --plugins [ transform-class-properties ]
+BABELIFY := babelify --presets [ env react flow ] --plugins [ transform-class-properties ]
 BROWSERIFY_FLAGS := -d -t [ $(BABELIFY) ]
 #BROWSERIFY_FLAGS := -d -t [ $(BABELIFY) ] -g [ envify --$(ENV) ] -g uglifyify
 
