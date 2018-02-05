@@ -16,7 +16,7 @@ BABELIFY_PACKAGES := babel-core babelify babel-preset-react babel-preset-env bab
 BROWSERIFY_PACKAGES := browserify envify uglify-js uglifyify
 ESLINT_PACKAGES := eslint babel-eslint eslint-plugin-react eslint-plugin-node
 REACT_PACKAGES := react react-dom
-NPM_INSTALL := npm install --save-dev $(BABELIFY_PACKAGES) $(BROWSERIFY_PACKAGES) $(ESLINT_PACKAGES) $(REACT_PACKAGES)
+NPM_INSTALL := npm install --save-dev $(BABELIFY_PACKAGES) $(BROWSERIFY_PACKAGES) $(ESLINT_PACKAGES) $(REACT_PACKAGES) express
 
 ESLINT := node_modules/eslint/bin/eslint.js
 ESLINT_FLAGS := --fix

@@ -5,6 +5,7 @@ import { registerHandler } from './EventHandler';
 import EventButton from './EventButton';
 import TheCanvas from './TheCanvas';
 import DisplayArray from './DisplayArray';
+import GameSettings from './GameSettings';
 
 /* Tells canvas what to draw */
 class DrawCanvas extends React.Component {
@@ -158,6 +159,7 @@ class DrawCanvas extends React.Component {
 					<DisplayArray array={polygon} line_label="polygon"/>
 					<DisplayArray array={example} line_label="new line"/>
 				</div>
+				<GameSettings />
 			</div>
 		);
 	}
