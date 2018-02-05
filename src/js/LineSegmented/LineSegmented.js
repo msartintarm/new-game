@@ -1,3 +1,5 @@
+// @flow
+
 import vec2 from 'gl-matrix/src/gl-matrix/vec2';
 
 const ZERO_VEC = vec2.fromValues(0, 0);
@@ -6,7 +8,7 @@ const ZERO_VEC = vec2.fromValues(0, 0);
     takes two input frames with line segments that are matched up
     Returns array of frames with line-interpolated values
 */
-const lerpLineSegments = (frame1, frame2, numFrames) => {
+const lerpLineSegments = (frame1: (number[])[], frame2: (number[])[], numFrames: number) => {
     const retArr = new Array( numFrames );
     const lenFrame = frame1.length;
     for (let frameCount = 0; frameCount < numFrames; ++frameCount) {
@@ -26,8 +28,21 @@ const lerpLineSegments = (frame1, frame2, numFrames) => {
     return retArr;
 };
 
+type Options = {
+	translate: number[],
+	numFrames: number,
+	setToFrame?: number,
+	fillStyle?: string,
+	fillFrames?: boolean[],
+};
+
 class LineSegmented {
 
+	lineSegments: (number[])[];
+	fillStyle: string;
+	fillFrames: boolean[];
+	pos: number[];
+	frames: ((number[])[])[];
 	static lerp = lerpLineSegments;
 
     /*
@@ -36,7 +51,7 @@ class LineSegmented {
         frameEnd: optional, if present and structure mirrors frameStart
             allow interpolarion.
     */
-	constructor(opts, frameOrSeg, frameEnd) {
+	constructor(opts: Options, frameOrSeg: (number[])[], frameEnd: (number[][])) {
 
         const _opts = opts || {};
 
@@ -68,7 +83,7 @@ class LineSegmented {
 
     /* Select frame index and copy it to this.lineSegments array
         Negativve index means offset index from end */
-    setToFrame(num) {
+    setToFrame(num: number) {
         const index = (num >= 0)? num: this.frames.length + num;
         if (index >= this.frames.length) return;
         this.lineSegments = [];
@@ -83,13 +98,13 @@ class LineSegmented {
         return this;
     }
 
-    translate (vec) {
+    translate (vec: number[]) {
         this._translateNoCopy(vec);
         vec2.add(this.pos, this.pos, vec);
         return this;
     }
 
-    _translateNoCopy (vec) {
+    _translateNoCopy (vec: number[]) {
         if (vec2.equals(vec, ZERO_VEC)) {
             return this; // nothing to translate here
         }
@@ -102,7 +117,7 @@ class LineSegmented {
         return this.lineSegments;
     }
 
-    draw (ctx) {
+    draw (ctx: CanvasRenderingContext2D) {
         const ls = this.lineSegments;
         ctx.save();
         ctx.beginPath();

@@ -1,5 +1,5 @@
+// @flow
 import LineSegmented from './LineSegmented';
-
 
 const floorFrame = [
     [ 1,168,610,169,610,184,2,181,1,168 ],

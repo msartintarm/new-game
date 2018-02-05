@@ -14,7 +14,7 @@ CSS_TARGET:= $(WORK_DIR)/bundle.css
 # Get ES6 + React compilation + type checking
 BABELIFY_PACKAGES := babel-core babelify babel-preset-react babel-preset-flow babel-preset-env babel-plugin-transform-class-properties
 BROWSERIFY_PACKAGES := browserify envify uglify-js uglifyify
-ESLINT_PACKAGES := eslint babel-eslint eslint-plugin-react eslint-plugin-node
+ESLINT_PACKAGES := eslint babel-eslint eslint-plugin-react eslint-plugin-node eslint-plugin-flowtype
 REACT_PACKAGES := react react-dom
 NPM_INSTALL := npm install --save-dev $(BABELIFY_PACKAGES) $(BROWSERIFY_PACKAGES) $(ESLINT_PACKAGES) $(REACT_PACKAGES) express
 
