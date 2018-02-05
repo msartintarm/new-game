@@ -9,7 +9,6 @@ div {
 	margin: auto;
 }
 
-.canvas_real_container > div,
 .canvas_real_container > button {
 	border: 2px solid brown;
 }
@@ -41,7 +40,8 @@ div {
 }
 
 .the_canvas {
-filter: blur(0px);
+	border: 2px solid brown;
+    filter: blur(0px);
 	transition:
 		opacity 1.5s ease-in,
 		filter 3s cubic-bezier(.02,.58,.5,.97),
@@ -92,14 +92,14 @@ filter: blur(0px);
 .play_focuser_small:before {
 	content: "Pause"
 }
-.play_focuser_big { 
+.play_focuser_big {
 	top: 40%;
 	right: 50%;
 	font-size: 2rem;
 	color: rgb(255,255,255);
 	background-color: rgb(0,0,0);
 }
-.play_focuser_big:before { 
+.play_focuser_big:before {
 	content: "Play!"
 }
 
@@ -109,4 +109,11 @@ filter: blur(0px);
 	top: 0;
 	left: -3000px;
 	opacity: 0;
+}
+
+.settings {
+    position: fixed;
+	bottom: 0;
+	left: 0;
+	background-color: rgba(70, 70, 70, .6);
 }

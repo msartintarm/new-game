@@ -19,7 +19,8 @@ class DrawCanvas extends React.Component {
 			example_line: [],
 			example_line_text: 'no coords bro',
 			polygon_arr_committed: 0,
-			offset: [ 0,0 ]
+			offset: [ 0,0 ],
+			scale: 1
 		};
 
 		for(const argList of [
@@ -124,6 +125,9 @@ class DrawCanvas extends React.Component {
 	onCanvasMouseOver = (e) => { return e; }
 	onCanvasTouchDown = (e) => { return e; }
 
+	increaseScale = () => { this.setState({ scale: this.state.scale * 1.25 }); };
+	decreaseScale = () => { this.setState({ scale: this.state.scale * 0.8 }); };
+
 	render () {
 
 		const polygon = this.state.polygon_arr;
@@ -143,9 +147,15 @@ class DrawCanvas extends React.Component {
 			<div className="canvas_real_container"
 				style={{backgroundColor: "red"}} >
 				<TheCanvas
-					size={3200}
+			size={3200}
+			scale={this.state.scale}
 					offset={ this.state.offset }
 					lineSegments={ arrayToDraw } />
+				<GameSettings scale={{
+					val: this.state.scale,
+					increase: this.increaseScale,
+					decrease: this.decreaseScale
+				}} >
 				<EventButton
 					name="line drop"
 					ref="line drop" />
@@ -154,12 +164,10 @@ class DrawCanvas extends React.Component {
 				<EventButton
 					name="line loop"
 					ref="line loop" />
-				<div>
 					<DisplayArray array={[playerPos]} line_label="Playuh"/>
 					<DisplayArray array={polygon} line_label="polygon"/>
 					<DisplayArray array={example} line_label="new line"/>
-				</div>
-				<GameSettings />
+				</GameSettings>
 			</div>
 		);
 	}
