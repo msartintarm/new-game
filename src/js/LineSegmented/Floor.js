@@ -1,8 +1,8 @@
 // @flow
 import LineSegmented from './LineSegmented';
-import type {Options} from './LineSegmented';
+import type {Options, Frame} from './LineSegmented';
 
-const floorFrame = [
+const floorFrame: Frame = [
     [ 1,168,610,169,610,184,2,181,1,168 ],
     [ 3,794,2,7,5,797,2,769,779,764,782,785,3,794 ],
     [ 1596,1560,2,756 ],

@@ -36,13 +36,18 @@ export type Options = {
 	fillFrames?: boolean[],
 };
 
+export type Segment = number[]; // A line segment is an array of points
+export type Frame = (Segment)[]; // A frame consists of multiple segments
+
+export type Vector = number[]; // Always a fixed length segment
+
 class LineSegmented {
 
-	lineSegments: (number[])[];
+	lineSegments: Frame;
 	fillStyle: CanvasPattern;
 	fillFrames: boolean[];
 	pos: number[];
-	frames: ((number[])[])[];
+	frames: (Frame)[];
 	static lerp = lerpLineSegments;
 
     /*
@@ -51,12 +56,13 @@ class LineSegmented {
         frameEnd: optional, if present and structure mirrors frameStart
             allow interpolarion.
     */
-	constructor(opts: Options, frameOrSeg: (number[])[], frameEnd?: (number[][])) {
+	constructor(opts?: Options, frameOrSeg: Frame, frameEnd?: Frame) {
 
         const _opts = opts || {};
 
         const _t = _opts.translate;
-        const _nF = _opts.numFrames;
+
+		const _nF = _opts.numFrames;
         const _sF = _opts.setToFrame;
         const _fS = _opts.fillStyle;
         const _fF = _opts.fillFrames;
@@ -68,9 +74,11 @@ class LineSegmented {
 
         // either one line segment or multipleframes
         if (frameEnd) {
-            this.frames = _nF?
-                this.constructor.lerp(frameOrSeg, frameEnd, _nF):
-                [ frameOrSeg, frameEnd ];
+			if (_nF) {
+				this.frames = this.constructor.lerp(frameOrSeg, frameEnd, _nF);
+			} else {
+				this.frames = [ frameOrSeg, frameEnd ];
+			}
             this.setToFrame(_sF || 0); // Load this.lineSegments
         } else {
             this.lineSegments = [...frameOrSeg];

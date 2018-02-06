@@ -91,9 +91,9 @@ class Player {
         this.correctionDist = vec2.create();
         this.body = new Body();
 
-        this.speech_bubble = new SpeechBubble({
-            text: "Oh hey there pal. \n Wow, I can move using \n the arrow keys!"
-        });
+        this.speech_bubble = new SpeechBubble(
+            "Oh hey there pal. \n Wow, I can move using \n the arrow keys!"
+        );
 
 
         this.jumpFlag = false;
@@ -124,7 +124,7 @@ class Player {
     }
 
     addCollisionLine(a: number, b: number, c: number, d: number) { // registers lines in a useful list
-        const newLine = [a,b,c,d];
+        const newLine = [ a,b,c,d ];
         this.collisionLineList.push(newLine);
         return newLine;
     }

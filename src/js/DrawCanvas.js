@@ -67,8 +67,12 @@ class DrawCanvas extends React.Component<Props, State> {
 	/* return array from event with offset relative to target */
 	getCoords (e: MouseEvent) {
 		const t = e.target;
-		const x = e.pageX - t.offsetLeft - this.state.offset[0];
-		const y = e.pageY - t.offsetTop - this.state.offset[1];
+		let x = e.pageX - this.state.offset[0];
+		let y = e.pageY - this.state.offset[1];
+		if (t instanceof HTMLElement) {
+			x -= t.offsetLeft;
+			y -= t.offsetTop;
+		}
 		console.log(JSON.stringify([ x, y ]));
 		return [ x, y ];
 	}
@@ -132,7 +136,7 @@ class DrawCanvas extends React.Component<Props, State> {
 	}
 
 	/* Draws example line with last point */
-	onCanvasMouseMove = (e: EventTarget) => {
+	onCanvasMouseMove = (e: MouseEvent) => {
 		const len = this.state.polygon_arr.length;
 		if (len - this.state.polygon_arr_committed < 2) { return; }
 		const newArr = [

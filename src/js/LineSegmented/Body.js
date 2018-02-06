@@ -1,12 +1,19 @@
 // @flow
 
 import LineSegmented from './LineSegmented';
+import type {Frame} from './LineSegmented';
 import FootSegment from './Foot';
 import Hand from './Hand';
 
+const face: Frame = [
+    [ 115,105,106,104,102,89,102,71,105,74,115,75 ],
+    [ 113,88,106,88 ],
+    [ 110,63,107,60,107,56,109,51,111,54,111,60,110,63 ] // eyeball
+];
 
-
-
+const body: Frame = [
+    [ 57,130,139,129 ],[ 96,130,94,13,125,44 ]
+];
 
 
 class Body {
@@ -19,14 +26,8 @@ class Body {
 
     constructor() {
 
-        this.face = new LineSegmented({}, [
-            [ 115,105,106,104,102,89,102,71,105,74,115,75 ],
-            [ 113,88,106,88 ],
-            [ 110,63,107,60,107,56,109,51,111,54,111,60,110,63 ] // eyeball
-        ]);
-        this.body = new LineSegmented({}, [
-            [ 57,130,139,129 ],[ 96,130,94,13,125,44 ]
-        ]);
+        this.face = new LineSegmented({}, face);
+        this.body = new LineSegmented({}, body);
         this.hand = (new Hand()).translate([ 120, 100 ]);
         this.feet = [
             FootSegment({

@@ -1,9 +1,18 @@
-
+// @flow
 /* Draws text onto a canvas */
 class TextCanvas {
 
+	canvas: HTMLCanvasElement;
+	text: string;
+	textSize: number;
+	font: string;
+	fillStyle: string;
+
     // Render text on a hidden canvas
-    constructor(opts) {
+    constructor(opts: {
+		textSize: number,
+		text: string
+	}) {
         if (!opts.textSize || !opts.text) { return null; }
 
         this.text = opts.text;
@@ -15,7 +24,7 @@ class TextCanvas {
         this.renderTextIntoCanvas();
     }
 
-    setCanvasWidth(ctx) {
+    setCanvasWidth(ctx: CanvasRenderingContext2D) {
         this.canvas.width = Math.pow(
             2, Math.ceil(
                 Math.log(ctx.measureText(this.text).width) / Math.LN2));
