@@ -1,13 +1,20 @@
+// @flow
+import type LineSegmented from './LineSegmented/LineSegmented';
 import Hook from './LineSegmented/Hook';
 import TwoTonWeight from './LineSegmented/TwoTonWeight';
 import Floor from './LineSegmented/Floor';
 
 class Stuff {
-	constructor (ctx) {
+
+	floor: LineSegmented;
+	hook: Hook;
+	weight: LineSegmented;
+
+	constructor () {
 		const theOffset = [ -582, 202 ];
 		this.hook = new Hook().translate(theOffset);
-		this.weight = (new TwoTonWeight()).translate([ 597,227 ]).translate(theOffset);
-		this.floor = new Floor(ctx);
+		this.weight = TwoTonWeight.create().translate([ 597,227 ]).translate(theOffset);
+		this.floor = Floor.create();
 	}
 
 	getLines () {
@@ -26,7 +33,7 @@ class Stuff {
 		];
 	};
 
-    draw (ctx) {
+    draw (ctx: CanvasRenderingContext2D) {
         this.hook.draw(ctx);
         this.weight.draw(ctx);
         this.floor.draw(ctx);

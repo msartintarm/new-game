@@ -1,3 +1,4 @@
+// @flow
 import * as React from 'react';
 
 import vec2 from 'gl-matrix/src/gl-matrix/vec2';
@@ -6,6 +7,10 @@ import { registerHandler } from './EventHandler';
 
 import TheCanvas from './TheCanvas';
 import Background from './Background';
+
+import type ZoomController from './ZoomController';
+import type Player from './Player';
+import type Stuff from './Stuff';
 
 const GAME_SIZE = 800;
 
@@ -16,10 +21,22 @@ const cPA = "play_area";
 
 const CANVAS_CONTAINER_CLASS = "canvas_real_container";
 
-/* Tells canvas what to draw */
-class GameCanvas extends React.Component {
+type Props = {
+	zoom: ZoomController;
+	player: Player;
+	stuff: Stuff;
+};
 
-    constructor(props) {
+type State = {
+	show_game_canvas: boolean;
+};
+
+/* Tells canvas what to draw */
+class GameCanvas extends React.Component<Props, State> {
+
+	background: Background;
+
+	constructor(props: Props) {
         super(props);
         this.background = new Background({ size: GAME_SIZE });
 
@@ -36,21 +53,19 @@ class GameCanvas extends React.Component {
         this.setState(newState);
     };
 
-    focusOnPlayArea = (e) => {
+    focusOnPlayArea = (e: MouseEvent) => {
         e.preventDefault();
         const newState = { show_game_canvas: (!this.state.show_game_canvas) };
-        this.setState(newState, (
-            newState.show_game_canvas?
-		() => {
-		    this.refs.play_area.focus();
- //		    registerHandler(cMD, CANVAS_CONTAINER_CLASS, this.preventDefocus);
-		    console.log("Registered.");
-		}: null
-        ));
+        this.setState(newState, () => {
+			if (newState.show_game_canvas) {
+				this.refs.play_area.focus();
+			}
+			// registerHandler(cMD, CANVAS_CONTAINER_CLASS, this.preventDefocus);
+        });
     };
 
     /** Block page level elements from removing focus on the textbox */
-    preventDefocus = (e) => {
+    preventDefocus = (e: MouseEvent) => {
 	console.log("Hey there you're preventing defocus");
 	e.preventDefault();
     };

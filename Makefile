@@ -29,6 +29,7 @@ $(JS_LIB_TARGET): $(LIB_JS)
 	cat $^ >& $@
 
 $(JS_TARGET): $(ENTRY_JS) $(SRC_JS)
+	flow
 	$(ESLINT) $^ $(ESLINT_FLAGS)
 #   $(BROWSERIFY) $< $(BROWSERIFY_FLAGS) | $(UGLIFY) > $@
 	$(BROWSERIFY) $< $(BROWSERIFY_FLAGS) > $@

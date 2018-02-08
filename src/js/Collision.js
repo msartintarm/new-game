@@ -1,6 +1,8 @@
+// @flow
 const NON_LINE_WARNING = "You need a 2d line to detect collisions. [1, 99, 3, 97]. Kapisch please.";
 
 import lineIntersection from './LineSegmented/lineIntersection';
+import type {Segment, Frame} from './LineSegmented/LineSegmented';
 
 /*
     Contains lines and checks for collisions between them and env.
@@ -10,7 +12,7 @@ import lineIntersection from './LineSegmented/lineIntersection';
         line: [lineAX, lineAY, lineBX, lineBY]
     }
 */
-const DetectCollision = (theLine, theSegs) => {
+const DetectCollision = (theLine: Segment, theSegs: Frame) => {
 
     if (theLine.length !== 4) { throw (NON_LINE_WARNING); }
     const resArr = [];

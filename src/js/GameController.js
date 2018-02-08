@@ -1,9 +1,22 @@
+// @flow
 import * as React from 'react';
 
 import { registerHandler } from './EventHandler';
 
+import type Player from './Player';
+
+type Props = {
+	player: Player;
+};
+
+type State = {
+	left_button_pressed: boolean,
+	right_button_pressed: boolean,
+	jump_button_pressed: boolean
+};
+
 /* Tells canvas what to draw */
-class GameController extends React.Component {
+class GameController extends React.Component<Props, State> {
 
 	static BUTTONS_CONTAINER = "bc";
     static LEFT_BUTTON = "lb";
@@ -42,7 +55,7 @@ class GameController extends React.Component {
 		backgroundColor: "rgb(24,2,3)"
 	};
 
-	constructor (props) {
+	constructor (props: Props) {
 		super(props);
 
  		this.state = {
@@ -92,17 +105,17 @@ class GameController extends React.Component {
 		this.props.player.startMoveEnd();
 	};
 
-	preventTouchMouseEvents = (e) => {
+	preventTouchMouseEvents = (e: TouchEvent) => {
 		e.preventDefault();
 		this.props.player.startMoveEnd();
 	};
 
 	/* Draws example line with last point */
-	onButtonMouseMove = (e) => { return e; }
+	onButtonMouseMove = (e: MouseEvent) => { return e; }
 
 	/* Todo: something cool */
-	onButtonMouseOver = (e) => { return e; }
-	onButtonTouchDown = (e) => { return e; }
+	onButtonMouseOver = (e: MouseEvent) => { return e; }
+	onButtonTouchDown = (e: TouchEvent) => { return e; }
 
 	render () {
 

@@ -75,7 +75,7 @@ image_brick.onload = () => {
 image_brick.src = BRICK_SRC;
 
 class Floor {
-    constructor(opts: Options) {
+    static create(opts?: Options): LineSegmented {
         if (!opts) {
 			opts = {};
 		}
@@ -90,8 +90,8 @@ class Floor {
                 console.log("sdd22`22FR");
             };
             console.log("{sofidn");
-        return ls;
         }
+        return ls;
     }
 }
 

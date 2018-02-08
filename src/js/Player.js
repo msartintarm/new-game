@@ -4,6 +4,7 @@ import vec2 from 'gl-matrix/src/gl-matrix/vec2';
 
 import { registerHandler, registerTickEvent, deregisterTickEvent } from './EventHandler';
 
+import type {Frame, Segment} from './LineSegmented/LineSegmented';
 import Body from './LineSegmented/Body';
 import SpeechBubble from './SpeechBubble';
 
@@ -48,7 +49,7 @@ const MOVING = {
 const MOVE = 'move';
 const JUMP = 'jump';
 
-type CollisionFn = () => (number[])[];
+type CollisionFn = Function;
 
 /* Has its own line segments and manages connections to feet and arms
     @collisionlinesFn: type [function]
@@ -68,17 +69,16 @@ class Player {
 	footFrame: number;
 	footMoveFrames: number;
 	moveEndFrames: number;
-	collisionLineList: (number[])[];
+	collisionLineList: Frame;
 	onGround: boolean;
-	bodyCollisionLine: number[];
-	footCollisionLine1: number[];
-	footCollisionLine2: number[];
-	headCollisionLine1: number[];
-	headCollisionLine2: number[];
+	bodyCollisionLine: Segment;
+	footCollisionLine1: Segment;
+	footCollisionLine2: Segment;
+	headCollisionLine1: Segment;
+	headCollisionLine2: Segment;
 	body_offset_x_1: number;
 	body_offset_x_2: number;
 	head_offset_y: number;
-
 	movingFlag: number;
 
     constructor(collisionRetrievalFunction: CollisionFn) {

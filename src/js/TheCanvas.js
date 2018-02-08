@@ -1,15 +1,45 @@
+// @flow
 import * as React from 'react';
+
+import type {Frame, Segment} from './LineSegmented/LineSegmented';
+import type Background from './Background';
+import type Player from './Player';
+import type Stuff from './Stuff';
 
 const DEFAULT_SIZE = 800;
 
 let warnCount = 0;
+
+type ObjectsToDraw = Player | Stuff;
+
+type Props = {
+
+    lineSegments: Frame,
+    // Array of 2D arrays -- see this._isLineSegment check.
+    // The canvas draws them directly
+
+    drawObjs: ObjectsToDraw[],
+    // objects with .draw methods can be passed in instead.
+    // They are passed the canvas context
+    // These two methods prob have very different perf under load
+
+    scale: number, // zoom level of canvas
+    size: number, // size of canvas itself (in pixels)
+    offset: number[], // offset of canvas viewport. Independent of scale
+    positionAbsolute: boolean, // be relative by default,
+    backgroundObj?: Background, // is drawn before offset and scaling
+    show_canvas: boolean // is canvas shown?
+};
 
 /*
     Base-level canvas class that binds passed-down line segments with DOM canvas
     Also has a toggle button to show / hide canvas
     Is position: absolute and fills parent element starting at {0,0}
 */
-class TheCanvas extends React.Component {
+class TheCanvas extends React.Component<Props> {
+
+	ctx: CanvasRenderingContext2D;
+	pattern_brick: string;
 
     static defaultProps = {
 
@@ -42,7 +72,7 @@ class TheCanvas extends React.Component {
     }
 
     /* Returns false if this is not an array of 2d arrays [0,1,1,2,2,3] */
-    _isLineSegment (points) {
+    _isLineSegment (points: Segment) {
         let t;
         if (!points) {
             console.warn("No point list provided");
@@ -63,7 +93,7 @@ class TheCanvas extends React.Component {
     /*
         input needs to be 'line segment'
     */
-    _paintLineSegment (points) {
+    _paintLineSegment (points: Segment) {
         if (!this._isLineSegment(points)) return; // make sure input is 'line segment format'
         this.ctx.save();
         this.ctx.beginPath();
@@ -78,7 +108,7 @@ class TheCanvas extends React.Component {
         this.ctx.restore();
     }
 
-    _paint (lineSegments) {
+    _paint (lineSegments: Frame) {
 
         // important optimization: do not draw canvases that are not being used
         if (!this.props.show_canvas) { return; }

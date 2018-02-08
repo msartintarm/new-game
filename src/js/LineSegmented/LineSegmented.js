@@ -2,13 +2,17 @@
 
 import vec2 from 'gl-matrix/src/gl-matrix/vec2';
 
+export type Segment = number[]; // A line segment is an array of points
+export type Frame = (Segment)[]; // A frame consists of multiple segments
+export type Vector = number[]; // Always a fixed length segment
+
 const ZERO_VEC = vec2.fromValues(0, 0);
 
 /*
     takes two input frames with line segments that are matched up
     Returns array of frames with line-interpolated values
 */
-const lerpLineSegments = (frame1: (number[])[], frame2: (number[])[], numFrames: number) => {
+const lerpLineSegments = (frame1: Frame, frame2: Frame, numFrames: number) => {
     const retArr = new Array( numFrames );
     const lenFrame = frame1.length;
     for (let frameCount = 0; frameCount < numFrames; ++frameCount) {
@@ -34,16 +38,14 @@ export type Options = {
 	setToFrame?: number,
 	fillStyle?: CanvasPattern,
 	fillFrames?: boolean[],
+	collisionLines?: Segment
 };
 
-export type Segment = number[]; // A line segment is an array of points
-export type Frame = (Segment)[]; // A frame consists of multiple segments
-
-export type Vector = number[]; // Always a fixed length segment
 
 class LineSegmented {
 
 	lineSegments: Frame;
+	collisionSegment: Segment;
 	fillStyle: CanvasPattern;
 	fillFrames: boolean[];
 	pos: number[];
@@ -83,6 +85,10 @@ class LineSegmented {
         } else {
             this.lineSegments = [...frameOrSeg];
         }
+
+		if (_opts.collisionLines) {
+			this.collisionSegment = [..._opts.collisionLines];
+		}
 
         if (_t) { this.translate(_t); }
 
@@ -124,6 +130,13 @@ class LineSegmented {
     getLines () {
         return this.lineSegments;
     }
+
+	getCollisionLines(): Segment {
+		if (!this.collisionSegment) {
+			throw "Collision lines do not exist for this object."
+		}
+		return this.collisionSegment;
+	}
 
     draw (ctx: CanvasRenderingContext2D) {
         const ls = this.lineSegments;

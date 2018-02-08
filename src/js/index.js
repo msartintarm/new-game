@@ -1,3 +1,4 @@
+// @flow
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -12,7 +13,17 @@ import { onTick } from './EventHandler';
 
 const drawHash = window.location.hash.includes("draw");
 
-class App extends React.Component {
+type State = {
+	frameNum: number;
+};
+
+class App extends React.Component<{}, State> {
+
+	stuff: Stuff;
+	player: Player;
+	zoom: ZoomController;
+	showGame: boolean;
+	showDraw: boolean;
 
     constructor () {
         super();
@@ -67,4 +78,8 @@ class App extends React.Component {
     }
 }
 
-ReactDOM.render(<App />, document.body.firstElementChild);
+const body = document.body;
+const theElement = body && body.firstElementChild;
+if (theElement instanceof Element) {
+	ReactDOM.render(<App />, theElement);
+}

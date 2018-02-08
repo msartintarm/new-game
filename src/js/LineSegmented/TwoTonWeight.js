@@ -1,4 +1,6 @@
+// @flow
 import LineSegmented from './LineSegmented';
+import type {Options} from './LineSegmented';
 
 const theExterior = [ 20,117,174,118,94,30,20,117 ];
 
@@ -14,11 +16,12 @@ const theFrame = [
 
 /* The Two Ton Weight */
 class TwoTonWeight {
-    constructor(opts) {
+    static create (opts?: Options): LineSegmented {
+		if (!opts) {
+			opts = {};
+		}
+		opts.collisionLines = theExterior;
         const ls = new LineSegmented(opts, theFrame);
-        ls.getCollisionLines = () => {
-            return [theExterior];
-        };
         return ls;
     }
 }

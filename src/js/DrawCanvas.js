@@ -7,8 +7,9 @@ import EventButton from './EventButton';
 import TheCanvas from './TheCanvas';
 import DisplayArray from './DisplayArray';
 import GameSettings from './GameSettings';
-import Player from './Player';
 import Stuff from './Stuff';
+
+import Player from './Player';
 
 type Props = {
 	player: Player,
@@ -181,9 +182,9 @@ class DrawCanvas extends React.Component<Props, State> {
 			decreaseScale={this.decreaseScale}
 			status={this.state.status}
 				>
-				<EventButton name="line drop" ref={(c) => {this.line_drop = c;}} />
-				<EventButton name="line end" ref={(c) => {this.line_end = c;}} />
-				<EventButton name="line loop" ref={(c) => {this.line_end = c;}} />
+				<EventButton name="line drop" ref={(c) => {if (c) {this.line_drop = c;}}} />
+				<EventButton name="line end" ref={(c) => {if (c) {this.line_end = c;}}} />
+				<EventButton name="line loop" ref={(c) => {if (c) {this.line_loop = c;}}} />
 					<DisplayArray array={[playerPos]} line_label="Playuh"/>
 					<DisplayArray array={polygon} line_label="polygon"/>
 					<DisplayArray array={example} line_label="new line"/>

@@ -1,15 +1,16 @@
+// @flow
 import * as React from 'react';
 
 import { registerHandler, deregisterHandler } from './EventHandler';
 
 // for keys that fromCharCode doesn't define
 const keyCodeMap = {
-	16: 'Left Shift',
-	32: 'Space',
-	37: 'Left',
-	38: 'Up',
-	39: 'Right',
-	40: 'Down'
+	"16": 'Left Shift',
+	"32": 'Space',
+	"37": 'Left',
+	"38": 'Up',
+	"39": 'Right',
+	"40": 'Down'
 };
 
 const getKeycodeName = (val) => {
@@ -18,9 +19,21 @@ const getKeycodeName = (val) => {
 		|| '\'' + val + '\'';
 };
 
+type Props = {
+	name: string;
+};
+
+type State = {
+	button_text?: string;
+};
+
 let initial_val = 54; // first button has key '7'
-class EventButton extends React.Component {
-	constructor(props) {
+class EventButton extends React.Component<Props, State> {
+
+	className: string;
+	key_val: number;
+
+	constructor(props: Props) {
 		super(props);
 		this.key_val = ++initial_val;
 		this.className=(this.props.name + ' button').replace(/ /g,"-");
@@ -31,7 +44,7 @@ class EventButton extends React.Component {
 	}
 
 	/* Edits provided object and adds key / val pair for button text */
-	addStartButtonText (obj) {
+	addStartButtonText (obj: State) {
 		const keyName = getKeycodeName(this.key_val);
 		obj.button_text = 'Set ' + (this.props.name || 'the')
 			+ ' keycode (currently ' + keyName + ')';
@@ -39,7 +52,7 @@ class EventButton extends React.Component {
 	}
 
 	/* Edits provided object and adds key / val pair for button text */
-	addSetButtonText (obj) {
+	addSetButtonText (obj: State) {
 		const keyName = getKeycodeName(this.key_val);
 		obj.button_text = 'The ' + (this.props.name || 'event')
 			+ ' set to ' + keyName;
@@ -48,7 +61,7 @@ class EventButton extends React.Component {
 	/* Returns function indexed by key that can be bound
 		to DOM elements and deletes itself after execution
 	*/
-	setKey = (ev) => {
+	setKey = (ev: KeyboardEvent) => {
 		const theCode = ev.keyCode;
 		this.key_val = theCode;
 		const newState = {};

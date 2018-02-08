@@ -1,3 +1,4 @@
+// @flow
 import vec2 from 'gl-matrix/src/gl-matrix/vec2';
 
 const ROOM_SIZE = 800; // can be made smaller
@@ -9,28 +10,28 @@ const ROOM_SIZE = 800; // can be made smaller
 
 const coordMaps = [{
 	boxSize: ROOM_SIZE,
-	0: {
-		0: 1
+	"0": {
+		"0": 1
 	},
-	2: {
-		0: 1
+	"2": {
+		"0": 1
 	}
 }, {
 	boxSize: (ROOM_SIZE * 2),
-	0: {
-		0: 0.5
+	"0": {
+		"0": 0.5
 	},
-	1: {
-		0: 0.5
+	"1": {
+		"0": 0.5
 	}
 }, {
 	boxSize: (ROOM_SIZE * 4),
 	"-1": {
-		0: 0.25
+		"0": 0.25
 	},
-	0: {
+	"0": {
 		"-1": 0.25,
-		0: 0.25
+		"0": 0.25
 	}
 }];
 
@@ -41,13 +42,16 @@ const coordMaps = [{
 */
 class ZoomController {
 
+	playerOffset: number[];
+	zoom: number;
+
 	/* Calculates box based on player position */
-	constructor (initialPos) {
+	constructor (initialPos: number[]) {
 		this.playerOffset = [...initialPos];
 		this.setZoom(initialPos);
 	}
 
-	setZoom (pos) {
+	setZoom (pos: number[]) {
 
 ///		let realPos = vec2.sub(vec2.create(), pos, this.playerOffset);
 		const realPos = pos;
@@ -57,8 +61,8 @@ class ZoomController {
 		let x, y, a, arr;
 		for (const map of coordMaps) {
 			a = map.boxSize;
-			x = Math.floor(realPos[0] / a);
-			y = Math.floor(realPos[1] / a);
+			x = String(Math.floor(realPos[0] / a));
+			y = String(Math.floor(realPos[1] / a));
 			zoomLev = (arr = map[x]) && arr[y] || null;
 			if (zoomLev) { break; }
 		}
