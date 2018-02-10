@@ -1,3 +1,5 @@
+// @flow
+import type {Options} from './LineSegmented';
 import LineSegmented from './LineSegmented';
 
 const theHook = [
@@ -9,7 +11,7 @@ const theHook = [
 
 /* The Hook. Converted to using composition*/
 class Hook {
-    constructor(opts) {
+    static create(opts?: Options): LineSegmented {
         return new LineSegmented(opts, theHook);
     }
 }

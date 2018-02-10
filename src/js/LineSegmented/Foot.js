@@ -1,3 +1,5 @@
+// @flow
+import type {Options} from './LineSegmented';
 import LineSegmented from './LineSegmented';
 
 const frameStart = [
@@ -10,10 +12,12 @@ const frameEnd = [
 ];
 
 /* The Foot */
-const FootSegment = (opts) => {
-	opts.fillStyle = "rgb(100, 100, 40)";
-	opts.fillFrames = [ false, true ];
-    return new LineSegmented(opts, frameStart, frameEnd);
-};
+class Foot {
+	static create(opts: Options): LineSegmented {
+		opts.fillStyle = "rgb(100, 100, 40)";
+		opts.fillFrames = [ false, true ];
+		return new LineSegmented(opts, frameStart, frameEnd);
+	}
+}
 
-export default FootSegment;
+export default Foot;

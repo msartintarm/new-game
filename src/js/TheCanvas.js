@@ -56,7 +56,6 @@ class TheCanvas extends React.Component<Props> {
         size: DEFAULT_SIZE, // size of canvas itself (in pixels)
         offset: [ 0,0 ], // offset of canvas viewport. Independent of scale
         positionAbsolute: false, // be relative by default,
-        backgroundObj: null, // is drawn before offset and scaling
         show_canvas: true // is canvas shown?
     };
 

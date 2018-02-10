@@ -1,7 +1,7 @@
 // @flow
 
 import LineSegmented from './LineSegmented';
-import type {Frame} from './LineSegmented';
+import type {Frame, Options} from './LineSegmented';
 import FootSegment from './Foot';
 import Hand from './Hand';
 
@@ -20,24 +20,27 @@ class Body {
 
 	face: LineSegmented;
 	body: LineSegmented;
-	hand: Hand;
-	feet: FootSegment[];
+	hand: LineSegmented;
+	feet: LineSegmented[];
 	partList: LineSegmented[];
 
     constructor() {
 
+		const footOptions1: Options = {
+            numFrames: 15,
+            translate: [ 73, 130 ]
+        };
+		const footOptions2: Options = {
+            numFrames: 15,
+            translate: [ 109, 130 ]
+		};
+
         this.face = new LineSegmented({}, face);
         this.body = new LineSegmented({}, body);
-        this.hand = (new Hand()).translate([ 120, 100 ]);
+        this.hand = Hand.create().translate([ 120, 100 ]);
         this.feet = [
-            FootSegment({
-                numFrames: 15,
-                translate: [ 73, 130 ]
-            }),
-            FootSegment({
-                numFrames: 15,
-                translate: [ 109, 130 ]
-            })
+            FootSegment.create(footOptions1),
+            FootSegment.create(footOptions2)
         ];
 
         // used to automate drawing / translation a little

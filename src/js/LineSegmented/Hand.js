@@ -1,3 +1,5 @@
+// @flow
+import type {Options} from './LineSegmented';
 import LineSegmented from './LineSegmented';
 
 const HandWithScissors1 = [
@@ -16,7 +18,7 @@ const HandWithScissors2 = [
 ];
 
 class Hand {
-    constructor(opts) {
+    static create(opts?: Options): LineSegmented {
         return new LineSegmented(
             opts, HandWithScissors1, HandWithScissors2);
     }

@@ -1,10 +1,34 @@
-
+// @flow
 const FILL_STYLE_TICK_CHANGE = 40; // higher number means slower change
+
+type BackgroundOptions = {
+	width?: number;
+	height?: number;
+	size?: number;
+};
 
 /* Draws background. */
 class Background {
 
-    constructor(opts) {
+	width: number;
+	height: number;
+    r_inc: boolean;
+    g_inc: boolean;
+    b_inc: boolean;
+    r_hi: number;
+    r_low: number;
+    g_hi: number;
+    g_low: number;
+    b_hi: number;
+    b_low: number;
+    r_val: number;
+    g_val: number;
+    b_val: number;
+    count: number;
+	fillStyle: string;
+
+
+    constructor(opts: BackgroundOptions) {
         this.width = opts.width || opts.size || 200;
         this.height = opts.height || opts.size || 200;
 
@@ -73,7 +97,7 @@ class Background {
         }
     }
 
-    draw (ctx) {
+    draw (ctx: CanvasRenderingContext2D) {
         this.count = (this.count + 1) % FILL_STYLE_TICK_CHANGE;
         if (this.count == 0) {
             this.incRedVal();

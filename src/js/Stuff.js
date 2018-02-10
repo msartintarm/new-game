@@ -7,12 +7,12 @@ import Floor from './LineSegmented/Floor';
 class Stuff {
 
 	floor: LineSegmented;
-	hook: Hook;
+	hook: LineSegmented;
 	weight: LineSegmented;
 
 	constructor () {
 		const theOffset = [ -582, 202 ];
-		this.hook = new Hook().translate(theOffset);
+		this.hook = Hook.create().translate(theOffset);
 		this.weight = TwoTonWeight.create().translate([ 597,227 ]).translate(theOffset);
 		this.floor = Floor.create();
 	}

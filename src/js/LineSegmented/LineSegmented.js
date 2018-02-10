@@ -36,7 +36,7 @@ export type Options = {
 	translate?: number[],
 	numFrames?: number,
 	setToFrame?: number,
-	fillStyle?: CanvasPattern,
+	fillStyle?: CanvasPattern | string,
 	fillFrames?: boolean[],
 	collisionLines?: Segment
 };
@@ -46,7 +46,7 @@ class LineSegmented {
 
 	lineSegments: Frame;
 	collisionSegment: Segment;
-	fillStyle: CanvasPattern;
+	fillStyle: CanvasPattern | string;
 	fillFrames: boolean[];
 	pos: number[];
 	frames: (Frame)[];

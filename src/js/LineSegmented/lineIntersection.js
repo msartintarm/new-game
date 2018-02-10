@@ -1,4 +1,4 @@
-const NON_NUMBER_WARNING = "non number passed into LineIntersection, you twat.";
+// @flow
 
 /// <summary>
 /// Returns the determinant of the 2x2 matrix defined as
@@ -7,7 +7,7 @@ const NON_NUMBER_WARNING = "non number passed into LineIntersection, you twat.";
 /// <item>| y1 y2 |</item>
 /// </list>
 /// </summary>
-const Det2 = (x1, x2, y1, y2) => {
+const Det2 = (x1: number, x2: number, y1: number, y2: number) => {
     return (x1 * y2 - y1 * x2);
 };
 
@@ -15,13 +15,8 @@ const Det2 = (x1, x2, y1, y2) => {
 /// Returns Empty if the lines do not intersect.
 /// Source: http://mathworld.wolfram.com/Line-LineIntersection.html
 /// </summary>
-const lineIntersection = (x1, y1, x2, y2, x3, y3, x4, y4) => {
-    // type checking because JS doesn't have it...
-    for (const oneArg of [ x1, y1, x2, y2, x3, y3, x4, y4 ]) {
-        if (typeof oneArg != "number") {
-            throw (NON_NUMBER_WARNING);
-        }
-    }
+const lineIntersection = (x1: number, y1: number, x2: number, y2: number,
+						  x3: number, y3: number, x4: number, y4: number) => {
 
     const tolerance = 0.000001;
     const EmptyPt = null;
