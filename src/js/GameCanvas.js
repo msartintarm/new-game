@@ -35,6 +35,7 @@ type State = {
 class GameCanvas extends React.Component<Props, State> {
 
 	background: Background;
+	play_area: HTMLElement;
 
 	constructor(props: Props) {
         super(props);
@@ -58,7 +59,7 @@ class GameCanvas extends React.Component<Props, State> {
         const newState = { show_game_canvas: (!this.state.show_game_canvas) };
         this.setState(newState, () => {
 			if (newState.show_game_canvas) {
-				this.refs.play_area.focus();
+				this.play_area.focus();
 			}
 			// registerHandler(cMD, CANVAS_CONTAINER_CLASS, this.preventDefocus);
         });
@@ -66,9 +67,11 @@ class GameCanvas extends React.Component<Props, State> {
 
     /** Block page level elements from removing focus on the textbox */
     preventDefocus = (e: MouseEvent) => {
-	console.log("Hey there you're preventing defocus");
-	e.preventDefault();
+		console.log("Hey there you're preventing defocus");
+		e.preventDefault();
     };
+
+	setPlayAreaRef = (ref: React.ElementRef<*>) => { if (ref) { this.play_area = ref; }}
 
     render () {
 
@@ -109,7 +112,8 @@ class GameCanvas extends React.Component<Props, State> {
                 cPFS: cPFB
         )};
         const playAreaAttrs = {
-            className: cPA, ref: cPA
+            className: cPA,
+			ref: this.setPlayAreaRef
         };
 
         return (

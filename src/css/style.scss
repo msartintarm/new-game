@@ -113,7 +113,9 @@ div {
 
 .settings {
     position: fixed;
-	bottom: 0;
-	left: 0;
+	bottom: 20px;
+	left: 20px;
+	border: 3px solid black;
+	border-radius: 7px;
 	background-color: rgba(70, 70, 70, .6);
 }

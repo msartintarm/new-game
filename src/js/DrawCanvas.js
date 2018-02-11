@@ -31,7 +31,7 @@ type State = {
 class DrawCanvas extends React.Component<Props, State> {
 
 	getCoords: (MouseEvent) => number[];
-	onCanvasMouseDown: (MouseEvent) => void;
+ 	onCanvasMouseDown: (MouseEvent) => void;
 	onCanvasTouchDown: (MouseEvent) => void;
 	onCanvasKeyDown: (MouseEvent) => void;
 	onCanvasMouseOver: (MouseEvent) => void;
@@ -156,6 +156,12 @@ class DrawCanvas extends React.Component<Props, State> {
 	increaseScale = () => { this.setState({ scale: this.state.scale * 1.25 }); };
 	decreaseScale = () => { this.setState({ scale: this.state.scale * 0.8 }); };
 
+
+	setLineDropRef (ref: React.ElementRef<*>) { if (ref) {this.line_drop = ref;} }
+	setLineEndRef (c: React.ElementRef<*>) { if (c) {this.line_end = c;} }
+ 	setLineLoopRef (c: React.ElementRef<*>) { if (c) {this.line_loop = c;} }
+
+
 	render () {
 
 		const polygon = this.state.polygon_arr;
@@ -182,9 +188,9 @@ class DrawCanvas extends React.Component<Props, State> {
 			decreaseScale={this.decreaseScale}
 			status={this.state.status}
 				>
-				<EventButton name="line drop" ref={(c) => {if (c) {this.line_drop = c;}}} />
-				<EventButton name="line end" ref={(c) => {if (c) {this.line_end = c;}}} />
-				<EventButton name="line loop" ref={(c) => {if (c) {this.line_loop = c;}}} />
+				<EventButton name="line drop" ref={this.setLineDropRef} />
+				<EventButton name="line end" ref={this.setLineEndRef} />
+				<EventButton name="line loop" ref={this.setLineLoopRef} />
 					<DisplayArray array={[playerPos]} line_label="Playuh"/>
 					<DisplayArray array={polygon} line_label="polygon"/>
 					<DisplayArray array={example} line_label="new line"/>
