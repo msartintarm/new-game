@@ -1,16 +1,27 @@
+// @flow
 import * as React from 'react';
 
 const BAD_JSON_WARNING = 'JSON does not like the array passed';
 
-class DisplayArray extends React.Component {
-	constructor (propz) {
+type Props = {
+	array: number[];
+	line_label: string;
+
+};
+
+const setArray = (arrOrNum: number): number => {
+	return Math.floor(arrOrNum);
+};
+
+class DisplayArray extends React.Component<Props> {
+
+	timer: number;
+	floorArr: number[];
+
+	constructor (propz: Props) {
 		super(propz);
 		this.timer = 0;
-		this.floorArr = propz.array.map((childArr) => {
-			return childArr.map((num) => {
-				return Math.floor(num);
-			});
-		});
+		this.floorArr = propz.array.map(setArray);
 	}
 
 	shouldComponentUpdate () {
@@ -18,16 +29,9 @@ class DisplayArray extends React.Component {
 		this.timer = newTime;
 		return (newTime === 0);
 	}
-	componentWillUpdate (newProps) {
+	componentWillUpdate (newProps: Props) {
 		// can display either nested arrays or single level
-		this.floorArr = newProps.array.map((arrOrNum) => {
-			if (typeof arrOrNum === "number") {
-				return Math.floor(arrOrNum);
-			}
-			return arrOrNum.map((num) => {
-					return Math.floor(num);
-			});
-		});
+		this.floorArr = newProps.array.map(setArray);
 	}
 	render () {
 

@@ -6,137 +6,137 @@ import { registerHandler } from './EventHandler';
 import type Player from './Player';
 
 type Props = {
-	player: Player;
+    player: Player;
 };
 
 type State = {
-	left_button_pressed: boolean,
-	right_button_pressed: boolean,
-	jump_button_pressed: boolean
+    left_button_pressed: boolean,
+    right_button_pressed: boolean,
+    jump_button_pressed: boolean
 };
 
 /* Tells canvas what to draw */
 class GameController extends React.Component<Props, State> {
 
-	static BUTTONS_CONTAINER = "bc";
+    static BUTTONS_CONTAINER = "bc";
     static LEFT_BUTTON = "lb";
     static RIGHT_BUTTON = "rb";
     static JUMP_BUTTON = "jb";
 
- 	static CONTAINER_STYLE = {
-		position: "relative",
-		width: "100%",
-		textAlign: "center",
-		height: "300px",
-		userSelect: "none"
-	};
+    static CONTAINER_STYLE = {
+        position: "relative",
+        width: "100%",
+        textAlign: "center",
+        height: "300px",
+        userSelect: "none"
+    };
 
-	static LEFT_BUTTON_STYLE = {
-		position: "absolute",
-		top: "0px",
-		left: "0px",
-		height: "100%",
-		width: "30%",
-		backgroundColor: "rgb(3,22,5)"
-	};
+    static LEFT_BUTTON_STYLE = {
+        position: "absolute",
+        top: "0px",
+        left: "0px",
+        height: "100%",
+        width: "30%",
+        backgroundColor: "rgb(3,22,5)"
+    };
 
-	static RIGHT_BUTTON_STYLE = {
-		position: "absolute",
-		top: "0px",
-		right: "0px",
-		height: "100%",
-		width: "30%",
-		backgroundColor: "rgb(4,3,35)"
-	};
+    static RIGHT_BUTTON_STYLE = {
+        position: "absolute",
+        top: "0px",
+        right: "0px",
+        height: "100%",
+        width: "30%",
+        backgroundColor: "rgb(4,3,35)"
+    };
 
-	static JUMP_BUTTON_STYLE = {
-		height: "100%",
-		width: "40%",
-		backgroundColor: "rgb(24,2,3)"
-	};
+    static JUMP_BUTTON_STYLE = {
+        height: "100%",
+        width: "40%",
+        backgroundColor: "rgb(24,2,3)"
+    };
 
-	constructor (props: Props) {
-		super(props);
+    constructor (props: Props) {
+        super(props);
 
- 		this.state = {
-			left_button_pressed: false,
-			right_button_pressed: false,
-			jump_button_pressed: false
-		};
+        this.state = {
+            left_button_pressed: false,
+            right_button_pressed: false,
+            jump_button_pressed: false
+        };
 
-		for(const argList of [
- 			[ "mousedown", GameController.LEFT_BUTTON, this.onLeftButtonMouseDown ],
-			[ "mousedown", GameController.RIGHT_BUTTON, this.onRightButtonMouseDown ],
-			[ "mousedown", GameController.JUMP_BUTTON, this.onJumpButtonMouseDown ],
+        for(const argList of [
+            [ "mousedown", GameController.LEFT_BUTTON, this.onLeftButtonMouseDown ],
+            [ "mousedown", GameController.RIGHT_BUTTON, this.onRightButtonMouseDown ],
+            [ "mousedown", GameController.JUMP_BUTTON, this.onJumpButtonMouseDown ],
 
             [ "mouseup", GameController.LEFT_BUTTON, this.endPlayerMove ],
-			[ "mouseup", GameController.RIGHT_BUTTON, this.endPlayerMove ],
+            [ "mouseup", GameController.RIGHT_BUTTON, this.endPlayerMove ],
 
-			[ "touchstart", GameController.LEFT_BUTTON, this.onLeftButtonMouseDown ],
-			[ "touchstart", GameController.RIGHT_BUTTON, this.onRightButtonMouseDown ],
-			[ "touchstart", GameController.JUMP_BUTTON, this.onJumpButtonMouseDown ],
+            [ "touchstart", GameController.LEFT_BUTTON, this.onLeftButtonMouseDown ],
+            [ "touchstart", GameController.RIGHT_BUTTON, this.onRightButtonMouseDown ],
+            [ "touchstart", GameController.JUMP_BUTTON, this.onJumpButtonMouseDown ],
 
-			[ "touchend", GameController.BUTTONS_CONTAINER, this.preventTouchMouseEvents ],
+            [ "touchend", GameController.BUTTONS_CONTAINER, this.preventTouchMouseEvents ],
 
-			[ "mousemove", GameController.LEFT_BUTTON, this.onButtonMouseMove ],
-			[ "mousemove", GameController.RIGHT_BUTTON, this.onButtonMouseMove ],
-			[ "mousemove", GameController.JUMP_BUTTON, this.onButtonMouseMove ]
-		]) { registerHandler(...argList); }
-	}
-
-	/* Control the player's moves. */
-	onLeftButtonMouseDown = () => {
-		this.props.player.startMoveLeft();
-		this.setState({ left_button_pressed: true });
-	};
-
-	onRightButtonMouseDown = () => {
-		this.props.player.startMoveRight();
-		this.setState({ right_button_pressed: true });
-	};
-
-	onJumpButtonMouseDown = () => {
-		this.props.player.startJump();
-		this.setState({ jump_button_pressed: true });
-	};
+            [ "mousemove", GameController.LEFT_BUTTON, this.onButtonMouseMove ],
+            [ "mousemove", GameController.RIGHT_BUTTON, this.onButtonMouseMove ],
+            [ "mousemove", GameController.JUMP_BUTTON, this.onButtonMouseMove ]
+        ]) { registerHandler(...argList); }
+    }
 
     /* Control the player's moves. */
-	endPlayerMove = () => {
-		this.props.player.startMoveEnd();
-	};
+    onLeftButtonMouseDown = () => {
+        this.props.player.startMoveLeft();
+        this.setState({ left_button_pressed: true });
+    };
 
-	preventTouchMouseEvents = (e: TouchEvent) => {
-		e.preventDefault();
-		this.props.player.startMoveEnd();
-	};
+    onRightButtonMouseDown = () => {
+        this.props.player.startMoveRight();
+        this.setState({ right_button_pressed: true });
+    };
 
-	/* Draws example line with last point */
-	onButtonMouseMove = (e: MouseEvent) => { return e; }
+    onJumpButtonMouseDown = () => {
+        this.props.player.startJump();
+        this.setState({ jump_button_pressed: true });
+    };
 
-	/* Todo: something cool */
-	onButtonMouseOver = (e: MouseEvent) => { return e; }
-	onButtonTouchDown = (e: TouchEvent) => { return e; }
+    /* Control the player's moves. */
+    endPlayerMove = () => {
+        this.props.player.startMoveEnd();
+    };
 
-	render () {
+    preventTouchMouseEvents = (e: TouchEvent) => {
+        e.preventDefault();
+        this.props.player.startMoveEnd();
+    };
 
-		return (
-	<div className={GameController.BUTTONS_CONTAINER}
-		style={GameController.CONTAINER_STYLE}>
-	<div className={GameController.JUMP_BUTTON}
-		style={GameController.JUMP_BUTTON_STYLE}>
-		Jump!
-	</div>
-	<div className={GameController.LEFT_BUTTON}
-		style={GameController.LEFT_BUTTON_STYLE}>
-		Left!
-	</div>
-	<div className={GameController.RIGHT_BUTTON}
-		style={GameController.RIGHT_BUTTON_STYLE}>
-		Right!
-	</div>
+    /* Draws example line with last point */
+    onButtonMouseMove = (e: MouseEvent) => { return e; }
+
+    /* Todo: something cool */
+    onButtonMouseOver = (e: MouseEvent) => { return e; }
+    onButtonTouchDown = (e: TouchEvent) => { return e; }
+
+    render () {
+
+        return (
+    <div className={GameController.BUTTONS_CONTAINER}
+        style={GameController.CONTAINER_STYLE}>
+    <div className={GameController.JUMP_BUTTON}
+        style={GameController.JUMP_BUTTON_STYLE}>
+        Jump!
+    </div>
+    <div className={GameController.LEFT_BUTTON}
+        style={GameController.LEFT_BUTTON_STYLE}>
+        Left!
+    </div>
+    <div className={GameController.RIGHT_BUTTON}
+        style={GameController.RIGHT_BUTTON_STYLE}>
+        Right!
+    </div>
 </div>
-		);
-	}
+        );
+    }
 }
 
 export default GameController;

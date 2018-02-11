@@ -57,29 +57,29 @@ type CollisionFn = Function;
 */
 class Player {
 
-	body: Body;
-	speech_bubble: SpeechBubble;
-	collisionlinesFn: CollisionFn;
-	moveDist: number[];
-	groundSpeed: number;
-	pos: number[];
-	correctionDist: number[];
-	jumpFlag: boolean;
-	secondJumpFlag: boolean;
-	footFrame: number;
-	footMoveFrames: number;
-	moveEndFrames: number;
-	collisionLineList: Frame;
-	onGround: boolean;
-	bodyCollisionLine: Segment;
-	footCollisionLine1: Segment;
-	footCollisionLine2: Segment;
-	headCollisionLine1: Segment;
-	headCollisionLine2: Segment;
-	body_offset_x_1: number;
-	body_offset_x_2: number;
-	head_offset_y: number;
-	movingFlag: number;
+    body: Body;
+    speech_bubble: SpeechBubble;
+    collisionlinesFn: CollisionFn;
+    moveDist: number[];
+    groundSpeed: number;
+    pos: number[];
+    correctionDist: number[];
+    jumpFlag: boolean;
+    secondJumpFlag: boolean;
+    footFrame: number;
+    footMoveFrames: number;
+    moveEndFrames: number;
+    collisionLineList: Frame;
+    onGround: boolean;
+    bodyCollisionLine: Segment;
+    footCollisionLine1: Segment;
+    footCollisionLine2: Segment;
+    headCollisionLine1: Segment;
+    headCollisionLine2: Segment;
+    body_offset_x_1: number;
+    body_offset_x_2: number;
+    head_offset_y: number;
+    movingFlag: number;
 
     constructor(collisionRetrievalFunction: CollisionFn) {
 
@@ -414,38 +414,38 @@ class Player {
 
     keydownList = {};
 
-	/* Starts a move. Intended to be exposed to callers. */
-	startMoveLeft () {
+    /* Starts a move. Intended to be exposed to callers. */
+    startMoveLeft () {
         registerTickEvent(MOVE, this.moveLeft, 0, true);
-	}
+    }
 
-	startJump () {
+    startJump () {
         registerTickEvent(JUMP, this.jump, 1);
-	}
+    }
 
-	startMoveRight () {
+    startMoveRight () {
         registerTickEvent(MOVE, this.moveRight, 0, true);
-	}
+    }
 
-	/** Terminate ongoing moves */
-	startMoveEnd () {
-		registerTickEvent(MOVE, this.moveEnd, 0, true);
-	}
+    /** Terminate ongoing moves */
+    startMoveEnd () {
+        registerTickEvent(MOVE, this.moveEnd, 0, true);
+    }
 
     setPositionOnKeyDown = (e: KeyboardEvent) => {
         this.keydownList[e.keyCode] = true;
         switch (e.keyCode) {
         case 37: // Left
-		case 65: // 'a'
-			this.startMoveLeft();
+        case 65: // 'a'
+            this.startMoveLeft();
             break;
         case 38: // Up
-		case 87: // 'w'
-			this.startJump();
+        case 87: // 'w'
+            this.startJump();
             break;
         case 39: // Right
- 		case 68: // 'd'
-			this.startMoveRight();
+        case 68: // 'd'
+            this.startMoveRight();
             break;
         default: null;
         }
@@ -456,21 +456,21 @@ class Player {
         this.keydownList[e.keyCode] = false;
         switch (e.keyCode) {
         case 37: // Left
-		case 65: // 'a'
+        case 65: // 'a'
             if (this.keydownList[39]
-				|| this.keydownList[68]) {
-				this.startMoveRight();
+                || this.keydownList[68]) {
+                this.startMoveRight();
             } else {
-				this.startMoveEnd();
+                this.startMoveEnd();
             }
             break;
         case 39: // Right
- 		case 68: // 'd'
+        case 68: // 'd'
             if (this.keydownList[37]
-				|| this.keydownList[65]) {
-				this.startMoveLeft();
+                || this.keydownList[65]) {
+                this.startMoveLeft();
             } else {
-				this.startMoveEnd();
+                this.startMoveEnd();
             }
             break;
         default: break;

@@ -38,8 +38,9 @@ type Props = {
 */
 class TheCanvas extends React.Component<Props> {
 
-	ctx: CanvasRenderingContext2D;
-	pattern_brick: string;
+    ctx: CanvasRenderingContext2D;
+    pattern_brick: string;
+	canvas: HTMLCanvasElement;
 
     static defaultProps = {
 
@@ -62,7 +63,7 @@ class TheCanvas extends React.Component<Props> {
     static CLASS = "the_canvas";
 
     componentDidMount () {
-        this.ctx = this.refs.theCanvas.getContext('2d');
+        this.ctx = this.canvas.getContext('2d');
         this._paint(this.props.lineSegments);
     }
 
@@ -148,9 +149,11 @@ class TheCanvas extends React.Component<Props> {
         };
     }
 
+	setCanvasRef = (ref: React.ElementRef<*>) => { if (ref) { this.canvas = ref; }}
+
     _getCanvasProps () {
         return {
-            ref: "theCanvas",
+            ref: this.setCanvasRef,
             width: this.props.size,
             height: this.props.size,
             className: (this.props.show_canvas?

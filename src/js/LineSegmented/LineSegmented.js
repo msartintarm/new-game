@@ -33,24 +33,24 @@ const lerpLineSegments = (frame1: Frame, frame2: Frame, numFrames: number) => {
 };
 
 export type Options = {
-	translate?: number[],
-	numFrames?: number,
-	setToFrame?: number,
-	fillStyle?: CanvasPattern | string,
-	fillFrames?: boolean[],
-	collisionLines?: Segment
+    translate?: number[],
+    numFrames?: number,
+    setToFrame?: number,
+    fillStyle?: CanvasPattern | string,
+    fillFrames?: boolean[],
+    collisionLines?: Segment
 };
 
 
 class LineSegmented {
 
-	lineSegments: Frame;
-	collisionSegment: Segment;
-	fillStyle: CanvasPattern | string;
-	fillFrames: boolean[];
-	pos: number[];
-	frames: (Frame)[];
-	static lerp = lerpLineSegments;
+    lineSegments: Frame;
+    collisionSegment: Segment;
+    fillStyle: CanvasPattern | string;
+    fillFrames: boolean[];
+    pos: number[];
+    frames: (Frame)[];
+    static lerp = lerpLineSegments;
 
     /*
         opts.numFrames: amount of frames to interpolate between
@@ -58,13 +58,13 @@ class LineSegmented {
         frameEnd: optional, if present and structure mirrors frameStart
             allow interpolarion.
     */
-	constructor(opts?: Options, frameOrSeg: Frame, frameEnd?: Frame) {
+    constructor(opts?: Options, frameOrSeg: Frame, frameEnd?: Frame) {
 
         const _opts = opts || {};
 
         const _t = _opts.translate;
 
-		const _nF = _opts.numFrames;
+        const _nF = _opts.numFrames;
         const _sF = _opts.setToFrame;
         const _fS = _opts.fillStyle;
         const _fF = _opts.fillFrames;
@@ -76,19 +76,19 @@ class LineSegmented {
 
         // either one line segment or multipleframes
         if (frameEnd) {
-			if (_nF) {
-				this.frames = this.constructor.lerp(frameOrSeg, frameEnd, _nF);
-			} else {
-				this.frames = [ frameOrSeg, frameEnd ];
-			}
+            if (_nF) {
+                this.frames = this.constructor.lerp(frameOrSeg, frameEnd, _nF);
+            } else {
+                this.frames = [ frameOrSeg, frameEnd ];
+            }
             this.setToFrame(_sF || 0); // Load this.lineSegments
         } else {
             this.lineSegments = [...frameOrSeg];
         }
 
-		if (_opts.collisionLines) {
-			this.collisionSegment = [..._opts.collisionLines];
-		}
+        if (_opts.collisionLines) {
+            this.collisionSegment = [..._opts.collisionLines];
+        }
 
         if (_t) { this.translate(_t); }
 
@@ -131,12 +131,12 @@ class LineSegmented {
         return this.lineSegments;
     }
 
-	getCollisionLines(): Segment {
-		if (!this.collisionSegment) {
-			throw "Collision lines do not exist for this object."
-		}
-		return this.collisionSegment;
-	}
+    getCollisionLines(): Segment {
+        if (!this.collisionSegment) {
+            throw "Collision lines do not exist for this object."
+        }
+        return this.collisionSegment;
+    }
 
     draw (ctx: CanvasRenderingContext2D) {
         const ls = this.lineSegments;

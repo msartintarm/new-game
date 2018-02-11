@@ -16,7 +16,8 @@
     },
     "env": {
         "es6": true,
-        "browser": true
+        "browser": true,
+		"node": true
     },
     "plugins": [
 		"flowtype",
@@ -33,13 +34,8 @@
         "no-negated-condition": 2,
         "no-use-before-define": 2,
         "no-console": 0,
-        "no-undef": 1,
         "react/jsx-uses-vars": 2,
         "react/prefer-es6-class": 2,
-        "react/react-in-jsx-scope": 0,
-        "react/prop-types": 0,
-	"react/no-string-refs": 1,
-	"no-mixed-spaces-and-tabs": 1,
         "array-bracket-spacing": [
             "error", "always", {
                 "singleValue": false,
