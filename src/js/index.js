@@ -1,4 +1,6 @@
 // @flow
+import vec2 from 'gl-matrix/src/gl-matrix/vec2';
+
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -29,7 +31,21 @@ class App extends React.Component<{}, State> {
         super();
         this.state = { frameNum: 0 };
 
-        this.stuff = new Stuff();
+		const hook_offset = vec2.fromValues( -582, 202 );
+		const weight_offset = vec2.fromValues(597, 227);
+		vec2.add(weight_offset, weight_offset, hook_offset);
+        this.stuff = new Stuff({
+			hooks: [
+				hook_offset
+			],
+			weights: [
+				weight_offset
+			],
+			floors: [
+				[]
+			]
+		});
+
         this.player = new Player(
             this.stuff.getCollisionLines
         );

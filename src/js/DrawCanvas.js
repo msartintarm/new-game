@@ -5,7 +5,6 @@ import { registerHandler } from './EventHandler';
 
 import EventButton from './EventButton';
 import TheCanvas from './TheCanvas';
-import DisplayArray from './DisplayArray';
 import GameSettings from './GameSettings';
 import Stuff from './Stuff';
 
@@ -66,17 +65,17 @@ class DrawCanvas extends React.Component<Props, State> {
     }
 
     /* return array from event with offset relative to target */
-    getCoords (e: MouseEvent) {
+    getCoords = (e: MouseEvent) => {
         const t = e.target;
+		const scale = this.state.scale;
         let x = e.pageX - this.state.offset[0];
         let y = e.pageY - this.state.offset[1];
         if (t instanceof HTMLElement) {
             x -= t.offsetLeft;
             y -= t.offsetTop;
         }
-        console.log(JSON.stringify([ x, y ]));
-        return [ x, y ];
-    }
+        return [ x / scale, y / scale ];
+    };
 
     /* Update polygon array with point from latest canvas click. */
     onCanvasMouseDown = (e: MouseEvent) => {
@@ -153,13 +152,17 @@ class DrawCanvas extends React.Component<Props, State> {
         this.setState(newState);
     }
 
-    increaseScale = () => { this.setState({ scale: this.state.scale * 1.25 }); };
-    decreaseScale = () => { this.setState({ scale: this.state.scale * 0.8 }); };
+    increaseScale = () => {
+		this.setState({ scale: this.state.scale * 1.25 });
+	};
+    decreaseScale = () => {
+		this.setState({ scale: this.state.scale * 0.8 });
+	};
 
 
-    setLineDropRef (ref: React.ElementRef<*>) { if (ref) {this.line_drop = ref;} }
-    setLineEndRef (c: React.ElementRef<*>) { if (c) {this.line_end = c;} }
-    setLineLoopRef (c: React.ElementRef<*>) { if (c) {this.line_loop = c;} }
+    setLineDropRef = (ref: React.ElementRef<*>) => { if (ref) {this.line_drop = ref;} };
+    setLineEndRef = (c: React.ElementRef<*>) => { if (c) {this.line_end = c;} };
+    setLineLoopRef = (c: React.ElementRef<*>) => { if (c) {this.line_loop = c;} };
 
 
     render () {
@@ -187,13 +190,13 @@ class DrawCanvas extends React.Component<Props, State> {
             increaseScale={this.increaseScale}
             decreaseScale={this.decreaseScale}
             status={this.state.status}
+			player_pos={playerPos}
+			polygon={polygon}
+			new_line={example}
                 >
                 <EventButton name="line drop" ref={this.setLineDropRef} />
                 <EventButton name="line end" ref={this.setLineEndRef} />
                 <EventButton name="line loop" ref={this.setLineLoopRef} />
-                    <DisplayArray array={playerPos} line_label="Playuh"/>
-                    <DisplayArray array={polygon} line_label="polygon"/>
-                    <DisplayArray array={example} line_label="new line"/>
                 </GameSettings>
             </div>
         );

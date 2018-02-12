@@ -1,12 +1,18 @@
 // @flow
 import * as React from 'react';
+import DisplayArray from './DisplayArray';
+//import ExpandableOption from './ExpandableOption';
 
 type Props = {
 	children?: React.Node,
 	status: string,
 	scale: number,
 	decreaseScale: () => void,
-	increaseScale: () => void
+	increaseScale: () => void,
+	player_pos: number[],
+	polygon: number[],
+	new_line: number[]
+
 };
 
 class GameSettings extends React.Component<Props> {
@@ -26,6 +32,11 @@ class GameSettings extends React.Component<Props> {
     <input type="textarea" value={this.props.scale} readOnly/>
     <input type="button" value="+" onClick={this.props.increaseScale}/>
   </div>
+
+
+  <DisplayArray array={this.props.player_pos} line_label="Playuh"/>
+  <DisplayArray array={this.props.polygon} line_label="polygon"/>
+  <DisplayArray array={this.props.new_line} line_label="new line"/>
 </div>
 		);
 	}

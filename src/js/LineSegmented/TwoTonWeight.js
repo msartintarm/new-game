@@ -16,11 +16,8 @@ const theFrame = [
 
 /* The Two Ton Weight */
 class TwoTonWeight {
-    static create (opts?: Options): LineSegmented {
-		if (!opts) {
-			opts = {};
-		}
-		opts.collisionLines = theExterior;
+    static create (opts: Options): LineSegmented {
+		opts.collisionIndex = theFrame.length - 1;
         const ls = new LineSegmented(opts, theFrame);
         return ls;
     }

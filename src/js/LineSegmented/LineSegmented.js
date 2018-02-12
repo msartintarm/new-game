@@ -38,14 +38,14 @@ export type Options = {
     setToFrame?: number,
     fillStyle?: CanvasPattern | string,
     fillFrames?: boolean[],
-    collisionLines?: Segment
+    collisionIndex?: number
 };
 
 
 class LineSegmented {
 
     lineSegments: Frame;
-    collisionSegment: Segment;
+    collisionIndex: number;
     fillStyle: CanvasPattern | string;
     fillFrames: boolean[];
     pos: number[];
@@ -86,8 +86,8 @@ class LineSegmented {
             this.lineSegments = [...frameOrSeg];
         }
 
-        if (_opts.collisionLines) {
-            this.collisionSegment = [..._opts.collisionLines];
+        if (_opts.collisionIndex) {
+            this.collisionIndex = _opts.collisionIndex;
         }
 
         if (_t) { this.translate(_t); }
@@ -127,15 +127,15 @@ class LineSegmented {
         }
     }
 
-    getLines () {
+    getLines (): Frame {
         return this.lineSegments;
     }
 
-    getCollisionLines(): Segment {
-        if (!this.collisionSegment) {
+    getCollisionLines(): Frame {
+        if (!this.collisionIndex) {
             throw "Collision lines do not exist for this object."
         }
-        return this.collisionSegment;
+        return [this.lineSegments[this.collisionIndex]];
     }
 
     draw (ctx: CanvasRenderingContext2D) {

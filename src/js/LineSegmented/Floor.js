@@ -83,9 +83,9 @@ class Floor {
         const ls = new LineSegmented(opts, floorFrame);
         if (pattern_brick) opts.fillStyle = pattern_brick;
         else {
-            const a = image_brick.onload;
+			const old_onload = image_brick.onload;
             image_brick.onload = () => {
-                if (a) { a(); }
+				if (old_onload) { old_onload(); }
                 ls.fillStyle = pattern_brick;
                 console.log("sdd22`22FR");
             };
