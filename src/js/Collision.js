@@ -2,7 +2,7 @@
 const NON_LINE_WARNING = "You need a 2d line to detect collisions. [1, 99, 3, 97]. Kapisch please.";
 
 import lineIntersection from './LineSegmented/lineIntersection';
-import type {Segment, Frame} from './LineSegmented/LineSegmented';
+import type {Segment, Frame} from './LineSegmented/Types';
 
 /*
     Contains lines and checks for collisions between them and env.

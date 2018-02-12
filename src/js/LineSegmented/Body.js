@@ -1,7 +1,7 @@
 // @flow
 
 import LineSegmented from './LineSegmented';
-import type {Frame, Options} from './LineSegmented';
+import type {Frame, Options} from './Types';
 import FootSegment from './Foot';
 import Hand from './Hand';
 
@@ -55,6 +55,10 @@ class Body {
     translate (vec: number[]) {
         this.partList.map((a) => a.translate(vec));
     }
+
+	turnAround (x_axis: number) {
+        this.partList.map((a) => a.turnAround(x_axis));
+	}
 
     /* Sets only object that supports multiple frames (the foot) */
     setFeetToFrame (theFrame: number) {

@@ -2,9 +2,7 @@
 
 import vec2 from 'gl-matrix/src/gl-matrix/vec2';
 
-export type Segment = number[]; // A line segment is an array of points
-export type Frame = (Segment)[]; // A frame consists of multiple segments
-export type Vector = number[]; // Always a fixed length segment
+import type {Frame, Vector} from './Types';
 
 const ZERO_VEC = vec2.fromValues(0, 0);
 
@@ -90,7 +88,7 @@ class LineSegmented {
             this.collisionIndex = _opts.collisionIndex;
         }
 
-        if (_t) { this.translate(_t); }
+        this.translate(_t || ZERO_VEC);
 
         return this;
     }
@@ -112,13 +110,33 @@ class LineSegmented {
         return this;
     }
 
-    translate (vec: number[]) {
+
+    turnAround (x_axis: number) {
+        if (this.frames) {
+            for (const oneSegment of this.frames) {
+                for (const oneLine of oneSegment) {
+					console.log(oneLine);
+//                    vec2.forEach(oneLine, 0, 0, 0, vec2.multiply, [ -1, 1 ]);
+  //                  vec2.forEach(oneLine, 0, 0, 0, vec2.add, [ 2 * x_axis, 0 ]);
+
+                }
+            }
+        } else {
+            for (const oneLine of this.lineSegments) {
+                vec2.forEach(oneLine, 0, 0, 0, vec2.multiply, [ -1, 1 ]);
+                vec2.forEach(oneLine, 0, 0, 0, vec2.add, [ 2 * x_axis, 0 ]);
+
+            }
+        }
+    }
+
+    translate (vec: Vector) {
         this._translateNoCopy(vec);
         vec2.add(this.pos, this.pos, vec);
         return this;
     }
 
-    _translateNoCopy (vec: number[]) {
+    _translateNoCopy (vec: Vector) {
         if (vec2.equals(vec, ZERO_VEC)) {
             return this; // nothing to translate here
         }

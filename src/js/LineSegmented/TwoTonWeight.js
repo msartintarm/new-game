@@ -1,6 +1,6 @@
 // @flow
 import LineSegmented from './LineSegmented';
-import type {Options} from './LineSegmented';
+import type {Options} from './Types';
 
 const theExterior = [ 20,117,174,118,94,30,20,117 ];
 

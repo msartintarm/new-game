@@ -1,6 +1,6 @@
 // @flow
 import LineSegmented from './LineSegmented/LineSegmented';
-import type {Options, Frame} from './LineSegmented/LineSegmented';
+import type {Options, Frame} from './LineSegmented/Types';
 
 const boxLines: Frame = [[ 100,200,200,200,200,100,100,100 ]];
 

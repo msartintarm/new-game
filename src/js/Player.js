@@ -4,7 +4,7 @@ import vec2 from 'gl-matrix/src/gl-matrix/vec2';
 
 import { registerHandler, registerTickEvent, deregisterTickEvent } from './EventHandler';
 
-import type {Frame, Segment} from './LineSegmented/LineSegmented';
+import type {Frame, Segment, Vector} from './LineSegmented/Types';
 import Body from './LineSegmented/Body';
 import SpeechBubble from './SpeechBubble';
 
@@ -58,6 +58,7 @@ type CollisionFn = Function;
 class Player {
 
     body: Body;
+	direction: number;
     speech_bubble: SpeechBubble;
     collisionlinesFn: CollisionFn;
     moveDist: number[];
@@ -99,6 +100,7 @@ class Player {
         this.jumpFlag = false;
         this.secondJumpFlag = false;
 
+		this.direction = MOVING.RIGHT;
         this.movingFlag = MOVING.NOT;
 
         this.footFrame = 0;
@@ -146,6 +148,10 @@ class Player {
     };
 
     moveRight = () => {
+		if (this.direction == MOVING.LEFT) {
+			this.direction = MOVING.RIGHT;
+			this.turnAround(this.pos[0]);
+		}
         this.movingFlag = MOVING.RIGHT;
 
         let x = this.moveDist[0];
@@ -158,6 +164,10 @@ class Player {
     };
 
     moveLeft = () => {
+		if (this.direction == MOVING.RIGHT) {
+			this.direction = MOVING.LEFT;
+			this.turnAround(this.pos[0]);
+		}
         this.movingFlag = MOVING.LEFT;
 
         let x = this.moveDist[0];
@@ -402,7 +412,24 @@ class Player {
         this.body.setFeetToFrame(f);
     };
 
-    translate (vec: number[]) {
+	/* A visual effect
+	   Modifies player lines around an X axis pivot
+
+	   Input X values: 35, 40
+	   Pivot: 30
+	   Output X values: 25, 20
+	   Equation: 30 + (30 - X) =
+
+	*/
+	turnAround (x_axis: number) {
+		for (const line of this.collisionLineList) {
+            vec2.forEach(line, 0, 0, 0, vec2.multiply, [ -1, 1 ]);
+			vec2.forEach(line, 0, 0, 0, vec2.add, [ 2 * x_axis, 0 ]);
+		}
+		this.body.turnAround(x_axis);
+	}
+
+    translate (vec: Vector) {
         for (const oneLine of this.collisionLineList) {
             vec2.forEach(oneLine, 0, 0, 0, vec2.add, vec);
         }

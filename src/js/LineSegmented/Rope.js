@@ -1,6 +1,6 @@
 // @flow
 import LineSegmented from './LineSegmented';
-import type {Options} from './LineSegmented';
+import type {Options} from './Types';
 //import lineIntersection from './lineIntersection';
 
 type Knot = {

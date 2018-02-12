@@ -1,6 +1,6 @@
 // @flow
 import type LineSegmented from './LineSegmented/LineSegmented';
-import type {Frame, Vector} from './LineSegmented/LineSegmented';
+import type {Frame, Vector} from './LineSegmented/Types';
 
 import Hook from './LineSegmented/Hook';
 import TwoTonWeight from './LineSegmented/TwoTonWeight';
@@ -47,11 +47,10 @@ class Stuff {
 		for (const thing of this.floors) {
 			arr = arr.concat(thing.getLines());
 		}
+		for (const thing of this.weights) {
+			arr = arr.concat(thing.getCollisionLines());
+		}
 		return arr;
-		//		return [
-//				...this.floor.getLines(),
-//				...this.weight.getCollisionLines()
-//		];
 	};
 
 	draw (ctx: CanvasRenderingContext2D) {

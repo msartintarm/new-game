@@ -1,6 +1,6 @@
 // @flow
 import LineSegmented from './LineSegmented/LineSegmented';
-import type {Options, Frame} from './LineSegmented/LineSegmented';
+import type {Options, Frame} from './LineSegmented/Types';
 
 import TextCanvas from './TextCanvas';
 

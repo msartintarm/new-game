@@ -1,5 +1,5 @@
 // @flow
-import type {Options} from './LineSegmented';
+import type {Options} from './Types';
 import LineSegmented from './LineSegmented';
 
 const theHook = [

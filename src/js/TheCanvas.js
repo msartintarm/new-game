@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 
-import type {Frame, Segment} from './LineSegmented/LineSegmented';
+import type {Frame, Segment} from './LineSegmented/Types';
 import type Background from './Background';
 import type Player from './Player';
 import type Stuff from './Stuff';
